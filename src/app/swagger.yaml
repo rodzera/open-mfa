@@ -1,0 +1,96 @@
+openapi: 3.0.3
+info:
+  title: open-mfa
+  description: developed by github.com/rodzera
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /database:
+    get:
+      tags:
+        - Status
+      summary: Database healthcheck.
+      responses:
+        200:
+          description: Database healthcheck success response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "up"
+                  datetime:
+                    type: string
+                    example: "2023-06-11 18:37:55"
+        405:
+          $ref: "#/components/responses/HTTPErrorResponse"
+        406:
+          $ref: "#/components/responses/HTTPErrorResponse"
+        500:
+          $ref: "#/components/responses/HTTPErrorResponse"
+  /server:
+    get:
+      tags:
+        - Status
+      summary: Server healthcheck.
+      responses:
+        200:
+          description: Server healthcheck success response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "up"
+                  version:
+                    type: string
+                    example: "1.0.0"
+        405:
+          $ref: "#/components/responses/HTTPErrorResponse"
+        406:
+          $ref: "#/components/responses/HTTPErrorResponse"
+        500:
+          $ref: "#/components/responses/HTTPErrorResponse"
+
+components:
+  schemas:
+    ErrorSchema:
+      description: The default error message schema.
+      type: object
+      required:
+        - status_code
+        - name
+        - message
+      properties:
+        status_code:
+          description: The HTTP status code.
+          type: integer
+          format: int64
+        name:
+          description: The HTTP status code name.
+          type: string
+        message:
+          description: The error message.
+          type: string
+    NoContent:
+      description: Response message with no content
+      type: object
+      nullable: true
+  responses:
+    HTTPErrorResponse:
+      description: Default response for a HTTP error.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorSchema"
+  securitySchemes:
+    basic:
+      type: http
+      scheme: basic
+      description: Basic HTTP authorization

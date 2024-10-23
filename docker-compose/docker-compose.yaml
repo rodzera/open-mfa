@@ -1,0 +1,59 @@
+networks:
+  open-mfa:
+    name: open-mfa
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+
+services:
+  open-mfa:
+    image: rodzera/open-mfa:latest
+    container_name: open-mfa
+    restart: unless-stopped
+    depends_on:
+      - open-mfa-database
+    environment:
+      _SECRET_KEY: ${_SECRET_KEY}
+      _ADMIN_PASS: ${_ADMIN_PASS}
+      _DB_PROVIDER: postgresql
+      _DB_HOST: open-mfa-database
+      _DB_DATABASE: open-mfa
+      _DB_PASS: ${_DB_PASS}
+      HOST: 0.0.0.0
+      PORT: 8080
+      WORKERS: 4
+      THREADS: 64
+      WORKER_CONNECTIONS: 8192
+      TZ: Etc/Greenwich
+    networks:
+      open-mfa:
+        aliases:
+          - open-mfa
+        ipv4_address: 172.19.0.2
+    ports:
+      - "8080:8080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+  open-mfa-database:
+    image: postgres:17
+    container_name: open-mfa-database
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: open-mfa
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${_DB_PASS}
+      TZ: Etc/Greenwich
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql
+    networks:
+      open-mfa:
+        aliases:
+          - open-mfa-database
+        ipv4_address: 172.19.0.3
