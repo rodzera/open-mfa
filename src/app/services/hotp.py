@@ -22,7 +22,7 @@ class HOTPService(object):
         )
 
     @property
-    def new_hotp_data(self):
+    def new_data(self):
         return {
             "count": self.client_initial_count,
             "secret": self.secret,
@@ -30,7 +30,7 @@ class HOTPService(object):
         }
 
     def create_hotp(self) -> None:
-        redis_service.insert_hset(self.session_key, self.new_hotp_data)
+        redis_service.insert_hset(self.session_key, self.new_data)
 
     def create(self) -> str:
         self.create_hotp()

@@ -20,7 +20,7 @@ class OTPService(object):
         self.server_otp = OTP(self.secret).generate_otp(self.current_timestamp)
 
     @property
-    def new_otp_data(self):
+    def new_data(self):
         return {
             "otp": self.server_otp,
             "secret": self.secret,
@@ -29,7 +29,7 @@ class OTPService(object):
         }
 
     def create_otp(self) -> None:
-        redis_service.insert_hset(self.session_key, self.new_otp_data)
+        redis_service.insert_hset(self.session_key, self.new_data)
 
     def otp_has_expired(self):
         return self.current_timestamp - self.creation_timestamp >= 300  # five minutes expiration

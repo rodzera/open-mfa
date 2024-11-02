@@ -145,3 +145,55 @@ paths:
           description: HOTP reset successfully
         404:
           description: HOTP not created
+  /totp:
+    get:
+      tags:
+        - TOTP
+      summary: Generate and verify a Time-based One-time Password (TOTP).
+      parameters:
+        - name: otp
+          in: query
+          required: false
+          description: The OTP to verify (optional).
+          schema:
+            type: string
+        - name: interval
+          in: query
+          required: false
+          description: TOTP interval in seconds (optional).
+          schema:
+            type: integer
+      responses:
+        200:
+          description: TOTP generated or verified successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      uri:
+                        type: string
+                        description: Provisioning TOTP uri to be used in a authenticator app
+                        example: "otpauth://totp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App"
+                  - type: object
+                    properties:
+                      status:
+                        type: boolean
+                        description: Verification result if an OTP was provided
+                        example: true
+        400:
+          description: Invalid OTP provided
+        404:
+          description: TOTP not created
+        409:
+          description: TOTP already created
+    delete:
+      tags:
+        - TOTP
+      summary: Reset the Time-based One-time Password (TOTP).
+      responses:
+        204:
+          description: TOTP reset successfully
+        404:
+          description: TOTP not created

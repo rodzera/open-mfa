@@ -1,23 +1,14 @@
 from flask import abort
-from typing import Optional
-from marshmallow import Schema, fields, validates, ValidationError, post_load
+from marshmallow import post_load
 
 from src.app.services.redis import redis_service
+from src.app.schemas.common import OTPFieldSchema
 
 
-class OTPSchema(Schema):
-    otp = fields.Str(required=False)
-
-    @validates('otp')
-    def validate_otp(self, otp: Optional[str]) -> None:
-        if not otp:
-            return
-
-        if not otp.isdigit() or len(otp) != 6:
-            raise ValidationError("OTP must be a 6-digit string")
+class OTPSchema(OTPFieldSchema):
 
     @post_load
-    def validate(self, data, **kwargs):
+    def otp_validation(self, data, **kwargs):
         if not data.get("otp"):
             return data
 
