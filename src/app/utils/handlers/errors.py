@@ -1,3 +1,4 @@
+from redis import RedisError
 from marshmallow import ValidationError
 from flask import json, Flask, Response as FlaskResponse
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -19,24 +20,30 @@ def handle_any_error(e: HTTPException) -> FlaskResponse:
     response.mimetype = "application/json"
     return response
 
-
 def handle_marshmallow_exc(e: ValidationError) -> FlaskResponse:
     log.error(f"Marshmallow validation error: {e.messages}")
     first_error = list(e.messages.values())[0][0]
     return jsonify_error_response(400, "Bad Request", first_error)
 
-
-def handle_any_exception(e: BaseException) -> FlaskResponse:
-    log.exception(f"Uncaught Exception occurred:")
+def handle_redis_exc(e: RedisError) -> FlaskResponse:
+    log.exception(f"Redis exception occurred:")
     return jsonify_error_response(
         500,
         "Internal Server Error",
         InternalServerError.description
     )
 
+def handle_any_exc(e: BaseException) -> FlaskResponse:
+    log.exception(f"Uncaught exception occurred:")
+    return jsonify_error_response(
+        500,
+        "Internal Server Error",
+        InternalServerError.description
+    )
 
 def register_error_handlers(app: Flask):
     for ex in default_exceptions:
         app.register_error_handler(ex, handle_any_error)
     app.register_error_handler(ValidationError, handle_marshmallow_exc)
-    app.register_error_handler(Exception, handle_any_exception)
+    app.register_error_handler(RedisError, handle_redis_exc)
+    app.register_error_handler(Exception, handle_any_exc)

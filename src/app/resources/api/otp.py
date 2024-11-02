@@ -6,11 +6,11 @@ from src.app.schemas.common import schema_validation
 
 @api.route("/otp", methods=["GET"])
 @schema_validation(OTPSchema)
-def otp_route(**kwargs):
+def get_otp(**kwargs):
     service = OTPService(**kwargs)
-    if not service.client_otp:
-        otp = service.create_flow()
-        return {"otp": otp}
-    else:
-        status = service.verify_flow()
+    if service.client_otp:
+        status = service.verify()
         return {"status": status}
+    else:
+        otp = service.create()
+        return {"otp": otp}

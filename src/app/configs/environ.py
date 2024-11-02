@@ -9,8 +9,8 @@ class DefaultConfig(object):
     def __init__(self, **kwargs):
         self.ADMIN_USER = "admin"
         self.JSON_SORT_KEYS = False
-        self.REMEMBER_COOKIE_DURATION = timedelta(minutes=30)
-        self.PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
+        self.REMEMBER_COOKIE_DURATION = timedelta(minutes=60)
+        self.PERMANENT_SESSION_LIFETIME = timedelta(minutes=60)
         self.SWAGGER = dict(title="open-mfa", openapi="3.0.3")
 
     @staticmethod

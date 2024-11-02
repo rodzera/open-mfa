@@ -1,7 +1,8 @@
 from os import environ
 from flask import session
-from typing import Union, Literal
+from datetime import timedelta
 from time import strftime, gmtime
+from typing import Union, Literal, Dict
 from redis import RedisError, StrictRedis
 
 from src.app.logger import get_logger
@@ -14,14 +15,17 @@ class RedisService(object):
         self.client = self.setup_connection()
 
     def db(self, method: str, *args, **kwargs):
-        try:
-            log.debug(
-                f"Executing Redis command: {method}, args: {args}, kwargs: {kwargs}"
-            )
-            return getattr(self.client, method)(*args, **kwargs)
-        except RedisError:
-            log.exception("Redis exception:")
-            raise RuntimeError("Redis connection failed")
+        log.debug(
+            f"Executing Redis command: {method}, args: {args}, kwargs: {kwargs}"
+        )
+        return getattr(self.client, method)(*args, **kwargs)
+
+    @staticmethod
+    def insert_hset(
+        session_key: str, hset: Dict[str, str], exp: int = 60
+    ) -> None:
+        redis_service.db("hset", session_key, mapping=hset)
+        redis_service.db("expire", session_key, timedelta(minutes=exp))
 
     @staticmethod
     def setup_connection():
