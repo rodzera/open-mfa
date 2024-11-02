@@ -4,14 +4,11 @@ DB_STATUS=1
 
 while [[ $DB_STATUS -ne 0 ]] ; do
   sleep 2
-  echo "Connecting into database"
-  DB_STATUS=$(python3 /src/check_database.py)
+  echo "Connecting into redis"
+  DB_STATUS=$(python3 /src/check_redis.py)
 done
 
-echo "Database connected"
-
-echo "Running migrations"
-flask --app run db upgrade --directory /src/migrations
+echo "Redis connected"
 
 if [[ -z "${HOST}" ]]; then
   export HOST="0.0.0.0"

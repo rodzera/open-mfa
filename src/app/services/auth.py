@@ -16,7 +16,7 @@ def admin_auth():
             if not auth or not hasattr(auth, "username") or not hasattr(auth, "password"):
                 log.debug("Invalid authorization in headers")
                 abort(401)
-            if auth.username != current_app.config["ADMIN_USER"] and auth.password != \
+            if auth.username != current_app.config["ADMIN_USER"] or auth.password != \
                     current_app.config["ADMIN_PASS"]:
                 log.debug("Invalid super admin credential")
                 abort(401)

@@ -6,10 +6,8 @@
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="_ADMIN_PASS" value="admin" />
-      <env name="_DB_DATABASE" value="open-mfa" />
-      <env name="_DB_HOST" value="172.19.0.3" />
-      <env name="_DB_PASS" value="admin" />
-      <env name="_DB_PROVIDER" value="postgresql" />
+      <env name="_REDIS_PASS" value="open-mfa" />
+      <env name="_REDIS_HOST" value="172.19.0.3" />
       <env name="_SECRET_KEY" value="ABCDEFGH12345678" />
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>

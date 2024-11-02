@@ -1,7 +1,7 @@
 from signal import SIGTERM
 from os import kill, getenv
 
-from app.configs.constants import DIR_PATH
+from src.app.configs.constants import DIR_PATH
 
 __all__ = ["terminate_server"]
 

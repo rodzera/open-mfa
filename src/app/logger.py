@@ -1,6 +1,7 @@
 import logging
 from os import path, mkdir, getenv
 
+# TODO : create a server and redis log files
 
 def set_logger_level(level: str):
     logger_level = logging._nameToLevel.get(level)

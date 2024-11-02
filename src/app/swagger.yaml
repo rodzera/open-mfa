@@ -9,88 +9,87 @@ paths:
   /database:
     get:
       tags:
-        - Status
-      summary: Database healthcheck.
+        - Healthcheck
+      summary: Get the status of the database.
       responses:
         200:
-          description: Database healthcheck success response.
+          description: Database status response
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status:
-                    type: string
-                    example: "up"
                   datetime:
                     type: string
-                    example: "2023-06-11 18:37:55"
-        405:
-          $ref: "#/components/responses/HTTPErrorResponse"
-        406:
-          $ref: "#/components/responses/HTTPErrorResponse"
-        500:
-          $ref: "#/components/responses/HTTPErrorResponse"
-  /server:
-    get:
-      tags:
-        - Status
-      summary: Server healthcheck.
-      responses:
-        200:
-          description: Server healthcheck success response.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
+                    description: Current timestamp from redis
+                    example: "2024-11-01 03:36:58"
                   status:
                     type: string
+                    description: Status of the database, either 'up' or 'down'
                     example: "up"
                   version:
                     type: string
-                    example: "1.0.0"
-        405:
-          $ref: "#/components/responses/HTTPErrorResponse"
-        406:
-          $ref: "#/components/responses/HTTPErrorResponse"
+                    description: Current redis version
+                    example: "7.4.1"
         500:
-          $ref: "#/components/responses/HTTPErrorResponse"
-
-components:
-  schemas:
-    ErrorSchema:
-      description: The default error message schema.
-      type: object
-      required:
-        - status_code
-        - name
-        - message
-      properties:
-        status_code:
-          description: The HTTP status code.
-          type: integer
-          format: int64
-        name:
-          description: The HTTP status code name.
-          type: string
-        message:
-          description: The error message.
-          type: string
-    NoContent:
-      description: Response message with no content
-      type: object
-      nullable: true
-  responses:
-    HTTPErrorResponse:
-      description: Default response for a HTTP error.
-      content:
-        application/json:
+          description: Database connection error
+  /server:
+    get:
+      tags:
+        - Healthcheck
+      summary: Get the status of the server.
+      responses:
+        200:
+          description: Server status response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  datetime:
+                    type: string
+                    description: Current timestamp from Flask server
+                    example: "2024-11-01 03:36:58"
+                  status:
+                    type: string
+                    description: Status of the server, always 'up'
+                    example: "up"
+                  version:
+                    type: string
+                    description: Current version of the application
+                    example: "1.0.0"
+  /otp:
+    get:
+      tags:
+        - OTP
+      summary: Generate and verify a One-Time Password (OTP).
+      parameters:
+        - name: otp
+          in: query
+          required: false
+          description: The OTP to verify (optional).
           schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorSchema"
-  securitySchemes:
-    basic:
-      type: http
-      scheme: basic
-      description: Basic HTTP authorization
+            type: string
+      responses:
+        200:
+          description: OTP generated or verified successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      otp:
+                        type: string
+                        description: Server side OTP, generated if no OTP is provided for verification
+                        example: "123456"
+                  - type: object
+                    properties:
+                      status:
+                        type: boolean
+                        description: Verification result if an OTP was provided
+                        example: true
+        400:
+          description: Missing OTP in the verification request
+        409:
+          description: OTP not created or not available for verification
