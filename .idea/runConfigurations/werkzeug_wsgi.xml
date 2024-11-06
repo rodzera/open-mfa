@@ -11,6 +11,7 @@
       <env name="_REDIS_PASS" value="admin" />
       <env name="_SECRET_KEY" value="ABCDEFGH12345678" />
       <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="_ADMIN_USER" value="admin" />
     </envs>
     <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />

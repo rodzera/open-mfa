@@ -3,13 +3,32 @@ from marshmallow import ValidationError
 from flask import json, Flask, Response as FlaskResponse
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
-from src.app.logger import get_logger
+from src.app.utils.helpers.logs import get_logger
 from src.app.utils.helpers.json import jsonify_error_response
 
 log = get_logger(__name__)
 
 __all__ = ["register_error_handlers"]
 
+
+def handle_marshmallow_exc(e: ValidationError) -> FlaskResponse:
+    log.error(f"Marshmallow validation error: {e.messages}")
+    first_error = list(e.messages.values())[0][0]
+    return jsonify_error_response(400, "Bad Request", first_error)
+
+def handle_redis_exc(e: RedisError) -> FlaskResponse:
+    return make_500_response("Redis exception occurred")
+
+def handle_any_exc(e: BaseException) -> FlaskResponse:
+    return make_500_response()
+
+def make_500_response(msg: str = "Uncaught exception occurred"):
+    log.exception(f"{msg}:")
+    return jsonify_error_response(
+        500,
+        "Internal Server Error",
+        InternalServerError.description
+    )
 
 def handle_any_error(e: HTTPException) -> FlaskResponse:
     log.error(f"Handling error: {e.__repr__()}")
@@ -19,27 +38,6 @@ def handle_any_error(e: HTTPException) -> FlaskResponse:
     response.data = json.dumps(data)
     response.mimetype = "application/json"
     return response
-
-def handle_marshmallow_exc(e: ValidationError) -> FlaskResponse:
-    log.error(f"Marshmallow validation error: {e.messages}")
-    first_error = list(e.messages.values())[0][0]
-    return jsonify_error_response(400, "Bad Request", first_error)
-
-def handle_redis_exc(e: RedisError) -> FlaskResponse:
-    log.exception(f"Redis exception occurred:")
-    return jsonify_error_response(
-        500,
-        "Internal Server Error",
-        InternalServerError.description
-    )
-
-def handle_any_exc(e: BaseException) -> FlaskResponse:
-    log.exception(f"Uncaught exception occurred:")
-    return jsonify_error_response(
-        500,
-        "Internal Server Error",
-        InternalServerError.description
-    )
 
 def register_error_handlers(app: Flask):
     for ex in default_exceptions:

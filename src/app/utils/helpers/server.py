@@ -1,7 +1,7 @@
+from os import kill
 from signal import SIGTERM
-from os import kill, getenv
 
-from src.app.configs.constants import DIR_PATH
+from src.app.configs.constants import DIR_PATH, DEVELOPMENT_ENV
 
 __all__ = ["terminate_server"]
 
@@ -11,7 +11,7 @@ def terminate_server() -> None:
     Terminates the current Flask server (Werkzeug WSGI or Gunicorn).
     :return: None
     """
-    if getenv("_DEBUG"):
+    if DEVELOPMENT_ENV:
         exit(1)
     else:
         kill(get_gunicorn_pid(), SIGTERM)

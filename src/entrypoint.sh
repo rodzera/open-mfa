@@ -33,19 +33,14 @@ else
     export WORKERS=4
   fi
 
-  if [[ -z "${THREADS}" ]]; then
-    export THREADS=64
-  fi
-
   if [[ -z "${WORKER_CONNECTIONS}" ]]; then
     export WORKER_CONNECTIONS=8192
   fi
 
   echo "Server workers class: gthread"
   echo "Server workers: $WORKERS"
-  echo "Server threads: $THREADS"
   echo "Worker connections limit: $WORKER_CONNECTIONS"
   echo "Starting production server"
-  gunicorn --bind "$HOST:$PORT" --threads $THREADS --worker-class gthread --workers $WORKERS --worker-connections $WORKER_CONNECTIONS --pid /src/app/gunicorn.pid "run"
+  gunicorn --bind "$HOST:$PORT" --workers $WORKERS --worker-connections $WORKER_CONNECTIONS --pid /src/app/gunicorn.pid --log-config=app/gunicorn_log.conf "run"
 
 fi

@@ -1,11 +1,11 @@
 from os import environ
 from flask import session
+from redis import StrictRedis
 from datetime import timedelta
 from time import strftime, gmtime
 from typing import Union, Literal, Dict
-from redis import RedisError, StrictRedis
 
-from src.app.logger import get_logger
+from src.app.utils.helpers.logs import get_logger
 
 log = get_logger("redis")
 
@@ -24,32 +24,31 @@ class RedisService(object):
     def insert_hset(
         session_key: str, hset: Dict[str, str], exp: int = 60
     ) -> None:
+        log.debug(f"Inserting hset key: {hset}")
         redis_service.db("hset", session_key, mapping=hset)
         redis_service.db("expire", session_key, timedelta(minutes=exp))
 
     @staticmethod
     def setup_connection():
-        try:
-            client = StrictRedis(
-                host=environ["_REDIS_HOST"],
-                port="6379",
-                password=environ["_REDIS_PASS"],
-                db=0,
-                socket_timeout=5,
-                decode_responses=True
-            )
-            return client if client.ping() else None
-        except RedisError as e:
-            log.exception("Redis connection failed:")
-            raise e
+        log.debug("Setting up redis connection")
+        client = StrictRedis(
+            host=environ["_REDIS_HOST"],
+            port="6379",
+            password=environ["_REDIS_PASS"],
+            db=0,
+            socket_timeout=5,
+            decode_responses=True
+        )
+        return client if client.ping() else None
 
     @property
     def info(self):
+        log.debug("Getting redis client info")
         return self.client.info()
 
     @property
     def current_timestamp(self) -> Union[str, bool]:
-        log.info("Querying redis current timestamp")
+        log.debug("Querying redis current timestamp")
         try:
             redis_time = self.client.time()
             return strftime('%Y-%m-%d %H:%M:%S', gmtime(redis_time[0]))

@@ -33,6 +33,8 @@ paths:
                     example: "7.4.1"
         500:
           description: Database connection error
+      security:
+        - basic: [ ]
   /server:
     get:
       tags:
@@ -58,6 +60,8 @@ paths:
                     type: string
                     description: Current version of the application
                     example: "1.0.0"
+      security:
+        - basic: [ ]
   /otp:
     get:
       tags:
@@ -197,3 +201,65 @@ paths:
           description: TOTP reset successfully
         404:
           description: TOTP not created
+  /logs:
+    get:
+      tags:
+        - Logs
+      summary: Retrieve the server log level.
+      responses:
+        200:
+          description: Server log level response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogLevel"
+        401:
+          description: Invalid credential provided
+      security:
+        - basic: [ ]
+    put:
+      tags:
+        - Logs
+      summary: Change the server log level.
+      requestBody:
+        $ref: "#/components/requestBodies/LogLevel"
+      responses:
+        200:
+          description: Server log level response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogLevel"
+        400:
+          description: Invalid log level provided
+        401:
+          description: Invalid credential provided
+      security:
+        - basic: [ ]
+
+components:
+  schemas:
+    LogLevel:
+      type: object
+      properties:
+        level:
+          type: string
+          enum:
+            - INFO
+            - DEBUG
+            - CRITICAL
+            - ERROR
+            - WARNING
+          example: "INFO"
+  requestBodies:
+    LogLevel:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/LogLevel"
+  securitySchemes:
+    basic:
+      type: http
+      scheme: basic
+      description: Basic HTTP authorization
