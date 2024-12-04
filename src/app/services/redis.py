@@ -5,6 +5,7 @@ from datetime import timedelta
 from time import strftime, gmtime
 from typing import Union, Literal, Dict
 
+from src.app.configs.constants import TESTING_ENV
 from src.app.utils.helpers.logs import get_logger
 
 log = get_logger("redis")
@@ -12,7 +13,10 @@ log = get_logger("redis")
 
 class RedisService(object):
     def __init__(self):
-        self.client = self.setup_connection()
+        if not TESTING_ENV:
+            self.client = self.setup_connection()
+        else:
+            self.client = None
 
     def db(self, method: str, *args, **kwargs):
         log.debug(

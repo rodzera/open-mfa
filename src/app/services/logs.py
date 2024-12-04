@@ -1,5 +1,4 @@
 import logging
-from logging import StreamHandler
 from typing import Dict
 from os import path, mkdir
 from logging.handlers import TimedRotatingFileHandler

@@ -8,6 +8,7 @@ from src.app.configs.environ import DefaultConfig
 from src.app.services.logs import logging_service
 from src.app.services.signals import register_gunicorn_signal_handler
 from src.app.utils.handlers.request import set_session_id_before_request
+from src.app.utils.handlers.errors import register_error_handlers
 
 log = get_logger(__name__)
 
@@ -36,7 +37,6 @@ def create_app() -> Flask:
     app.before_request(set_session_id_before_request)
     app.after_request(log_json_after_request)
 
-    from src.app.utils.handlers.errors import register_error_handlers
     log.info("Registering error handlers")
     register_error_handlers(app)
 
