@@ -1,9 +1,10 @@
 from flask import Flask
+from pytest_mock import MockerFixture
 
 from src.app.factory import create_app
 
 
-def test_factory(mocker):
+def test_factory(mocker: MockerFixture) -> None:
     mock_ma = mocker.patch("src.app.factory.ma")
     mock_register_error_handlers = mocker.patch("src.app.factory.register_error_handlers")
     mock_register_gunicorn_signal_handler = mocker.patch("src.app.factory.register_gunicorn_signal_handler")
