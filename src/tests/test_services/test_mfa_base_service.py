@@ -1,7 +1,7 @@
 from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock, MagicMock
 
-from src.tests.utils import test_case
+from src.tests.utils import helper_test_case
 from src.app.services.mfa.base import RedisOTPHelperService, BaseOTPService
 
 
@@ -115,7 +115,7 @@ def test_base_otp_service_delete_data_session_key_does_not_exists() -> None:
 def test_base_otp_service_delete_data_attribute_error() -> None:
     mock_self = MagicMock(_service_type="otp", spec=BaseOTPService)
 
-    with test_case.assertRaises(AttributeError):
+    with helper_test_case.assertRaises(AttributeError):
         BaseOTPService.delete_data(mock_self)
 
 

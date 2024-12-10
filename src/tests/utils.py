@@ -18,4 +18,4 @@ def basic_auth(username: str, password: str) -> Dict:
     return {"Authorization": f"Basic {encoded_credentials}"}
 
 basic_admin_auth = basic_auth("admin", "admin")
-test_case = TestCase()
+helper_test_case = TestCase()
