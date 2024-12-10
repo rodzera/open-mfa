@@ -3,6 +3,7 @@ from flask import session
 from redis import StrictRedis
 from datetime import timedelta
 from time import strftime, gmtime
+from fakeredis import FakeStrictRedis
 from typing import Union, Literal, Dict
 
 from src.app.configs.constants import TESTING_ENV
@@ -16,7 +17,7 @@ class RedisService(object):
         if not TESTING_ENV:
             self.client = self.setup_connection()
         else:
-            self.client = None
+            self.client = FakeStrictRedis(decode_responses=True)
 
     def db(self, method: str, *args, **kwargs):
         log.debug(

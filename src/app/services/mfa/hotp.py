@@ -29,8 +29,7 @@ class HOTPService(BaseOTPService):
 
     def _verify(self) -> Dict:
         self._log_action("verify")
-        # TODO : invalid case gg authenticator
-        status = self._server_hotp.verify(self._client_otp, self._cached_count + 1)
+        status = self._server_hotp.verify(self._client_otp, self._cached_count)
         if status:
             self._increase_hotp_counter()
         return {"status": status}

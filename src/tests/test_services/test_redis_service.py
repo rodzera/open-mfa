@@ -6,8 +6,6 @@ from unittest.mock import PropertyMock
 from src.app.services.redis import RedisService, redis_service
 
 
-def test_client_is_none_for_testing_env() -> None:
-    assert redis_service.client is None
 
 def test_db_method(mocker: MockerFixture) -> None:
     mock_client_prop = mocker.patch.object(
