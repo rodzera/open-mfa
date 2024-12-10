@@ -2,8 +2,8 @@ from flask import Flask
 from flasgger import Swagger
 
 from src.app.schemas import ma
-from src.app.utils import log_json_after_request
 from src.app.utils.helpers.logs import get_logger
+from src.app.utils import log_json_after_request
 from src.app.configs.environ import DefaultConfig
 from src.app.services.logs import logging_service
 from src.app.services.signals import register_gunicorn_signal_handler
