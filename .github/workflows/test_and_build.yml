@@ -62,7 +62,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./src
+          context: "{{defaultContext}}:src"
           push: true
           tags: ${{ secrets.DOCKERHUB_USER }}/open-mfa:${{ needs.tests.outputs.VERSION }} , ${{ secrets.DOCKERHUB_USER }}/open-mfa:latest
           labels: ${{ steps.meta.outputs.labels }}
