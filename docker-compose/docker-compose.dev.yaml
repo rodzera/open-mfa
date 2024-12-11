@@ -13,6 +13,7 @@ services:
     depends_on:
       - redis
     environment:
+      _DEBUG: 1
       _SECRET_KEY: ${_SECRET_KEY}
       _ADMIN_USER: ${_ADMIN_USER}
       _ADMIN_PASS: ${_ADMIN_PASS}
@@ -20,9 +21,6 @@ services:
       _REDIS_PASS: ${_REDIS_PASS}
       HOST: 0.0.0.0
       PORT: 8080
-      WORKERS: 4
-      THREADS: 64
-      WORKER_CONNECTIONS: 8192
       TZ: Etc/Greenwich
     networks:
       open-mfa:
