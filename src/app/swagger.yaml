@@ -1,0 +1,265 @@
+openapi: 3.0.3
+info:
+  title: open-mfa
+  description: developed by github.com/rodzera
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /database:
+    get:
+      tags:
+        - Healthcheck
+      summary: Get the status of the database.
+      responses:
+        200:
+          description: Database status response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  datetime:
+                    type: string
+                    description: Current timestamp from redis
+                    example: "2024-11-01 03:36:58"
+                  status:
+                    type: string
+                    description: Status of the database, either 'up' or 'down'
+                    example: "up"
+                  version:
+                    type: string
+                    description: Current redis version
+                    example: "7.4.1"
+        500:
+          description: Database connection error
+      security:
+        - basic: [ ]
+  /server:
+    get:
+      tags:
+        - Healthcheck
+      summary: Get the status of the server.
+      responses:
+        200:
+          description: Server status response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  datetime:
+                    type: string
+                    description: Current timestamp from Flask server
+                    example: "2024-11-01 03:36:58"
+                  status:
+                    type: string
+                    description: Status of the server, always 'up'
+                    example: "up"
+                  version:
+                    type: string
+                    description: Current version of the application
+                    example: "1.0.0"
+      security:
+        - basic: [ ]
+  /otp:
+    get:
+      tags:
+        - OTP
+      summary: Generate and verify a One-Time Password (OTP).
+      parameters:
+        - name: otp
+          in: query
+          required: false
+          description: The OTP to verify (optional).
+          schema:
+            type: string
+      responses:
+        200:
+          description: OTP generated or verified successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      otp:
+                        type: string
+                        description: Server side OTP, generated if no OTP is provided for verification
+                        example: "123456"
+                  - type: object
+                    properties:
+                      status:
+                        type: boolean
+                        description: Verification result if an OTP was provided
+                        example: true
+        400:
+          description: Invalid OTP provided
+        404:
+          description: OTP not created
+  /hotp:
+    get:
+      tags:
+        - HOTP
+      summary: Generate and verify a HMAC-based One-time Password (HOTP).
+      parameters:
+        - name: otp
+          in: query
+          required: false
+          description: The OTP to verify (optional).
+          schema:
+            type: string
+        - name: initial_count
+          in: query
+          required: false
+          description: HOTP initial creation counter (optional).
+          schema:
+            type: integer
+      responses:
+        200:
+          description: HOTP generated or verified successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      uri:
+                        type: string
+                        description: Provisioning HOTP uri to be used in a authenticator app
+                        example: "otpauth://hotp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App&counter=0"
+                  - type: object
+                    properties:
+                      status:
+                        type: boolean
+                        description: Verification result if an OTP was provided
+                        example: true
+        400:
+          description: Invalid OTP provided
+        404:
+          description: HOTP not created
+        409:
+          description: HOTP already created
+    delete:
+      tags:
+        - HOTP
+      summary: Reset the HMAC-based One-time Password (HOTP).
+      responses:
+        204:
+          description: HOTP reset successfully
+        404:
+          description: HOTP not created
+  /totp:
+    get:
+      tags:
+        - TOTP
+      summary: Generate and verify a Time-based One-time Password (TOTP).
+      parameters:
+        - name: otp
+          in: query
+          required: false
+          description: The OTP to verify (optional).
+          schema:
+            type: string
+        - name: interval
+          in: query
+          required: false
+          description: TOTP interval in seconds (optional).
+          schema:
+            type: integer
+      responses:
+        200:
+          description: TOTP generated or verified successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      uri:
+                        type: string
+                        description: Provisioning TOTP uri to be used in a authenticator app
+                        example: "otpauth://totp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App"
+                  - type: object
+                    properties:
+                      status:
+                        type: boolean
+                        description: Verification result if an OTP was provided
+                        example: true
+        400:
+          description: Invalid OTP provided
+        404:
+          description: TOTP not created
+        409:
+          description: TOTP already created
+    delete:
+      tags:
+        - TOTP
+      summary: Reset the Time-based One-time Password (TOTP).
+      responses:
+        204:
+          description: TOTP reset successfully
+        404:
+          description: TOTP not created
+  /logs:
+    get:
+      tags:
+        - Logs
+      summary: Retrieve the server log level.
+      responses:
+        200:
+          description: Server log level response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogLevel"
+        401:
+          description: Invalid credential provided
+      security:
+        - basic: [ ]
+    put:
+      tags:
+        - Logs
+      summary: Change the server log level.
+      requestBody:
+        $ref: "#/components/requestBodies/LogLevel"
+      responses:
+        200:
+          description: Server log level response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogLevel"
+        400:
+          description: Invalid log level provided
+        401:
+          description: Invalid credential provided
+      security:
+        - basic: [ ]
+
+components:
+  schemas:
+    LogLevel:
+      type: object
+      properties:
+        level:
+          type: string
+          enum:
+            - INFO
+            - DEBUG
+            - CRITICAL
+            - ERROR
+            - WARNING
+          example: "INFO"
+  requestBodies:
+    LogLevel:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/LogLevel"
+  securitySchemes:
+    basic:
+      type: http
+      scheme: basic
+      description: Basic HTTP authorization
