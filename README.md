@@ -1,1 +1,1 @@
-# OpenMFA
+# open-mfa
