@@ -1,13 +1,21 @@
+from os import environ
+from redis import StrictRedis
 from logging import getLogger
-
-from app.services.redis import redis_service
 
 log = getLogger(__name__)
 
 
 def redis_check() -> int:
     try:
-        if redis_service.setup_connection():
+        client = StrictRedis(
+            host=environ["_REDIS_HOST"],
+            port="6379",
+            password=environ["_REDIS_PASS"],
+            db=0,
+            socket_timeout=5,
+            decode_responses=True
+        )
+        if client.ping():
             log.debug("Redis connection established")
             return 1
     except RuntimeError as e:
