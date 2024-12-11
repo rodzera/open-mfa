@@ -1,6 +1,6 @@
 import logging
 from typing import Dict
-from os import path, mkdir
+from os import path, mkdir, makedirs
 from logging.handlers import TimedRotatingFileHandler
 
 from src.app.services.redis import redis_service

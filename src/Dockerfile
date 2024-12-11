@@ -5,7 +5,7 @@ LABEL github="github.com/rodzera"
 
 COPY . /src
 
-RUN mv /src/run.py /run.py \
+RUN mv /src/run.py /run.py && mkdir /logs \
 && apt update ; apt upgrade -y ; apt install nginx vim -y ; apt clean \
 && pip install -U pip ; pip install -r /src/requirements.txt \
 && chmod +x /src/entrypoint.sh
