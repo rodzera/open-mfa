@@ -1,7 +1,8 @@
 from re import search
 from pyotp import HOTP
-
 from flask.testing import FlaskClient
+
+from src.app.services.mfa.hotp import HOTPService
 
 
 def test_hotp_create_and_verify_request_200_twice_success(
@@ -15,7 +16,7 @@ def test_hotp_create_and_verify_request_200_twice_success(
     hotp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", hotp_uri)
     secret = secret_match.group(1)
-    hotp = HOTP(secret)
+    hotp = HOTP(secret, digest=HOTPService._hash_method)
     current_otp = hotp.at(30)
 
     verify_response = client.get(f"/api/hotp?otp={current_otp}")
@@ -50,7 +51,7 @@ def test_hotp_create_and_verify_already_used_otp_200_failure(
     hotp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", hotp_uri)
     secret = secret_match.group(1)
-    hotp = HOTP(secret)
+    hotp = HOTP(secret, digest=HOTPService._hash_method)
     current_otp = hotp.at(30)
 
     verify_response = client.get(f"/api/hotp?otp={current_otp}")

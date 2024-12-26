@@ -4,8 +4,6 @@ from src.app.utils.helpers.logs import get_logger
 
 log = get_logger(__name__)
 
-__all__ = ["get_project_version"]
-
 
 def get_project_version(dir_path: str) -> str:
     try:
@@ -13,5 +11,6 @@ def get_project_version(dir_path: str) -> str:
             data = load(file, Loader=SafeLoader)
             return data["version"]
     except Exception as e:
+        from src.app.utils.helpers.server import terminate_server
         log.error(f"Error loading version.yaml: {e}")
-        exit(1)
+        terminate_server()

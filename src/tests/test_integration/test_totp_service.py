@@ -3,6 +3,8 @@ from pyotp import TOTP
 
 from flask.testing import FlaskClient
 
+from src.app.services.mfa.totp import TOTPService
+
 
 def test_totp_create_and_verify_request_200_success(
     client: FlaskClient
@@ -13,7 +15,7 @@ def test_totp_create_and_verify_request_200_success(
     totp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", totp_uri)
     secret = secret_match.group(1)
-    totp = TOTP(secret)
+    totp = TOTP(secret, digest=TOTPService._hash_method)
     current_otp = totp.now()
 
     verify_response = client.get(f"/api/totp?otp={current_otp}")
@@ -41,7 +43,7 @@ def test_totp_create_and_verify_already_used_otp_200_failure(
     totp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", totp_uri)
     secret = secret_match.group(1)
-    totp = TOTP(secret)
+    totp = TOTP(secret, digest=TOTPService._hash_method)
     current_otp = totp.now()
 
     verify_response = client.get(f"/api/totp?otp={current_otp}")

@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 from pytest_mock import MockerFixture
 
 from src.app.services.mfa.otp import OTPService
+from src.tests.utils import test_b64_cipher_secret, test_b32_secret
 
 
 def test_type_prop() -> None:
@@ -13,7 +14,7 @@ def test_init(redis_db: MagicMock, mocker: MockerFixture) -> None:
         OTPService, "_get_session_key", return_value="session_key"
     )
     mock_otp = mocker.patch("src.app.services.mfa.otp.OTP")
-    redis_db.return_value = {"secret": "s3cr3t"}
+    redis_db.return_value = {"secret": test_b64_cipher_secret}
     service_data = {"otp": "123456"}
 
     service = OTPService(**service_data)
@@ -22,7 +23,7 @@ def test_init(redis_db: MagicMock, mocker: MockerFixture) -> None:
     assert service._creation_timestamp == 0
     assert service._used_otp == 0
     assert service._server_otp == mock_otp.return_value.generate_otp.return_value
-    mock_otp.assert_called_once_with("s3cr3t")
+    mock_otp.assert_called_once_with(test_b32_secret, digest=OTPService._hash_method)
     mock_otp.return_value.generate_otp.assert_called_once_with(
         service._current_timestamp
     )
@@ -87,21 +88,21 @@ def test_verify_otp_is_not_valid_anymore() -> None:
     mock_self._is_otp_valid.assert_called_once_with()
     mock_self._set_otp_as_used.assert_not_called()
 
-def test_default_data(redis_db: MagicMock, mocker: MockerFixture) -> None:
+def test_redis_data(redis_db: MagicMock, mocker: MockerFixture) -> None:
     mock_get_session_key = mocker.patch.object(
         OTPService, "_get_session_key", return_value="session_key"
     )
     mock_otp = mocker.patch("src.app.services.mfa.otp.OTP")
-    redis_db.return_value = {"secret": "s3cr3t"}
+    redis_db.return_value = {"secret": test_b64_cipher_secret}
     service_data = {"otp": "123456"}
     service = OTPService(**service_data)
-    default_data = service._default_data
+    default_data = service._redis_data
 
     assert default_data["otp"] == mock_otp.return_value.generate_otp.return_value
     assert default_data["secret"] == redis_db.return_value["secret"]
     assert default_data["used"] == 0
     assert default_data["timestamp"] == int(time())
-    mock_otp.assert_called_once_with("s3cr3t")
+    mock_otp.assert_called_once_with(test_b32_secret, digest=OTPService._hash_method)
     mock_otp.return_value.generate_otp.assert_called_once_with(
         service._current_timestamp
     )

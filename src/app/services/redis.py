@@ -1,13 +1,14 @@
 from os import environ
 from flask import session
-from redis import StrictRedis
 from datetime import timedelta
 from time import strftime, gmtime
 from fakeredis import FakeStrictRedis
 from typing import Union, Literal, Dict
+from redis import StrictRedis, RedisError
 
 from src.app.configs.constants import TESTING_ENV
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.server import terminate_server
+from src.app.utils.helpers.logs import get_logger, mask_secrets_items
 
 log = get_logger("redis")
 
@@ -21,7 +22,7 @@ class RedisService(object):
 
     def db(self, method: str, *args, **kwargs):
         log.debug(
-            f"Executing Redis command: {method}, args: {args}, kwargs: {kwargs}"
+            f"Executing Redis command: {method}, args: {args}, kwargs: {mask_secrets_items(kwargs)}"
         )
         return getattr(self.client, method)(*args, **kwargs)
 
@@ -29,13 +30,13 @@ class RedisService(object):
     def insert_hset(
         session_key: str, hset: Dict[str, str], exp: int = 60
     ) -> None:
-        log.debug(f"Inserting hset key: {hset}")
         redis_service.db("hset", session_key, mapping=hset)
         redis_service.db("expire", session_key, timedelta(minutes=exp))
 
     @staticmethod
     def setup_connection():
         log.debug("Setting up redis connection")
+        # TODO : SSL connection for redis
         client = StrictRedis(
             host=environ["_REDIS_HOST"],
             port="6379",
@@ -44,7 +45,14 @@ class RedisService(object):
             socket_timeout=5,
             decode_responses=True
         )
-        return client if client.ping() else None
+
+        try:
+            client.ping()
+        except RedisError:
+            log.exception("Exception while connecting to Redis")
+            terminate_server()
+
+        return client
 
     @property
     def info(self):

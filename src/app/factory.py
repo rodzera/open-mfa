@@ -2,13 +2,12 @@ from flask import Flask
 from flasgger import Swagger
 
 from src.app.schemas import ma
-from src.app.utils.helpers.logs import get_logger
-from src.app.utils import log_json_after_request
 from src.app.configs.environ import DefaultConfig
 from src.app.services.logs import logging_service
+from src.app.utils.helpers.logs import get_logger
+from src.app.utils.handlers.errors import register_error_handlers
 from src.app.services.signals import register_gunicorn_signal_handler
 from src.app.utils.handlers.request import set_session_id_before_request
-from src.app.utils.handlers.errors import register_error_handlers
 
 log = get_logger(__name__)
 
@@ -35,7 +34,6 @@ def create_app() -> Flask:
 
     log.info("Registering request funcs")
     app.before_request(set_session_id_before_request)
-    app.after_request(log_json_after_request)
 
     log.info("Registering error handlers")
     register_error_handlers(app)

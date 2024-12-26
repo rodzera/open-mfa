@@ -16,7 +16,10 @@ class TOTPService(BaseOTPService):
         super().__init__(**kwargs)
         self._client_interval = kwargs.get("interval", 30)
         self._last_used_otp = self._service_data.get("last_used_otp", 0)
-        self._server_totp = TOTP(self._secret, interval=self._client_interval)
+        self._server_totp = TOTP(
+            self._secret, interval=self._client_interval,
+            digest=self._hash_method
+        )
         self._totp_uri = self._server_totp.provisioning_uri(
             name=session["session_id"], issuer_name="open-mfa"
         )
@@ -34,10 +37,10 @@ class TOTPService(BaseOTPService):
         return {"status": status}
 
     @property
-    def _default_data(self) -> Dict:
+    def _redis_data(self) -> Dict:
         return {
             "interval": self._client_interval,
-            "secret": self._secret,
+            "secret": self._b64_cipher_secret,
             "uri": self._totp_uri,
             "last_used_otp": 0
         }

@@ -8,6 +8,11 @@ from src.app.services.signals import send_logging_signal
 from src.app.configs.constants import TESTING_ENV, DEVELOPMENT_ENV
 
 
+_log_dir = "./logs"
+if not TESTING_ENV and not path.exists(_log_dir):
+    makedirs(_log_dir)
+
+
 class LoggingService(object):
     DEFAULT_DIR: str = "logs"
     DEFAULT_LEVEL: int = logging.DEBUG if DEVELOPMENT_ENV else logging.INFO
