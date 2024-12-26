@@ -82,6 +82,6 @@ def test_delete_request_404(
     response = client.delete("/api/totp")
 
     assert response.status_code == 404
-    assert response.json["description"] == "HOTP not created"
+    assert response.json["description"] == "TOTP not created"
     mock_totp_service.assert_called_once_with()
     mock_totp_service.return_value.delete_data.assert_called_once_with()

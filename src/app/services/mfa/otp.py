@@ -18,7 +18,7 @@ class OTPService(BaseOTPService):
         self._cached_otp = self._service_data.get("otp")
         self._creation_timestamp = int(self._service_data.get("timestamp", 0))
         self._used_otp = int(self._service_data.get("used", 0))
-        self._server_otp = OTP(self._secret).generate_otp(self._current_timestamp)
+        self._server_otp = OTP(self._secret, digest=self._hash_method).generate_otp(self._current_timestamp)
 
     def _create(self) -> Dict:
         self._log_action("create")
@@ -37,10 +37,10 @@ class OTPService(BaseOTPService):
         return {"status": status}
 
     @property
-    def _default_data(self) -> Dict:
+    def _redis_data(self) -> Dict:
         return {
             "otp": self._server_otp,
-            "secret": self._secret,
+            "secret": self._b64_cipher_secret,
             "used": 0,
             "timestamp": self._current_timestamp
         }

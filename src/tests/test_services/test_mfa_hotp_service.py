@@ -3,6 +3,7 @@ from flask.ctx import RequestContext
 from pytest_mock import MockerFixture
 
 from src.app.services.mfa.hotp import HOTPService
+from src.tests.utils import test_b64_cipher_secret, test_b32_secret
 
 
 def test_type_prop() -> None:
@@ -15,7 +16,7 @@ def test_init(
         HOTPService, "_get_session_key", return_value="session_key"
     )
     mock_hotp = mocker.patch("src.app.services.mfa.hotp.HOTP")
-    redis_db.return_value = {"secret": "s3cr3t", "count": 1}
+    redis_db.return_value = {"secret": test_b64_cipher_secret, "count": 1}
     service_data = {"otp": "123456", "initial_count": 10}
     mock_session = mocker.patch("src.app.services.mfa.hotp.session")
     mock_session.__getitem__.return_value = "session_key"
@@ -27,8 +28,9 @@ def test_init(
     assert service._server_hotp == mock_hotp.return_value
     assert service._hotp_uri == mock_hotp.return_value.provisioning_uri.return_value
     mock_hotp.assert_called_once_with(
-        redis_db.return_value["secret"],
-        initial_count=service_data["initial_count"]
+        test_b32_secret,
+        initial_count=service_data["initial_count"],
+        digest=HOTPService._hash_method
     )
     mock_hotp.return_value.provisioning_uri.assert_called_once_with(
         name=mock_session.__getitem__.return_value, issuer_name="open-mfa",
@@ -67,27 +69,28 @@ def test_verify_failure() -> None:
     )
     mock_self._increase_hotp_counter.assert_not_called()
 
-def test_default_data(
+def test_redis_data(
     redis_db: MagicMock, mocker: MockerFixture, req_ctx: RequestContext
 )-> None:
     mock_get_session_key = mocker.patch.object(
         HOTPService, "_get_session_key", return_value="session_key"
     )
     mock_hotp = mocker.patch("src.app.services.mfa.hotp.HOTP")
-    redis_db.return_value = {"secret": "s3cr3t", "count": 1}
+    redis_db.return_value = {"secret": test_b64_cipher_secret, "count": 1}
     service_data = {"otp": "123456", "initial_count": 10}
     mock_session = mocker.patch("src.app.services.mfa.hotp.session")
     mock_session.__getitem__.return_value = "session_key"
 
     service = HOTPService(**service_data)
-    default_data = service._default_data
+    default_data = service._redis_data
 
     assert default_data["count"] == service_data["initial_count"]
     assert default_data["secret"] == redis_db.return_value["secret"]
     assert default_data["uri"] == mock_hotp.return_value.provisioning_uri.return_value
     mock_hotp.assert_called_once_with(
-        redis_db.return_value["secret"],
-        initial_count=service_data["initial_count"]
+        test_b32_secret,
+        initial_count=service_data["initial_count"],
+        digest=HOTPService._hash_method
     )
     mock_hotp.return_value.provisioning_uri.assert_called_once_with(
         name=mock_session.__getitem__.return_value, issuer_name="open-mfa",
