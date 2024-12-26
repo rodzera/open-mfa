@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 from flask.ctx import RequestContext
 from pytest_mock import MockerFixture
 
-from src.app.services.mfa.totp import TOTPService
+from src.app.services.oath.totp import TOTPService
 from src.tests.utils import test_b64_cipher_secret, test_b32_secret
 
 
@@ -15,12 +15,12 @@ def test_init(
     mock_get_session_key = mocker.patch.object(
         TOTPService, "_get_session_key", return_value="session_key"
     )
-    mock_totp = mocker.patch("src.app.services.mfa.totp.TOTP")
+    mock_totp = mocker.patch("src.app.services.oath.totp.TOTP")
     redis_db.return_value = {
         "secret": test_b64_cipher_secret, "last_used_otp": "123456"
     }
     service_data = {"otp": "123456", "interval": 60}
-    mock_session = mocker.patch("src.app.services.mfa.totp.session")
+    mock_session = mocker.patch("src.app.services.oath.totp.session")
     mock_session.__getitem__.return_value = "session_key"
 
     service = TOTPService(**service_data)
@@ -76,10 +76,10 @@ def test_redis_data(
     mock_get_session_key = mocker.patch.object(
         TOTPService, "_get_session_key", return_value="session_key"
     )
-    mock_totp = mocker.patch("src.app.services.mfa.totp.TOTP")
+    mock_totp = mocker.patch("src.app.services.oath.totp.TOTP")
     redis_db.return_value = {"secret": test_b64_cipher_secret, "last_used_otp": "123456"}
     service_data = {"otp": "123456", "interval": 60}
-    mock_session = mocker.patch("src.app.services.mfa.totp.session")
+    mock_session = mocker.patch("src.app.services.oath.totp.session")
     mock_session.__getitem__.return_value = "session_key"
 
     service = TOTPService(**service_data)

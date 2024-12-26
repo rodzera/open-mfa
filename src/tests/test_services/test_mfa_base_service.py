@@ -3,7 +3,7 @@ from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock, MagicMock
 
 from src.app.services.aes_cipher import AESCipherService
-from src.app.services.mfa.base import RedisOTPHelperService, BaseOTPService
+from src.app.services.oath.base import RedisOTPHelperService, BaseOTPService
 from src.tests.utils import test_b64_cipher_secret, test_cipher_secret, \
     test_b32_secret
 
@@ -12,7 +12,7 @@ def test_redis_otp_helper_service_get_session_key_method(
     mocker: MockerFixture
 ) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.mfa.base.redis_service"
+        "src.app.services.oath.base.redis_service"
     )
 
     service = RedisOTPHelperService()
@@ -27,7 +27,7 @@ def test_redis_otp_helper_service_verify_session_key_exists(
     mocker: MockerFixture
 ) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.mfa.base.redis_service"
+        "src.app.services.oath.base.redis_service"
     )
 
     service = RedisOTPHelperService()
@@ -42,7 +42,7 @@ def test_redis_otp_helper_service_delete_session_key(
     mocker: MockerFixture
 ) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.mfa.base.redis_service"
+        "src.app.services.oath.base.redis_service"
     )
 
     service = RedisOTPHelperService()
@@ -59,7 +59,7 @@ def test_base_otp_has_session_key_attr() -> None:
 
 def test_base_otp_service_init(mocker: MockerFixture) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.mfa.base.redis_service", return_value={}
+        "src.app.services.oath.base.redis_service", return_value={}
     )
     mock_get_session_key = mocker.patch.object(
         BaseOTPService, "_get_session_key"
@@ -89,7 +89,7 @@ def test_base_otp_setup_secrets_method_missing_service_data(
     mocker: MockerFixture
 ) -> None:
     mock_random_base32 = mocker.patch(
-        "src.app.services.mfa.base.random_base32",
+        "src.app.services.oath.base.random_base32",
         return_value=test_b32_secret
     )
     mock_encrypt = mocker.patch.object(
@@ -107,7 +107,7 @@ def test_base_otp_setup_secrets_method_missing_service_data(
 
 def test_base_otp_service_create_data(mocker: MockerFixture) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.mfa.base.redis_service"
+        "src.app.services.oath.base.redis_service"
     )
     mock_redis_service.db.return_value = {}
     mock_get_session_key = mocker.patch.object(

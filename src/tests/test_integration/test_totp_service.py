@@ -3,7 +3,7 @@ from pyotp import TOTP
 
 from flask.testing import FlaskClient
 
-from src.app.services.mfa.totp import TOTPService
+from src.app.services.oath.totp import TOTPService
 
 
 def test_totp_create_and_verify_request_200_success(
