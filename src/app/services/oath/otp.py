@@ -4,7 +4,7 @@ from typing import Dict
 
 from src.app.utils.helpers.logs import get_logger
 from src.app.services.redis import redis_service
-from src.app.services.mfa.base import BaseOTPService
+from src.app.services.oath.base import BaseOTPService
 
 log = get_logger(__name__)
 

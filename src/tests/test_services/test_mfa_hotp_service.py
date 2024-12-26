@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 from flask.ctx import RequestContext
 from pytest_mock import MockerFixture
 
-from src.app.services.mfa.hotp import HOTPService
+from src.app.services.oath.hotp import HOTPService
 from src.tests.utils import test_b64_cipher_secret, test_b32_secret
 
 
@@ -15,10 +15,10 @@ def test_init(
     mock_get_session_key = mocker.patch.object(
         HOTPService, "_get_session_key", return_value="session_key"
     )
-    mock_hotp = mocker.patch("src.app.services.mfa.hotp.HOTP")
+    mock_hotp = mocker.patch("src.app.services.oath.hotp.HOTP")
     redis_db.return_value = {"secret": test_b64_cipher_secret, "count": 1}
     service_data = {"otp": "123456", "initial_count": 10}
-    mock_session = mocker.patch("src.app.services.mfa.hotp.session")
+    mock_session = mocker.patch("src.app.services.oath.hotp.session")
     mock_session.__getitem__.return_value = "session_key"
 
     service = HOTPService(**service_data)
@@ -75,10 +75,10 @@ def test_redis_data(
     mock_get_session_key = mocker.patch.object(
         HOTPService, "_get_session_key", return_value="session_key"
     )
-    mock_hotp = mocker.patch("src.app.services.mfa.hotp.HOTP")
+    mock_hotp = mocker.patch("src.app.services.oath.hotp.HOTP")
     redis_db.return_value = {"secret": test_b64_cipher_secret, "count": 1}
     service_data = {"otp": "123456", "initial_count": 10}
-    mock_session = mocker.patch("src.app.services.mfa.hotp.session")
+    mock_session = mocker.patch("src.app.services.oath.hotp.session")
     mock_session.__getitem__.return_value = "session_key"
 
     service = HOTPService(**service_data)

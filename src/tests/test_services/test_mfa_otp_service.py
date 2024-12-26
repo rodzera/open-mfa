@@ -2,7 +2,7 @@ from time import time
 from unittest.mock import MagicMock
 from pytest_mock import MockerFixture
 
-from src.app.services.mfa.otp import OTPService
+from src.app.services.oath.otp import OTPService
 from src.tests.utils import test_b64_cipher_secret, test_b32_secret
 
 
@@ -13,7 +13,7 @@ def test_init(redis_db: MagicMock, mocker: MockerFixture) -> None:
     mock_get_session_key = mocker.patch.object(
         OTPService, "_get_session_key", return_value="session_key"
     )
-    mock_otp = mocker.patch("src.app.services.mfa.otp.OTP")
+    mock_otp = mocker.patch("src.app.services.oath.otp.OTP")
     redis_db.return_value = {"secret": test_b64_cipher_secret}
     service_data = {"otp": "123456"}
 
@@ -92,7 +92,7 @@ def test_redis_data(redis_db: MagicMock, mocker: MockerFixture) -> None:
     mock_get_session_key = mocker.patch.object(
         OTPService, "_get_session_key", return_value="session_key"
     )
-    mock_otp = mocker.patch("src.app.services.mfa.otp.OTP")
+    mock_otp = mocker.patch("src.app.services.oath.otp.OTP")
     redis_db.return_value = {"secret": test_b64_cipher_secret}
     service_data = {"otp": "123456"}
     service = OTPService(**service_data)

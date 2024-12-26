@@ -2,7 +2,7 @@ from flask import abort
 
 from src.app.resources.api import api
 from src.app.schemas.mfa.hotp import HOTPSchema
-from src.app.services.mfa.hotp import HOTPService
+from src.app.services.oath.hotp import HOTPService
 from src.app.schemas.mfa.common import schema_validation
 
 
