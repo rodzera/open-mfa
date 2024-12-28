@@ -53,7 +53,7 @@ def test_verify_success() -> None:
     assert response["status"] is True
     mock_self._log_action.assert_called_once_with("verify")
     mock_self._server_totp.verify.assert_called_once_with(
-        mock_self._client_otp
+        mock_self._client_otp, valid_window=1
     )
     mock_self._set_last_used_otp.assert_called_once_with()
 
@@ -66,7 +66,7 @@ def test_verify_failure() -> None:
     assert response["status"] is False
     mock_self._log_action.assert_called_once_with("verify")
     mock_self._server_totp.verify.assert_called_once_with(
-        mock_self._client_otp
+        mock_self._client_otp, valid_window=1
     )
     mock_self._set_last_used_otp.assert_not_called()
 
