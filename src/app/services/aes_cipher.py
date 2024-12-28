@@ -1,4 +1,3 @@
-from binascii import Error
 from base64 import b64decode
 from os import urandom, getenv
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -26,7 +25,7 @@ class AESCipherService(object):
 
         try:
             key_bytes = b64decode(aes_key)
-        except Error:
+        except Exception:
             log.error("Invalid Base64 encoding for AES key")
             terminate_server()
 

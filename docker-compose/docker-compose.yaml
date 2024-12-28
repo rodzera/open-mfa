@@ -14,6 +14,7 @@ services:
       - redis
     environment:
       _SECRET_KEY: ${_SECRET_KEY}
+      _B64_AES_KEY: ${_B64_AES_KEY}
       _ADMIN_USER: ${_ADMIN_USER}
       _ADMIN_PASS: ${_ADMIN_PASS}
       _REDIS_HOST: redis
