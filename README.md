@@ -1,1 +1,55 @@
 # open-mfa
+[![Test and Build](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml) [![Python 3.12](https://img.shields.io/badge/python-3.12.x-blue.svg)](https://www.python.org/downloads/release/python-3111/)
+
+Open-MFA is a demo project that implements an authentication server supporting OTP (One-Time Password), HOTP (HMAC-Based One-Time Password) and TOTP (Time-Based One-Time Password) algorithms. 
+
+## Project Overview
+
+The authentication server creates a unique session ID for each user and stores it in a Flask session and a Redis database with 60-minutes expiration. All generated OTP codes for a user are linked to their unique session ID. It is worth noting that, in a real authentication server implementation the IAM (Identity Access Management) would be much robust and complex, however for demo purposes, this application was deliberately simplified.
+
+## OTP Algorithms
+
+* OTP algorithms use hash functions (like HMAC-SHA1) that receives two inputs: a **seed** and a **moving factor**.
+* The seed is a static and non-guessable secret that may be shared with the client in HOTP and TOTP implementations, but must always be securely stored by the authentication server. 
+* The moving factor is a dynamic value that must be distinct for each OTP code generation. This value, combined with the seed, produces different OTP codes for each authentication request.
+* Different OTP implementations exist due to variations in how the moving factor is generated and whether the HMAC secret is shared with the client.
+* While there are RFCs for HOTP ([RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238)) and TOTP ([RFC 4226](https://datatracker.ietf.org/doc/html/rfc4226)), there is no specific RFC for a "pure" OTP implementation. However, such implementations may be the most common on the world wide web today, often found in scenarios like email verification or temporary login codes. Despite their widespread use, any "pure" OTP implementation **should** still follow the security guidelines outlined in the HOTP and TOTP specs.
+
+### General and common best practices for all algorithms
+
+* All implementations **must** use HTTPS to secure communication between the authentication server and the client.
+* OTP HMAC secrets **must** be securely stored in a controlled access database.
+* OTP HMAC secrets **should** be generated randomly at the hardware level or using a cryptographically strong pseudorandom generator.
+* The authentication server **must** throttle (rate limit) brute-force attacks.
+* The authentication server **must** deny replay attacks by rejecting any already-used OTP code.
+* While the [HOTP](https://datatracker.ietf.org/doc/html/rfc4226) and [TOTP](https://datatracker.ietf.org/doc/html/rfc6238) specifications recommend using HMAC-SHA1 method, modern and safer methods like HMAC-SHA256 are preferable.
+
+## Running this project
+
+To run the open-mfa stack locally with docker compose, follow these steps within the `docker-compose` directory:
+* Install [docker](https://docs.docker.com/engine/install/) engine
+* Rename the `template.env` file to `.env` and fill the variables with real values
+* Run: `docker compose up`
+* Application will be available at: http://0.0.0.0:8080
+
+Optionally, you can build a local docker image within the `src` directory:
+* Run `make` command
+
+## API Documentation
+
+* The API is available and documented through the Swagger apidocs at: http://0.0.0.0:8080/apidocs.
+
+## Project Stack
+
+This project was build with the following tech stack:
+
+- [Flask](https://flask.palletsprojects.com/en/stable/) web server. 
+- OTP services implemented with [PyOTP](https://github.com/pyauth/pyotp).
+- RESTful APIs with [marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/) validation.
+- [Redis](https://hub.docker.com/_/redis) database support.
+- Runtime [logging](https://docs.python.org/3.12/library/logging).
+- Unittests with [Pytest](https://docs.pytest.org/en/7.4.x/).
+- [Swagger](https://github.com/flasgger/flasgger) documentation.
+- [Docker Hub](https://docs.docker.com/docker-hub/) deployment.
+- CI/CD pipelines with [GitHub Actions](https://docs.github.com/en/actions).
+- Production-ready [Docker Compose](https://docs.docker.com/compose/) setup with [Gunicorn](https://gunicorn.org/).

@@ -6,7 +6,7 @@ from pytest_mock import MockerFixture
 def test_verify_request_200(
     client: FlaskClient, redis_db: MagicMock, mocker: MockerFixture
 ) -> None:
-    mock_hotp_service = mocker.patch("src.app.resources.api.mfa.hotp.HOTPService")
+    mock_hotp_service = mocker.patch("src.app.resources.api.oath.hotp.HOTPService")
     mock_hotp_service.return_value.process_request.return_value = {}
 
     req_params = {"otp": "123456"}
@@ -20,7 +20,7 @@ def test_verify_request_200(
 def test_verify_request_404(
     client: FlaskClient, redis_db: MagicMock, mocker: MockerFixture
 ) -> None:
-    mock_hotp_service = mocker.patch("src.app.resources.api.mfa.hotp.HOTPService")
+    mock_hotp_service = mocker.patch("src.app.resources.api.oath.hotp.HOTPService")
     mock_hotp_service.return_value.process_request.return_value = {}
     redis_db.return_value = None
 
@@ -35,7 +35,7 @@ def test_verify_request_404(
 def test_create_request_200(
     client: FlaskClient, redis_db: MagicMock, mocker: MockerFixture
 ) -> None:
-    mock_hotp_service = mocker.patch("src.app.resources.api.mfa.hotp.HOTPService")
+    mock_hotp_service = mocker.patch("src.app.resources.api.oath.hotp.HOTPService")
     mock_hotp_service.return_value.process_request.return_value = {}
     redis_db.return_value = None
 
@@ -50,7 +50,7 @@ def test_create_request_200(
 def test_create_request_409(
     client: FlaskClient, redis_db: MagicMock, mocker: MockerFixture
 ) -> None:
-    mock_hotp_service = mocker.patch("src.app.resources.api.mfa.hotp.HOTPService")
+    mock_hotp_service = mocker.patch("src.app.resources.api.oath.hotp.HOTPService")
     mock_hotp_service.return_value.process_request.return_value = {}
 
     req_params = {"initial_count": 0}
@@ -64,7 +64,7 @@ def test_create_request_409(
 def test_delete_request_204(
     client: FlaskClient, redis_db: MagicMock, mocker: MockerFixture
 ) -> None:
-    mock_hotp_service = mocker.patch("src.app.resources.api.mfa.hotp.HOTPService")
+    mock_hotp_service = mocker.patch("src.app.resources.api.oath.hotp.HOTPService")
     mock_hotp_service.return_value.delete_data.return_value = 1
 
     response = client.delete("/api/hotp")
@@ -76,7 +76,7 @@ def test_delete_request_204(
 def test_delete_request_404(
     client: FlaskClient, redis_db: MagicMock, mocker: MockerFixture
 ) -> None:
-    mock_hotp_service = mocker.patch("src.app.resources.api.mfa.hotp.HOTPService")
+    mock_hotp_service = mocker.patch("src.app.resources.api.oath.hotp.HOTPService")
     mock_hotp_service.return_value.delete_data.return_value = 0
 
     response = client.delete("/api/hotp")

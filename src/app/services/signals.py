@@ -1,12 +1,13 @@
 import logging
 from os import kill
-from logging import getLogger
 from signal import signal, SIGUSR1
 
 from src.app.services.redis import redis_service
-from src.app.configs.constants import PRODUCTION_ENV, DIR_PATH
+from src.app.utils.helpers.logs import get_logger
+from src.app.configs.constants import PRODUCTION_ENV
+from src.app.utils.helpers.server import get_gunicorn_pid
 
-log = getLogger(__name__)
+log = get_logger(__name__)
 
 
 def send_logging_signal() -> None:
@@ -18,16 +19,11 @@ def send_logging_signal() -> None:
     if not PRODUCTION_ENV:
         return
 
-    try:
-        with open(DIR_PATH + "/gunicorn.pid") as f:
-            app_pid = int(f.readline())
+    app_pid = get_gunicorn_pid()
+    log.debug(f"Sending a SIGUSR1 signal to the gunicorn master process")
 
-        log.debug(f"Sending a SIGUSR1 signal to the gunicorn master process")
+    try:
         kill(app_pid, SIGUSR1)
-    except FileNotFoundError:
-        log.error("Gunicorn pid not defined. Exiting")
-    except ProcessLookupError:
-        log.error("Gunicorn master process not found. Exiting")
     except Exception:
         log.exception("Exception occurred while sending a SIGUSR1 signal")
 

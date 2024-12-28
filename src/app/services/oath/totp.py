@@ -4,7 +4,7 @@ from flask import session
 
 from src.app.utils.helpers.logs import get_logger
 from src.app.services.redis import redis_service
-from src.app.services.mfa.base import BaseOTPService
+from src.app.services.oath.base import BaseOTPService
 
 log = get_logger(__name__)
 
@@ -16,7 +16,10 @@ class TOTPService(BaseOTPService):
         super().__init__(**kwargs)
         self._client_interval = kwargs.get("interval", 30)
         self._last_used_otp = self._service_data.get("last_used_otp", 0)
-        self._server_totp = TOTP(self._secret, interval=self._client_interval)
+        self._server_totp = TOTP(
+            self._secret, interval=self._client_interval,
+            digest=self._hash_method
+        )
         self._totp_uri = self._server_totp.provisioning_uri(
             name=session["session_id"], issuer_name="open-mfa"
         )
@@ -28,16 +31,16 @@ class TOTPService(BaseOTPService):
 
     def _verify(self) -> Dict:
         self._log_action("verify")
-        status = self._server_totp.verify(self._client_otp) and self._client_otp != self._last_used_otp
+        status = self._server_totp.verify(self._client_otp, valid_window=1) and self._client_otp != self._last_used_otp
         if status:
             self._set_last_used_otp()
         return {"status": status}
 
     @property
-    def _default_data(self) -> Dict:
+    def _redis_data(self) -> Dict:
         return {
             "interval": self._client_interval,
-            "secret": self._secret,
+            "secret": self._b64_cipher_secret,
             "uri": self._totp_uri,
             "last_used_otp": 0
         }

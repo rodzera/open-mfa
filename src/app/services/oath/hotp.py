@@ -4,7 +4,7 @@ from flask import session
 
 from src.app.utils.helpers.logs import get_logger
 from src.app.services.redis import redis_service
-from src.app.services.mfa.base import BaseOTPService
+from src.app.services.oath.base import BaseOTPService
 
 log = get_logger(__name__)
 
@@ -16,7 +16,10 @@ class HOTPService(BaseOTPService):
         super().__init__(**kwargs)
         self._client_initial_count = kwargs.get("initial_count", 0)
         self._cached_count = int(self._service_data.get("count", 0))
-        self._server_hotp = HOTP(self._secret, initial_count=self._client_initial_count)
+        self._server_hotp = HOTP(
+            self._secret, initial_count=self._client_initial_count,
+            digest=self._hash_method
+        )
         self._hotp_uri = self._server_hotp.provisioning_uri(
             name=session["session_id"], issuer_name="open-mfa",
             initial_count=self._client_initial_count
@@ -35,10 +38,10 @@ class HOTPService(BaseOTPService):
         return {"status": status}
 
     @property
-    def _default_data(self) -> Dict:
+    def _redis_data(self) -> Dict:
         return {
             "count": self._client_initial_count,
-            "secret": self._secret,
+            "secret": self._b64_cipher_secret,
             "uri": self._hotp_uri
         }
 
