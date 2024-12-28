@@ -9,7 +9,7 @@ services:
   open-mfa:
     image: rodzera/open-mfa:latest
     container_name: open-mfa
-    restart: unless-stopped
+    restart: on-failure:3
     depends_on:
       - redis
     environment:
