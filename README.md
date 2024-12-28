@@ -35,10 +35,6 @@ To run the open-mfa stack locally with docker compose, follow these steps within
 Optionally, you can build a local docker image within the `src` directory:
 * Run `make` command
 
-## API Documentation
-
-* The API is available and documented through the Swagger apidocs at: http://0.0.0.0:8080/apidocs.
-
 ## Project Stack
 
 This project was build with the following tech stack:
