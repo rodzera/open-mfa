@@ -1,11 +1,13 @@
 # open-mfa
-[![Test and Build](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml) [![Python 3.12](https://img.shields.io/badge/python-3.12.x-blue.svg)](https://www.python.org/downloads/release/python-3111/)
+[![Test and Build](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml) [![Python 3.12](https://img.shields.io/badge/python-3.12.x-blue.svg)](https://www.python.org/downloads/release/python-3121/)
 
 Open-MFA is a demo project that implements an authentication server supporting OTP (One-Time Password), HOTP (HMAC-Based One-Time Password) and TOTP (Time-Based One-Time Password) algorithms. 
 
 ## Project Overview
 
-The authentication server creates a unique session ID for each user and stores it in a Flask session and a Redis database with 60-minutes expiration. All generated OTP codes for a user are linked to their unique session ID. It is worth noting that, in a real authentication server implementation the IAM (Identity Access Management) would be much robust and complex, however for demo purposes, this application was deliberately simplified.
+* The authentication server creates a unique session ID for each user, storing it in both a Flask session and a Redis database with 60-minutes expiration. All OTP codes generated for a user are linked to their unique session ID.
+* HOTP and TOTP URIs should be configured with any authenticator app (such as [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2)) that supports OTP algorithms generation.
+* In a real-world authentication server, the Identity and Access Management (IAM) would be much more robust and complex, however for demo purposes, this application has been deliberately simplified.
 
 ## OTP Algorithms
 
@@ -13,7 +15,7 @@ The authentication server creates a unique session ID for each user and stores i
 * The seed is a static and non-guessable secret that may be shared with the client in HOTP and TOTP implementations, but must always be securely stored by the authentication server. 
 * The moving factor is a dynamic value that must be distinct for each OTP code generation. This value, combined with the seed, produces different OTP codes for each authentication request.
 * Different OTP implementations exist due to variations in how the moving factor is generated and whether the HMAC secret is shared with the client.
-* While there are RFCs for HOTP ([RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238)) and TOTP ([RFC 4226](https://datatracker.ietf.org/doc/html/rfc4226)), there is no specific RFC for a "pure" OTP implementation. However, such implementations may be the most common on the world wide web today, often found in scenarios like email verification or temporary login codes. Despite their widespread use, any "pure" OTP implementation **should** still follow the security guidelines outlined in the HOTP and TOTP specs.
+* While there are RFCs for HOTP ([RFC 4226](https://datatracker.ietf.org/doc/html/rfc4226)) and TOTP ([RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238)), there is no specific RFC for a "pure" OTP implementation. However, such implementations may be the most common on the world wide web today, often found in scenarios like email verification or temporary login codes. Despite their widespread use, any "pure" OTP implementation **should** still follow the security guidelines outlined in the HOTP and TOTP specs.
 
 ### General and common best practices for all algorithms
 
@@ -22,7 +24,7 @@ The authentication server creates a unique session ID for each user and stores i
 * OTP HMAC secrets **should** be generated randomly at the hardware level or using a cryptographically strong pseudorandom generator.
 * The authentication server **must** throttle (rate limit) brute-force attacks.
 * The authentication server **must** deny replay attacks by rejecting any already-used OTP code.
-* While the [HOTP](https://datatracker.ietf.org/doc/html/rfc4226) and [TOTP](https://datatracker.ietf.org/doc/html/rfc6238) specifications recommend using HMAC-SHA1 method, modern and safer methods like HMAC-SHA256 are preferable.
+* While the HOTP and TOTP specifications recommend using HMAC-SHA1 method, modern and safer methods like HMAC-SHA256 are preferable.
 
 ## Running this project
 
@@ -37,7 +39,7 @@ Optionally, you can build a local docker image within the `src` directory:
 
 ## Project Stack
 
-This project was build with the following tech stack:
+This project was built with the following tech stack:
 
 - [Flask](https://flask.palletsprojects.com/en/stable/) web server. 
 - OTP services implemented with [PyOTP](https://github.com/pyauth/pyotp).

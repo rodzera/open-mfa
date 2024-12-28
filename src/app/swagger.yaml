@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: open-mfa
   description: developed by github.com/rodzera
-  version: 1.1
+  version: 1.2
 servers:
   - url: /api
 paths:
@@ -113,6 +113,12 @@ paths:
           in: query
           required: false
           description: HOTP initial creation counter (optional).
+          schema:
+            type: integer
+        - name: resync_threshold
+          in: query
+          required: false
+          description: HOTP resynchronization protocol threshold based on a look-ahead window (optional).
           schema:
             type: integer
       responses:
