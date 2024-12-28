@@ -1,13 +1,17 @@
-FROM python:3.12
+FROM python:3.12-alpine
 
 LABEL author="Rodrigo Lopes"
 LABEL github="github.com/rodzera"
 
 COPY . /src
 
-RUN mv /src/run.py /run.py && mkdir /logs \
-&& apt update ; apt upgrade -y ; apt install nginx vim -y ; apt clean \
-&& pip install -U pip ; pip install -r /src/requirements.txt \
-&& chmod +x /src/entrypoint.sh
+RUN apk update && apk upgrade \
+    && apk add --no-cache nginx bash libffi-dev postgresql-dev \
+    && pip install --no-cache-dir -U pip \
+    && pip install --no-cache-dir -r /src/requirements.txt \
+    && chmod +x /src/entrypoint.sh \
+    && rm -rf /var/cache/apk/*
+
+RUN mv /src/run.py /run.py && mkdir /logs
 
 ENTRYPOINT ["/src/entrypoint.sh"]
