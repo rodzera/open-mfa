@@ -2,7 +2,7 @@ from flask import abort
 
 from src.app.resources.api import api
 from src.app.schemas.mfa.totp import TOTPSchema
-from src.app.services.mfa.totp import TOTPService
+from src.app.services.oath.totp import TOTPService
 from src.app.schemas.mfa.common import schema_validation
 
 
@@ -16,5 +16,5 @@ def get_totp(**kwargs):
 def delete_totp():
     service = TOTPService()
     if not service.delete_data():
-        return abort(404, "HOTP not created")
+        return abort(404, "TOTP not created")
     return {}, 204

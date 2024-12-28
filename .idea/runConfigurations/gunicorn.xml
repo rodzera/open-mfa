@@ -5,12 +5,13 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
-      <env name="PYTHONUNBUFFERED" value="1" />
       <env name="_ADMIN_PASS" value="admin" />
+      <env name="_ADMIN_USER" value="admin" />
+      <env name="_B64_AES_KEY" value="QUJDREVGR0gxMjM0NTY3OA==" />
       <env name="_REDIS_HOST" value="172.19.0.3" />
       <env name="_REDIS_PASS" value="admin" />
       <env name="_SECRET_KEY" value="ABCDEFGH12345678" />
-      <env name="_ADMIN_USER" value="admin" />
+      <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />

@@ -10,7 +10,7 @@ paths:
     get:
       tags:
         - Healthcheck
-      summary: Get the status of the database.
+      summary: Get the status of Redis database.
       responses:
         200:
           description: Database status response
@@ -39,7 +39,7 @@ paths:
     get:
       tags:
         - Healthcheck
-      summary: Get the status of the server.
+      summary: Get the status of Flask server.
       responses:
         200:
           description: Server status response

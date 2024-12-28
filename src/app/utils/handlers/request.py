@@ -1,17 +1,12 @@
 from uuid import uuid4
+from flask import session
 from datetime import timedelta
-from flask import Response, session
 
 from src.app.utils.helpers.logs import get_logger
 from src.app.services.redis import redis_service
 
-
 log = get_logger(__name__)
 
-__all__ = [
-    "set_session_id_before_request",
-    "log_json_after_request"
-]
 
 def set_session_id_before_request() -> None:
     """
@@ -27,8 +22,3 @@ def set_session_id_before_request() -> None:
         redis_service.db(
             "setex", f"session:{session_id}", timedelta(minutes=30), "active"
         )
-
-def log_json_after_request(response: Response) -> Response:
-    if response.get_json(silent=True):
-        log.debug(f"Returning response: {response.json}")
-    return response

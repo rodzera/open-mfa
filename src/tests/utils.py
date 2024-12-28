@@ -1,6 +1,8 @@
 from typing import Dict
 from base64 import b64encode
-from unittest import TestCase
+from pyotp import random_base32
+
+from src.app.services.aes_cipher import aes_cipher_service
 
 
 def json_accept_header() -> Dict:
@@ -17,5 +19,6 @@ def basic_auth(username: str, password: str) -> Dict:
     encoded_credentials = b64encode(credentials).decode()
     return {"Authorization": f"Basic {encoded_credentials}"}
 
-basic_admin_auth = basic_auth("admin", "admin")
-helper_test_case = TestCase()
+test_b32_secret = random_base32()
+test_cipher_secret = aes_cipher_service.encrypt(test_b32_secret.encode())
+test_b64_cipher_secret = b64encode(test_cipher_secret).decode()

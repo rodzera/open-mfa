@@ -8,8 +8,6 @@ from src.app.utils.helpers.json import jsonify_error_response
 
 log = get_logger(__name__)
 
-__all__ = ["register_error_handlers"]
-
 
 def handle_marshmallow_exc(e: ValidationError) -> FlaskResponse:
     log.error(f"Marshmallow validation error: {e.messages}")
