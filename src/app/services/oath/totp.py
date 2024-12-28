@@ -31,7 +31,7 @@ class TOTPService(BaseOTPService):
 
     def _verify(self) -> Dict:
         self._log_action("verify")
-        status = self._server_totp.verify(self._client_otp) and self._client_otp != self._last_used_otp
+        status = self._server_totp.verify(self._client_otp, valid_window=1) and self._client_otp != self._last_used_otp
         if status:
             self._set_last_used_otp()
         return {"status": status}
