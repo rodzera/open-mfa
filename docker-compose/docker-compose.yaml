@@ -40,7 +40,7 @@ services:
     container_name: redis
     restart: unless-stopped
     environment:
-      _REDIS_PASS: ${_REDIS_PASS}
+      REDIS_PASS: ${_REDIS_PASS}
     command: sh -c 'redis-server --requirepass "$_REDIS_PASS"'
     ports:
       - "6379:6379"

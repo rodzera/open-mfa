@@ -1,9 +1,9 @@
 from flask import abort
 
 from src.app.resources.api import api
-from src.app.schemas.mfa.totp import TOTPSchema
+from src.app.schemas.oath.totp import TOTPSchema
 from src.app.services.oath.totp import TOTPService
-from src.app.schemas.mfa.common import schema_validation
+from src.app.schemas.oath.common import schema_validation
 
 
 @api.route("/totp", methods=["GET"])
