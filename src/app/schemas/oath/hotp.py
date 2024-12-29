@@ -1,7 +1,7 @@
 from marshmallow import fields
 from marshmallow.validate import Range
 
-from src.app.schemas.mfa.common import OTPValidationSchema, OTPFieldSchema
+from src.app.schemas.oath.common import OTPValidationSchema, OTPFieldSchema
 
 
 class HOTPSchema(OTPFieldSchema, OTPValidationSchema):
