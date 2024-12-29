@@ -6,7 +6,7 @@ Open-MFA is a demo project that implements an authentication server supporting O
 ## Project Overview
 
 * The authentication server creates a unique session ID for each user, storing it in both a Flask session and a Redis database with 60-minutes expiration. All OTP codes generated for a user are linked to their unique session ID.
-* HOTP and TOTP URIs should be configured with any authenticator app (such as [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2)) that supports OTP algorithms generation.
+* HOTP and TOTP URIs should be configured with any authenticator app (such as [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2)) that supports OTP algorithms generation for following code validation.
 * In a real-world authentication server, the Identity and Access Management (IAM) would be much more robust and complex, however for demo purposes, this application has been deliberately simplified.
 
 ## OTP Algorithms
@@ -20,8 +20,8 @@ Open-MFA is a demo project that implements an authentication server supporting O
 ### General and common best practices for all algorithms
 
 * All implementations **must** use HTTPS to secure communication between the authentication server and the client.
-* OTP HMAC secrets **must** be securely stored in a controlled access database.
-* OTP HMAC secrets **should** be generated randomly at the hardware level or using a cryptographically strong pseudorandom generator.
+* The authentication server **must** randomly generate OTP HMAC secrets at the hardware level, or using a cryptographically strong pseudorandom generators.
+* The authentication server **must** securely store OTP HMAC secrets in a controlled access database.
 * The authentication server **must** throttle (rate limit) brute-force attacks.
 * The authentication server **must** deny replay attacks by rejecting any already-used OTP code.
 * While the HOTP and TOTP specifications recommend using HMAC-SHA1 method, modern and safer methods like HMAC-SHA256 are preferable.
