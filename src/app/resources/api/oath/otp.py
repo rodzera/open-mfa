@@ -1,7 +1,7 @@
 from src.app.resources.api import api
-from src.app.schemas.mfa.otp import OTPSchema
+from src.app.schemas.oath.otp import OTPSchema
 from src.app.services.oath.otp import OTPService
-from src.app.schemas.mfa.common import schema_validation
+from src.app.schemas.oath.common import schema_validation
 
 
 @api.route("/otp", methods=["GET"])
