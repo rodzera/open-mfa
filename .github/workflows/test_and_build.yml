@@ -36,7 +36,7 @@ jobs:
     - name: Run tests
       run: |
         export _TESTING=1
-        pytest src/tests --cov=app --cov-branch --cov-report=xml
+        pytest src/tests --cov=src/app --cov-branch --cov-report=xml
 
   upload_codecov:
     name: Upload coverage reports to Codecov
