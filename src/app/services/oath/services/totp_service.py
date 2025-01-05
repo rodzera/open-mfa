@@ -3,7 +3,7 @@ from typing import Dict
 from flask import session
 
 from src.app.configs.oath import TOTP_DF_CONFIG
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.services.oath.repositories import TOTPRepository
 from src.app.services.oath.services.base_service import BaseOTPService
 

@@ -2,7 +2,7 @@ from typing import Callable
 from functools import wraps
 from flask import request, abort
 
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.controllers.auth import authenticate_super_admin
 
 log = get_logger(__name__)

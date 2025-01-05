@@ -8,8 +8,8 @@ from src.app.services.oath.services.totp_service import TOTPService
 
 @api.route("/totp", methods=["GET"])
 @schema_middleware(TOTPSchema)
-def get_totp(**kwargs):
-    service = TOTPService(**kwargs)
+def get_totp(**client_data):
+    service = TOTPService(**client_data)
     return service.process_request()
 
 @api.route("/totp", methods=["DELETE"])

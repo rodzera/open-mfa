@@ -6,6 +6,6 @@ from src.app.services.oath.services.otp_service import OTPService
 
 @api.route("/otp", methods=["GET"])
 @schema_middleware(OTPSchema)
-def get_otp(**kwargs):
-    service = OTPService(**kwargs)
+def get_otp(**client_data):
+    service = OTPService(**client_data)
     return service.process_request()

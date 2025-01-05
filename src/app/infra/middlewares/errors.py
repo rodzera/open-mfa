@@ -3,7 +3,7 @@ from marshmallow import ValidationError
 from flask import json, Flask, Response as FlaskResponse
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.utils.helpers.json import jsonify_error_response
 
 log = get_logger(__name__)

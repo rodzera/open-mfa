@@ -3,7 +3,7 @@ from flask import session
 from typing import Dict, Tuple
 
 from src.app.configs.oath import HOTP_DF_CONFIG
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.services.oath.repositories import HOTPRepository
 from src.app.services.oath.services.base_service import BaseOTPService
 

@@ -7,8 +7,8 @@ from typing import Union, Literal, Dict
 from redis import StrictRedis, RedisError
 
 from src.app.configs.constants import TESTING_ENV
-from src.app.utils.helpers.server import terminate_server
-from src.app.utils.helpers.logs import get_logger, mask_secrets_items
+from src.app.infra.signals import terminate_server
+from src.app.utils.helpers.logging import get_logger, mask_secrets_items
 
 log = get_logger("redis")
 
@@ -55,16 +55,20 @@ class RedisService(object):
         return client
 
     @property
-    def info(self):
+    def info(self) -> Dict:
         log.debug("Getting redis client info")
-        return self.client.info()
+        try:
+            return self.client.info()
+        except RedisError:
+            log.exception("Exception while getting redis client info")
+            return {}
 
     @property
     def current_timestamp(self) -> Union[str, bool]:
         log.debug("Querying redis current timestamp")
         try:
             redis_time = self.client.time()
-            return strftime('%Y-%m-%d %H:%M:%S', gmtime(redis_time[0]))
+            return strftime("%Y-%m-%d %H:%M:%S", gmtime(redis_time[0]))
         except Exception as e:
             log.error(f"Error fetching redis current timestamp: {e}")
             return False

@@ -2,9 +2,9 @@ from flask import Flask
 from flasgger import Swagger
 
 from src.app.schemas import ma
-from src.app.infra.logs import logging_service
+from src.app.infra.logging import logging_service
 from src.app.configs.environ import DefaultConfig
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.infra.middlewares.errors import register_error_handlers
 from src.app.infra.signals import register_gunicorn_signal_handler
 from src.app.infra.middlewares.session import set_session_id_before_request

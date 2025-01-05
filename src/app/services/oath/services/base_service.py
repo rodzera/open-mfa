@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from base64 import b64encode, b64decode
 from typing import Dict, Callable, Union, Literal
 
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.infra.aes_cipher import aes_cipher_service
 from src.app.services.oath.repositories import OTPRepository, TOTPRepository, \
     HOTPRepository
