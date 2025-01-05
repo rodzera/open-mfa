@@ -2,8 +2,8 @@ from flask import request
 from logging import getLevelName, root
 
 from src.app.resources.api import api
-from src.app.services import admin_auth
 from src.app.schemas.logs import LogSchema
+from src.app.infra.middlewares import admin_auth
 
 schema = LogSchema()
 

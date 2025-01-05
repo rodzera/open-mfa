@@ -8,8 +8,8 @@ from flask.testing import FlaskClient
 
 from src.run import application
 from src.tests.utils import basic_auth
-from src.app.services.redis import RedisService
-from src.app.services.aes_cipher import aes_cipher_service
+from src.app.infra.redis import RedisService
+from src.app.infra.aes_cipher import aes_cipher_service
 
 
 @fixture(autouse=True)

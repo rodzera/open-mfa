@@ -1,21 +1,9 @@
+from flask import abort
 from typing import Optional
-from functools import wraps
-from flask import abort, request
 from marshmallow import Schema, fields, validates, ValidationError, post_load
 
-from src.app.services.redis import redis_service
+from src.app.infra.redis import redis_service
 
-
-def schema_validation(schema_class):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            schema = schema_class()
-            client_data = schema.load(request.args)
-            kwargs.update(client_data)
-            return func(*args, **kwargs)
-        return wrapper
-    return decorator
 
 class OTPFieldSchema(Schema):
     otp = fields.Str(required=False)

@@ -2,8 +2,8 @@ from flask import abort
 
 from src.app.resources.api import api
 from src.app.schemas.oath.hotp import HOTPSchema
-from src.app.services.oath.hotp import HOTPService
-from src.app.schemas.oath.common import schema_validation
+from src.app.infra.middlewares import schema_validation
+from src.app.services.oath.services.hotp_service import HOTPService
 
 
 @api.route("/hotp", methods=["GET"])

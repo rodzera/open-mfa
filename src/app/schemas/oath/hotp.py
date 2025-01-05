@@ -1,8 +1,8 @@
 from marshmallow import fields
 from marshmallow.validate import Range
 
-from src.app.services.oath.default_config import HOTP_DF_CONFIG
-from src.app.schemas.oath.common import OTPValidationSchema, OTPFieldSchema
+from src.app.configs.oath import HOTP_DF_CONFIG
+from src.app.schemas.oath.base import OTPValidationSchema, OTPFieldSchema
 
 
 class HOTPSchema(OTPFieldSchema, OTPValidationSchema):

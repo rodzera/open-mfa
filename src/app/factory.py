@@ -2,11 +2,11 @@ from flask import Flask
 from flasgger import Swagger
 
 from src.app.schemas import ma
+from src.app.infra.logs import logging_service
 from src.app.configs.environ import DefaultConfig
-from src.app.services.logs import logging_service
 from src.app.utils.helpers.logs import get_logger
 from src.app.utils.handlers.errors import register_error_handlers
-from src.app.services.signals import register_gunicorn_signal_handler
+from src.app.infra.signals import register_gunicorn_signal_handler
 from src.app.utils.handlers.request import set_session_id_before_request
 
 log = get_logger(__name__)

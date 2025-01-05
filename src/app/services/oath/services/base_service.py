@@ -5,8 +5,8 @@ from base64 import b64encode, b64decode
 from typing import Dict, Callable, Union, Literal
 
 from src.app.utils.helpers.logs import get_logger
-from src.app.services.aes_cipher import aes_cipher_service
-from src.app.services.oath.repository import OTPRepository, TOTPRepository, \
+from src.app.infra.aes_cipher import aes_cipher_service
+from src.app.services.oath.repositories import OTPRepository, TOTPRepository, \
     HOTPRepository
 
 log = get_logger(__name__)
@@ -14,7 +14,7 @@ log = get_logger(__name__)
 
 class BaseOTPService(ABC):
     """
-    Base class for OTP Services (OTP, TOTP, HOTP).
+    Base service layer class for OTP services.
     """
     _secret: str
     _server_data: Dict

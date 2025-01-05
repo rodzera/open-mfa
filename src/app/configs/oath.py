@@ -3,8 +3,9 @@ OATH_DF_CONFIG = {
       "expires_in": 300
     },
     "totp": {
-        "interval": 30,
-        "valid_window": 1
+        "valid_window": 1,
+        "min_interval": 30,
+        "max_interval": 60
     },
     "hotp": {
         "initial_count": 0,

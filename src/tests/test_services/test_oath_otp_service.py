@@ -2,10 +2,10 @@ from time import time
 from unittest.mock import MagicMock
 from pytest_mock import MockerFixture
 
-from src.app.services.oath.otp import OTPService
-from src.app.services.oath.base import BaseOTPService
-from src.app.services.oath.repository import OTPRepository
-from src.app.services.oath.default_config import OTP_DF_CONFIG
+from src.app.services.oath.services.otp_service import OTPService
+from src.app.services.oath.services.base_service import BaseOTPService
+from src.app.services.oath.repositories import OTPRepository
+from src.app.configs.oath import OTP_DF_CONFIG
 from src.tests.utils import test_b64_cipher_secret, test_b32_secret
 
 
@@ -24,7 +24,7 @@ def test_init(mocker: MockerFixture) -> None:
         "_get_server_data",
         return_value={"secret": test_b64_cipher_secret, "otp": "654321"}
     )
-    mock_otp = mocker.patch("src.app.services.oath.otp.OTP")
+    mock_otp = mocker.patch("src.app.services.oath.services.otp_service.OTP")
     server_data = {"otp": "123456"}
 
     service = OTPService(**server_data)
@@ -94,7 +94,7 @@ def test_redis_data(mocker: MockerFixture) -> None:
         "_get_server_data",
         return_value={"secret": test_b64_cipher_secret}
     )
-    mock_otp = mocker.patch("src.app.services.oath.otp.OTP")
+    mock_otp = mocker.patch("src.app.services.oath.services.otp_service.OTP")
     server_data = {"otp": "123456"}
     service = OTPService(**server_data)
     default_data = service._redis_data

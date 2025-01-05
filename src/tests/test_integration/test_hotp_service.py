@@ -2,7 +2,7 @@ from re import search
 from pyotp import HOTP
 from flask.testing import FlaskClient
 
-from src.app.services.oath.hotp import HOTPService
+from src.app.services.oath.services.hotp_service import HOTPService
 
 
 def test_hotp_create_and_verify_request_200_twice_success(

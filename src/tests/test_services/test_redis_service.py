@@ -3,7 +3,7 @@ from flask.ctx import RequestContext
 from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock
 
-from src.app.services.redis import RedisService, redis_service
+from src.app.infra.redis import RedisService, redis_service
 
 
 def test_db_method(mocker: MockerFixture) -> None:
@@ -31,8 +31,8 @@ def test_insert_hset_method(mocker: MockerFixture) -> None:
     ])
 
 def test_setup_connection_method(mocker: MockerFixture) -> None:
-    mock_redis_cls = mocker.patch("src.app.services.redis.StrictRedis")
-    mock_environ = mocker.patch("src.app.services.redis.environ")
+    mock_redis_cls = mocker.patch("src.app.infra.redis.StrictRedis")
+    mock_environ = mocker.patch("src.app.infra.redis.environ")
     environ = {
         "_REDIS_HOST": "localhost",
         "_REDIS_PASS": "s3cr3t"
@@ -60,7 +60,7 @@ def test_info_prop(mocker: MockerFixture) -> None:
 def test_get_session_key_method(
     req_ctx: RequestContext, mocker: MockerFixture
 ) -> None:
-    mock_session = mocker.patch("src.app.services.redis.session")
+    mock_session = mocker.patch("src.app.infra.redis.session")
     sess = {"session_id": "123456"}
     mock_session.__getitem__.side_effect = sess.__getitem__
 

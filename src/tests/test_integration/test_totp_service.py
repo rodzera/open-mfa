@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta
 from re import search
 from pyotp import TOTP
 from flask.testing import FlaskClient
+from datetime import datetime, timedelta
 
-from src.app.services.oath.totp import TOTPService
+from src.app.services.oath.services.totp_service import TOTPService
 
 
 def test_totp_create_and_verify_request_200_success(

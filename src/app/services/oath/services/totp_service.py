@@ -2,10 +2,10 @@ from pyotp import TOTP
 from typing import Dict
 from flask import session
 
+from src.app.configs.oath import TOTP_DF_CONFIG
 from src.app.utils.helpers.logs import get_logger
-from src.app.services.oath.base import BaseOTPService
-from src.app.services.oath.repository import TOTPRepository
-from src.app.services.oath.default_config import TOTP_DF_CONFIG
+from src.app.services.oath.repositories import TOTPRepository
+from src.app.services.oath.services.base_service import BaseOTPService
 
 log = get_logger(__name__)
 
@@ -19,7 +19,7 @@ class TOTPService(BaseOTPService):
         super().__init__(self._repository_class, **client_data)
 
         self._client_interval = client_data.get(
-            "interval", self._df_config["interval"]
+            "interval", self._df_config["min_interval"]
         )
         self._last_used_otp = self._server_data.get("last_used_otp", 0)
         self._valid_window = self._df_config["valid_window"]

@@ -1,8 +1,8 @@
 from flask import abort
 from marshmallow import post_load
 
-from src.app.services.redis import redis_service
-from src.app.schemas.oath.common import OTPFieldSchema
+from src.app.infra.redis import redis_service
+from src.app.schemas.oath.base import OTPFieldSchema
 
 
 class OTPSchema(OTPFieldSchema):
