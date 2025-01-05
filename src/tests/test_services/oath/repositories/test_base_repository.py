@@ -4,25 +4,25 @@ from unittest.mock import PropertyMock
 from src.app.services.oath.repositories import BaseOTPRepository
 
 
-def test_get_server_data(mocker: MockerFixture) -> None:
+def test_get_session_data(mocker: MockerFixture) -> None:
     mock_redis_service = mocker.patch(
         "src.app.services.oath.repositories.base_repository.redis_service"
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     service = BaseOTPRepository()
-    data = service.get_server_data()
+    data = service.get_session_data()
 
     assert data == mock_redis_service.db.return_value
     mock_redis_service.db.assert_called_once_with("hgetall", mock_session_key)
 
-def test_create_server_data(mocker: MockerFixture) -> None:
+def test_create_session_data(mocker: MockerFixture) -> None:
     mock_redis_service = mocker.patch(
         "src.app.services.oath.repositories.base_repository.redis_service"
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     data = {}
     service = BaseOTPRepository()
-    service.create_server_data(data)
+    service.create_session_data(data)
 
     mock_redis_service.insert_hset.assert_called_once_with(
         mock_session_key, data

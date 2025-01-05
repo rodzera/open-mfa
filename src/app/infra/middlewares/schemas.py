@@ -1,9 +1,10 @@
-from functools import wraps
 from flask import request
+from typing import Callable
+from functools import wraps
 
 
-def schema_validation(schema_class):
-    def decorator(func):
+def schema_validation(schema_class) -> Callable:
+    def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
             schema = schema_class()

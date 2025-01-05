@@ -17,7 +17,7 @@ class BaseOTPService(ABC):
     Base service layer class for OTP services.
     """
     _secret: str
-    _server_data: Dict
+    _session_data: Dict
     _hash_method: Callable = sha256
     _service_type: Literal["otp", "totp", "hotp"]
     _repository: Union[OTPRepository, TOTPRepository, HOTPRepository]
@@ -25,14 +25,14 @@ class BaseOTPService(ABC):
     def __init__(self, repository, **kwargs):
         self._repository = repository()
         self._client_otp = kwargs.get("otp")
-        self._server_data = self._get_server_data()
+        self._session_data = self._get_session_data()
         self._setup_secrets()
 
-    def _get_server_data(self):
-        return self._repository.get_server_data()
+    def _get_session_data(self):
+        return self._repository.get_session_data()
 
-    def _create_server_data(self) -> None:
-        self._repository.create_server_data(self._redis_data)
+    def _create_session_data(self) -> None:
+        self._repository.create_session_data(self._redis_data)
 
     def _verify_session_key_exists(self) -> int:
         return self._repository.verify_session_key_exists()
@@ -41,8 +41,8 @@ class BaseOTPService(ABC):
         return self._repository.delete_session_key()
 
     def _setup_secrets(self) -> None:
-        if self._server_data:
-            self._b64_cipher_secret = self._server_data["secret"]
+        if self._session_data:
+            self._b64_cipher_secret = self._session_data["secret"]
             self._cipher_secret = b64decode(self._b64_cipher_secret.encode())
             self._secret = aes_cipher_service.decrypt(self._cipher_secret).decode()
         else:

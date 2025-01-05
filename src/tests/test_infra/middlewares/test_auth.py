@@ -4,10 +4,10 @@ from _pytest.python_api import raises
 from werkzeug.exceptions import Unauthorized
 
 from src.tests.utils import basic_auth
-from src.app.infra.middlewares.auth import admin_auth
+from src.app.infra.middlewares.auth import auth_middleware
 
 
-@admin_auth()
+@auth_middleware
 def func() -> bool:
     return True
 

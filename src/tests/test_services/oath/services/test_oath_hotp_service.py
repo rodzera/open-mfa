@@ -19,9 +19,9 @@ def test_df_config_attr() -> None:
     assert HOTPService._df_config == HOTP_DF_CONFIG
 
 def test_init(mocker: MockerFixture, req_ctx: RequestContext) -> None:
-    mock_get_server_data = mocker.patch.object(
+    mock_get_session_data = mocker.patch.object(
         BaseOTPService,
-        "_get_server_data",
+        "_get_session_data",
         return_value={"secret": test_b64_cipher_secret, "count": 1}
     )
     mock_hotp = mocker.patch("src.app.services.oath.services.hotp_service.HOTP")
@@ -32,7 +32,7 @@ def test_init(mocker: MockerFixture, req_ctx: RequestContext) -> None:
     service = HOTPService(**server_data)
 
     assert service._client_initial_count == server_data["initial_count"]
-    assert service._cached_count == mock_get_server_data.return_value["count"]
+    assert service._cached_count == mock_get_session_data.return_value["count"]
     assert service._server_hotp == mock_hotp.return_value
     assert service._hotp_uri == mock_hotp.return_value.provisioning_uri.return_value
     mock_hotp.assert_called_once_with(
@@ -119,9 +119,9 @@ def test_trigger_resync_protocol_failure() -> None:
     )
 
 def test_redis_data(mocker: MockerFixture, req_ctx: RequestContext) -> None:
-    mock_get_server_data = mocker.patch.object(
+    mock_get_session_data = mocker.patch.object(
         BaseOTPService,
-        "_get_server_data",
+        "_get_session_data",
         return_value={"secret": test_b64_cipher_secret, "count": 1}
     )
     mock_hotp = mocker.patch("src.app.services.oath.services.hotp_service.HOTP")
@@ -135,7 +135,7 @@ def test_redis_data(mocker: MockerFixture, req_ctx: RequestContext) -> None:
     default_data = service._redis_data
 
     assert default_data["count"] == server_data["initial_count"]
-    assert default_data["secret"] == mock_get_server_data.return_value["secret"]
+    assert default_data["secret"] == mock_get_session_data.return_value["secret"]
     assert default_data["uri"] == mock_hotp.return_value.provisioning_uri.return_value
     assert default_data["resync_threshold"] == server_data["resync_threshold"]
     mock_hotp.assert_called_once_with(

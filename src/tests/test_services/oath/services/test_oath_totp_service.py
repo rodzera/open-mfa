@@ -19,9 +19,9 @@ def test_df_config_attr() -> None:
     assert TOTPService._df_config == TOTP_DF_CONFIG
 
 def test_init(mocker: MockerFixture, req_ctx: RequestContext) -> None:
-    mock_get_server_data = mocker.patch.object(
+    mock_get_session_data = mocker.patch.object(
         BaseOTPService,
-        "_get_server_data",
+        "_get_session_data",
         return_value={
             "secret": test_b64_cipher_secret, "last_used_otp": "123456"
         }
@@ -34,7 +34,7 @@ def test_init(mocker: MockerFixture, req_ctx: RequestContext) -> None:
     service = TOTPService(**server_data)
 
     assert service._client_interval == server_data["interval"]
-    assert service._last_used_otp == mock_get_server_data.return_value["last_used_otp"]
+    assert service._last_used_otp == mock_get_session_data.return_value["last_used_otp"]
     assert service._server_totp == mock_totp.return_value
     assert service._totp_uri == mock_totp.return_value.provisioning_uri.return_value
     mock_totp.assert_called_once_with(
@@ -76,9 +76,9 @@ def test_verify_failure() -> None:
     mock_self._set_last_used_otp.assert_not_called()
 
 def test_redis_data(mocker: MockerFixture, req_ctx: RequestContext)-> None:
-    mock_get_server_data = mocker.patch.object(
+    mock_get_session_data = mocker.patch.object(
         BaseOTPService,
-        "_get_server_data",
+        "_get_session_data",
         return_value={
             "secret": test_b64_cipher_secret, "last_used_otp": "123456"
         }
@@ -92,7 +92,7 @@ def test_redis_data(mocker: MockerFixture, req_ctx: RequestContext)-> None:
     default_data = service._redis_data
 
     assert default_data["interval"] == server_data["interval"]
-    assert default_data["secret"] == mock_get_server_data.return_value["secret"]
+    assert default_data["secret"] == mock_get_session_data.return_value["secret"]
     assert default_data["uri"] == mock_totp.return_value.provisioning_uri.return_value
     assert default_data["last_used_otp"] == 0
     mock_totp.assert_called_once_with(
