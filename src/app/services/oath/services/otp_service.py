@@ -18,10 +18,10 @@ class OTPService(BaseOTPService):
     def __init__(self, **client_data):
         super().__init__(self._repository_class, **client_data)
 
-        self._cached_otp = self._server_data.get("otp")
-        self._used_otp = int(self._server_data.get("used", 0))
+        self._cached_otp = self._session_data.get("otp")
+        self._used_otp = int(self._session_data.get("used", 0))
         self._current_timestamp = int(time())
-        self._creation_timestamp = int(self._server_data.get("timestamp", 0))
+        self._creation_timestamp = int(self._session_data.get("timestamp", 0))
         self._server_otp = OTP(
             self._secret,
             digest=self._hash_method
@@ -32,7 +32,7 @@ class OTPService(BaseOTPService):
         if self._cached_otp and self._is_otp_valid():
             otp = self._cached_otp
         else:
-            self._create_server_data()
+            self._create_session_data()
             otp = self._server_otp
         return {"otp": otp}
 

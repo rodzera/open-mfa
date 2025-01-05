@@ -1,16 +1,16 @@
 from datetime import datetime
 
-from src.app.utils.helpers.logs import get_logger
 from src.app.resources.api import api
 from src.app.configs.constants import VERSION
-from src.app.infra.middlewares.auth import admin_auth
 from src.app.infra.redis import redis_service
+from src.app.utils.helpers.logs import get_logger
+from src.app.infra.middlewares.auth import auth_middleware
 
 log = get_logger(__name__)
 
 
 @api.route("/database", methods=["GET"])
-@admin_auth()
+@auth_middleware
 def database():
     db_datetime = redis_service.current_timestamp
     return {
@@ -23,7 +23,7 @@ def database():
 
 
 @api.route("/server", methods=["GET"])
-@admin_auth()
+@auth_middleware
 def server():
     return {
         "datetime": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),

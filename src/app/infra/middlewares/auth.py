@@ -1,24 +1,23 @@
+from typing import Callable
 from functools import wraps
-from flask import request, abort, current_app
+from flask import request, abort
 
 from src.app.utils.helpers.logs import get_logger
+from src.app.controllers.auth import authenticate_super_admin
 
 log = get_logger(__name__)
 
 
-def admin_auth():
-    def decorator(func):
-        @wraps(func)
-        def wrap(*args, **kwargs):
-            log.info(f"Authentication required called: {request.endpoint}")
-            auth = request.authorization
-            if not auth or not hasattr(auth, "username") or not hasattr(auth, "password"):
-                log.debug("Invalid authorization in headers")
-                abort(401)
-            if auth.username != current_app.config["ADMIN_USER"] or auth.password != \
-                    current_app.config["ADMIN_PASS"]:
-                log.debug("Invalid super admin credential")
-                abort(401)
-            return func(*args, **kwargs)
-        return wrap
-    return decorator
+def auth_middleware(func: Callable) -> Callable:
+    @wraps(func)
+    def wrapper(*args, **kwargs) -> Callable:
+        log.info(f"Authentication middleware called: {request.endpoint}")
+        auth = request.authorization
+        if not auth or not hasattr(auth, "username") or not hasattr(auth, "password"):
+            log.debug("Invalid or missing authorization in headers")
+            abort(401, "Unauthorized")
+        if not authenticate_super_admin(auth):
+            log.debug("Invalid credentials in headers")
+            abort(401, "Unauthorized")
+        return func(*args, **kwargs)
+    return wrapper

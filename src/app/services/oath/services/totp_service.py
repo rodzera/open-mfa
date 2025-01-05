@@ -21,7 +21,7 @@ class TOTPService(BaseOTPService):
         self._client_interval = client_data.get(
             "interval", self._df_config["min_interval"]
         )
-        self._last_used_otp = self._server_data.get("last_used_otp", 0)
+        self._last_used_otp = self._session_data.get("last_used_otp", 0)
         self._valid_window = self._df_config["valid_window"]
         self._server_totp = TOTP(
             self._secret,
@@ -35,7 +35,7 @@ class TOTPService(BaseOTPService):
 
     def _create(self) -> Dict:
         log.debug(f"Starting {self._service_type.upper()} creation")
-        self._create_server_data()
+        self._create_session_data()
         return {"uri": self._totp_uri}
 
     def _verify(self) -> Dict:

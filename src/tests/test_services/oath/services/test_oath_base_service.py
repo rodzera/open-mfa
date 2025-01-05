@@ -22,18 +22,18 @@ def test_init() -> None:
 
     assert mock_self._repository == mock_repo.return_value
     assert mock_self._client_otp == "123456"
-    assert mock_self._server_data == mock_self._get_server_data.return_value
+    assert mock_self._session_data == mock_self._get_session_data.return_value
     mock_self._setup_secrets.assert_called_once()
 
-def test_get_server_data() -> None:
+def test_get_session_data() -> None:
     mock_self = MagicMock()
-    data = BaseOTPService._get_server_data(mock_self)
-    assert data == mock_self._repository.get_server_data.return_value
+    data = BaseOTPService._get_session_data(mock_self)
+    assert data == mock_self._repository.get_session_data.return_value
 
-def test_create_server_data() -> None:
+def test_create_session_data() -> None:
     mock_self = MagicMock()
-    BaseOTPService._create_server_data(mock_self)
-    mock_self._repository.create_server_data.assert_called_once_with(
+    BaseOTPService._create_session_data(mock_self)
+    mock_self._repository.create_session_data.assert_called_once_with(
         mock_self._redis_data
     )
 
@@ -47,15 +47,15 @@ def test_delete_session_key() -> None:
     data = BaseOTPService._delete_session_key(mock_self)
     assert data == mock_self._repository.delete_session_key.return_value
 
-def test_setup_secrets_method_with_server_data() -> None:
+def test_setup_secrets_method_with_session_data() -> None:
     server_data = {"secret": test_b64_cipher_secret}
-    mock_self = MagicMock(_server_data=server_data)
+    mock_self = MagicMock(_session_data=server_data)
     BaseOTPService._setup_secrets(mock_self)
     assert mock_self._b64_cipher_secret == server_data["secret"]
     assert mock_self._cipher_secret == test_cipher_secret
     assert mock_self._secret == test_b32_secret
 
-def test_setup_secrets_method_missing_server_data(
+def test_setup_secrets_method_missing_session_data(
     mocker: MockerFixture
 ) -> None:
     mock_random_base32 = mocker.patch(
@@ -65,7 +65,7 @@ def test_setup_secrets_method_missing_server_data(
     mock_encrypt = mocker.patch.object(
         AESCipherService, "encrypt", return_value=test_cipher_secret
     )
-    mock_self = MagicMock(_server_data={})
+    mock_self = MagicMock(_session_data={})
 
     BaseOTPService._setup_secrets(mock_self)
 

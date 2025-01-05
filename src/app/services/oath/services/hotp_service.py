@@ -24,9 +24,9 @@ class HOTPService(BaseOTPService):
         self._client_resync_threshold = client_data.get(
             "resync_threshold", self._df_config["min_resync_threshold"]
         )
-        self._cached_count = int(self._server_data.get("count", 0))
+        self._cached_count = int(self._session_data.get("count", 0))
         self._resync_threshold = int(
-            self._server_data.get(
+            self._session_data.get(
                 "resync_threshold", self._df_config["min_resync_threshold"]
             )
         )
@@ -42,7 +42,7 @@ class HOTPService(BaseOTPService):
 
     def _create(self) -> Dict:
         log.debug(f"Starting {self._service_type.upper()} creation")
-        self._create_server_data()
+        self._create_session_data()
         return {"uri": self._hotp_uri}
 
     def _verify(self) -> Dict:
