@@ -5,7 +5,6 @@ from src.app.utils.helpers.logs import get_logger
 
 log = get_logger(__name__)
 
-__all__ = ["admin_auth"]
 
 def admin_auth():
     def decorator(func):
@@ -22,4 +21,15 @@ def admin_auth():
                 abort(401)
             return func(*args, **kwargs)
         return wrap
+    return decorator
+
+def schema_validation(schema_class):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            schema = schema_class()
+            client_data = schema.load(request.args)
+            kwargs.update(client_data)
+            return func(*args, **kwargs)
+        return wrapper
     return decorator

@@ -41,6 +41,6 @@ else
   echo "Server workers: $WORKERS"
   echo "Worker connections limit: $WORKER_CONNECTIONS"
   echo "Starting production server"
-  gunicorn --bind "$HOST:$PORT" --workers $WORKERS --worker-connections $WORKER_CONNECTIONS --pid /src/app/gunicorn.pid --log-config=/src/app/gunicorn_log.conf "run"
+  gunicorn --bind "$HOST:$PORT" --workers $WORKERS --worker-connections $WORKER_CONNECTIONS --pid /src/app/gunicorn.pid --log-config=/src/gunicorn_log.conf "run"
 
 fi

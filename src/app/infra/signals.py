@@ -2,9 +2,9 @@ import logging
 from os import kill
 from signal import signal, SIGUSR1
 
-from src.app.services.redis import redis_service
 from src.app.utils.helpers.logs import get_logger
 from src.app.configs.constants import PRODUCTION_ENV
+from src.app.infra.redis import redis_service
 from src.app.utils.helpers.server import get_gunicorn_pid
 
 log = get_logger(__name__)
@@ -47,7 +47,7 @@ def gunicorn_signal_handler(*args) -> None:
     :param *args: SIGUSR1, frame
     :return:
     """
-    from src.app.services.logs import logging_service
+    from src.app.infra.logs import logging_service
 
     level = int(
         redis_service.db("get", "log") or

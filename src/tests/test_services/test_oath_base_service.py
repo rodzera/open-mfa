@@ -4,8 +4,8 @@ from unittest.mock import MagicMock
 from _pytest.python_api import raises
 from pytest_mock import MockerFixture
 
-from src.app.services.oath.base import BaseOTPService
-from src.app.services.aes_cipher import AESCipherService
+from src.app.services.oath.services.base_service import BaseOTPService
+from src.app.infra.aes_cipher import AESCipherService
 from src.tests.utils import test_b64_cipher_secret, test_cipher_secret, \
     test_b32_secret
 
@@ -59,7 +59,7 @@ def test_setup_secrets_method_missing_server_data(
     mocker: MockerFixture
 ) -> None:
     mock_random_base32 = mocker.patch(
-        "src.app.services.oath.base.random_base32",
+        "src.app.services.oath.services.base_service.random_base32",
         return_value=test_b32_secret
     )
     mock_encrypt = mocker.patch.object(

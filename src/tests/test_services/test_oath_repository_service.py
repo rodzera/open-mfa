@@ -1,13 +1,13 @@
 from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock, MagicMock
 
-from src.app.services.oath.repository import OTPRepository, TOTPRepository, \
+from src.app.services.oath.repositories import OTPRepository, TOTPRepository, \
     HOTPRepository, BaseOTPRepository
 
 
 def test_base_otp_repository_get_server_data(mocker: MockerFixture) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.oath.repository.redis_service"
+        "src.app.services.oath.repositories.base_repository.redis_service"
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     service = BaseOTPRepository()
@@ -18,7 +18,7 @@ def test_base_otp_repository_get_server_data(mocker: MockerFixture) -> None:
 
 def test_base_otp_repository_create_server_data(mocker: MockerFixture) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.oath.repository.redis_service"
+        "src.app.services.oath.repositories.base_repository.redis_service"
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     data = {}
@@ -33,7 +33,7 @@ def test_base_otp_repository_service_verify_session_key_exists(
     mocker: MockerFixture
 ) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.oath.repository.redis_service"
+        "src.app.services.oath.repositories.base_repository.redis_service"
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     service = BaseOTPRepository()
@@ -46,7 +46,7 @@ def test_base_otp_repository_service_delete_session_key(
     mocker: MockerFixture
 ) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.oath.repository.redis_service"
+        "src.app.services.oath.repositories.base_repository.redis_service"
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     service = BaseOTPRepository()
@@ -57,7 +57,7 @@ def test_base_otp_repository_service_delete_session_key(
 
 def test_base_otp_repository_session_key_prop(mocker: MockerFixture) -> None:
     mock_redis_service = mocker.patch(
-        "src.app.services.oath.repository.redis_service"
+        "src.app.services.oath.repositories.base_repository.redis_service"
     )
     mock_service_type = mocker.patch.object(
         BaseOTPRepository,

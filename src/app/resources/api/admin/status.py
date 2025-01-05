@@ -3,8 +3,8 @@ from datetime import datetime
 from src.app.utils.helpers.logs import get_logger
 from src.app.resources.api import api
 from src.app.configs.constants import VERSION
-from src.app.services import admin_auth
-from src.app.services.redis import redis_service
+from src.app.infra.middlewares import admin_auth
+from src.app.infra.redis import redis_service
 
 log = get_logger(__name__)
 

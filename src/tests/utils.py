@@ -2,7 +2,7 @@ from typing import Dict
 from base64 import b64encode
 from pyotp import random_base32
 
-from src.app.services.aes_cipher import aes_cipher_service
+from src.app.infra.aes_cipher import aes_cipher_service
 
 
 def json_accept_header() -> Dict:

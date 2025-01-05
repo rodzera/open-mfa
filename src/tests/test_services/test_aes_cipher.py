@@ -2,7 +2,7 @@ import pytest
 from typing import Optional
 from pytest_mock import MockerFixture
 
-from src.app.services.aes_cipher import AESCipherService
+from src.app.infra.aes_cipher import AESCipherService
 from src.tests.utils import test_cipher_secret, test_b32_secret
 
 
@@ -21,7 +21,7 @@ def test_parse_aes_key_from_environ(
     env_value: Optional[str], expected_exception: Optional[SystemExit],
 ):
     get_env = mocker.patch(
-        "src.app.services.aes_cipher.getenv", return_value=env_value
+        "src.app.infra.aes_cipher.getenv", return_value=env_value
     )
     if expected_exception:
         with pytest.raises(expected_exception):

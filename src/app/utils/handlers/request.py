@@ -3,7 +3,7 @@ from flask import session
 from datetime import timedelta
 
 from src.app.utils.helpers.logs import get_logger
-from src.app.services.redis import redis_service
+from src.app.infra.redis import redis_service
 
 log = get_logger(__name__)
 

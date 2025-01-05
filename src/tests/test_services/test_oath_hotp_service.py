@@ -2,10 +2,10 @@ from flask.ctx import RequestContext
 from pytest_mock import MockerFixture
 from unittest.mock import MagicMock, call
 
-from src.app.services.oath.hotp import HOTPService
-from src.app.services.oath.base import BaseOTPService
-from src.app.services.oath.repository import HOTPRepository
-from src.app.services.oath.default_config import HOTP_DF_CONFIG
+from src.app.services.oath.services.hotp_service import HOTPService
+from src.app.services.oath.services.base_service import BaseOTPService
+from src.app.services.oath.repositories import HOTPRepository
+from src.app.configs.oath import HOTP_DF_CONFIG
 from src.tests.utils import test_b64_cipher_secret, test_b32_secret
 
 
@@ -24,9 +24,9 @@ def test_init(mocker: MockerFixture, req_ctx: RequestContext) -> None:
         "_get_server_data",
         return_value={"secret": test_b64_cipher_secret, "count": 1}
     )
-    mock_hotp = mocker.patch("src.app.services.oath.hotp.HOTP")
+    mock_hotp = mocker.patch("src.app.services.oath.services.hotp_service.HOTP")
     server_data = {"otp": "123456", "initial_count": 10}
-    mock_session = mocker.patch("src.app.services.oath.hotp.session")
+    mock_session = mocker.patch("src.app.services.oath.services.hotp_service.session")
     mock_session.__getitem__.return_value = "session_key"
 
     service = HOTPService(**server_data)
@@ -124,11 +124,11 @@ def test_redis_data(mocker: MockerFixture, req_ctx: RequestContext) -> None:
         "_get_server_data",
         return_value={"secret": test_b64_cipher_secret, "count": 1}
     )
-    mock_hotp = mocker.patch("src.app.services.oath.hotp.HOTP")
+    mock_hotp = mocker.patch("src.app.services.oath.services.hotp_service.HOTP")
     server_data = {
         "otp": "123456", "initial_count": 10, "resync_threshold": 5
     }
-    mock_session = mocker.patch("src.app.services.oath.hotp.session")
+    mock_session = mocker.patch("src.app.services.oath.services.hotp_service.session")
     mock_session.__getitem__.return_value = "session_key"
 
     service = HOTPService(**server_data)

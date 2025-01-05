@@ -2,10 +2,10 @@ from pyotp import HOTP
 from flask import session
 from typing import Dict, Tuple
 
+from src.app.configs.oath import HOTP_DF_CONFIG
 from src.app.utils.helpers.logs import get_logger
-from src.app.services.oath.base import BaseOTPService
-from src.app.services.oath.repository import HOTPRepository
-from src.app.services.oath.default_config import HOTP_DF_CONFIG
+from src.app.services.oath.repositories import HOTPRepository
+from src.app.services.oath.services.base_service import BaseOTPService
 
 log = get_logger(__name__)
 
