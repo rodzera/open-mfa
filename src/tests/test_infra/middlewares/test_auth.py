@@ -4,7 +4,7 @@ from _pytest.python_api import raises
 from werkzeug.exceptions import Unauthorized
 
 from src.tests.utils import basic_auth
-from src.app.infra.middlewares import admin_auth
+from src.app.infra.middlewares.auth import admin_auth
 
 
 @admin_auth()

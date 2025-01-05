@@ -1,6 +1,6 @@
 from src.app.resources.api import api
 from src.app.schemas.oath.otp import OTPSchema
-from src.app.infra.middlewares import schema_validation
+from src.app.infra.middlewares.schemas import schema_validation
 from src.app.services.oath.services.otp_service import OTPService
 
 
