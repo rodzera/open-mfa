@@ -3,38 +3,59 @@ from pyotp import OTP
 from typing import Dict
 
 from src.app.utils.helpers.logs import get_logger
-from src.app.services.redis import redis_service
 from src.app.services.oath.base import BaseOTPService
+from src.app.services.oath.repository import OTPRepository
+from src.app.services.oath.default_config import OTP_DF_CONFIG
 
 log = get_logger(__name__)
 
 
 class OTPService(BaseOTPService):
-    _service_type = "otp"
+    _service_type: str = "otp"
+    _df_config: Dict = OTP_DF_CONFIG
+    _repository_class: OTPRepository = OTPRepository
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, **client_data):
+        super().__init__(self._repository_class, **client_data)
+
+        self._cached_otp = self._server_data.get("otp")
+        self._used_otp = int(self._server_data.get("used", 0))
         self._current_timestamp = int(time())
-        self._cached_otp = self._service_data.get("otp")
-        self._creation_timestamp = int(self._service_data.get("timestamp", 0))
-        self._used_otp = int(self._service_data.get("used", 0))
-        self._server_otp = OTP(self._secret, digest=self._hash_method).generate_otp(self._current_timestamp)
+        self._creation_timestamp = int(self._server_data.get("timestamp", 0))
+        self._server_otp = OTP(
+            self._secret,
+            digest=self._hash_method
+        ).generate_otp(self._current_timestamp)
 
     def _create(self) -> Dict:
-        self._log_action("create")
+        log.debug(f"Starting {self._service_type.upper()} creation")
         if self._cached_otp and self._is_otp_valid():
             otp = self._cached_otp
         else:
-            self._create_data()
+            self._create_server_data()
             otp = self._server_otp
         return {"otp": otp}
 
     def _verify(self) -> Dict:
-        self._log_action("verify")
         status = (self._client_otp == self._cached_otp) and self._is_otp_valid()
         if status:
             self._set_otp_as_used()
         return {"status": status}
+
+    def _otp_has_expired(self) -> bool:
+        """ checks if OTP creation has surpassed the expiration range """
+        return (
+            self._current_timestamp -
+            self._creation_timestamp >=
+            self._df_config["expires_in"]
+        )
+
+    def _is_otp_valid(self) -> bool:
+        """ checks if OTP is neither expired nor used """
+        return not self._used_otp and not self._otp_has_expired()
+
+    def _set_otp_as_used(self) -> None:
+        self._repository.set_otp_as_used()
 
     @property
     def _redis_data(self) -> Dict:
@@ -44,14 +65,3 @@ class OTPService(BaseOTPService):
             "used": 0,
             "timestamp": self._current_timestamp
         }
-
-    def _set_otp_as_used(self) -> None:
-        redis_service.db("hset", self._session_key, mapping={"used": 1})
-
-    def _otp_has_expired(self) -> bool:
-        """ checks if OTP creation has surpassed five minute """
-        return self._current_timestamp - self._creation_timestamp >= 300
-
-    def _is_otp_valid(self) -> bool:
-        """ checks if OTP is neither expired nor used """
-        return not self._used_otp and (self._current_timestamp - self._creation_timestamp < 300)

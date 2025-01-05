@@ -16,5 +16,5 @@ def get_totp(**kwargs):
 def delete_totp():
     service = TOTPService()
     if not service.delete_data():
-        return abort(404, "TOTP not created")
+        abort(404, "TOTP not created")
     return {}, 204

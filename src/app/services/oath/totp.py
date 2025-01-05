@@ -3,38 +3,55 @@ from typing import Dict
 from flask import session
 
 from src.app.utils.helpers.logs import get_logger
-from src.app.services.redis import redis_service
 from src.app.services.oath.base import BaseOTPService
+from src.app.services.oath.repository import TOTPRepository
+from src.app.services.oath.default_config import TOTP_DF_CONFIG
 
 log = get_logger(__name__)
 
 
 class TOTPService(BaseOTPService):
-    _service_type = "totp"
+    _service_type: str = "totp"
+    _df_config: Dict = TOTP_DF_CONFIG
+    _repository_class: TOTPRepository = TOTPRepository
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._client_interval = kwargs.get("interval", 30)
-        self._last_used_otp = self._service_data.get("last_used_otp", 0)
+    def __init__(self, **client_data):
+        super().__init__(self._repository_class, **client_data)
+
+        self._client_interval = client_data.get(
+            "interval", self._df_config["interval"]
+        )
+        self._last_used_otp = self._server_data.get("last_used_otp", 0)
+        self._valid_window = self._df_config["valid_window"]
         self._server_totp = TOTP(
-            self._secret, interval=self._client_interval,
+            self._secret,
+            interval=self._client_interval,
             digest=self._hash_method
         )
         self._totp_uri = self._server_totp.provisioning_uri(
-            name=session["session_id"], issuer_name="open-mfa"
+            name=session["session_id"],
+            issuer_name="open-mfa"
         )
 
     def _create(self) -> Dict:
-        self._log_action("create")
-        self._create_data()
+        log.debug(f"Starting {self._service_type.upper()} creation")
+        self._create_server_data()
         return {"uri": self._totp_uri}
 
     def _verify(self) -> Dict:
-        self._log_action("verify")
-        status = self._server_totp.verify(self._client_otp, valid_window=1) and self._client_otp != self._last_used_otp
+        log.debug(f"Starting {self._service_type.upper()} verification")
+        status = (
+            self._server_totp.verify(
+                self._client_otp,
+                valid_window=self._valid_window
+            ) and self._client_otp != self._last_used_otp
+        )
         if status:
             self._set_last_used_otp()
         return {"status": status}
+
+    def _set_last_used_otp(self) -> None:
+        self._repository.set_last_used_otp(self._client_otp)
 
     @property
     def _redis_data(self) -> Dict:
@@ -44,9 +61,3 @@ class TOTPService(BaseOTPService):
             "uri": self._totp_uri,
             "last_used_otp": 0
         }
-
-    def _set_last_used_otp(self) -> None:
-        redis_service.db(
-            "hset", self._session_key,
-            mapping={"last_used_otp": self._client_otp}
-        )
