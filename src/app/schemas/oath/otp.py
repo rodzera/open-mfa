@@ -1,8 +1,8 @@
-from flask import abort
 from marshmallow import post_load
+from werkzeug.exceptions import NotFound
 
-from src.app.infra.redis import redis_service
 from src.app.schemas.oath.base import OTPFieldSchema
+from src.app.services.oath.repositories import OTPRepository
 
 
 class OTPSchema(OTPFieldSchema):
@@ -12,7 +12,7 @@ class OTPSchema(OTPFieldSchema):
         if not data.get("otp"):
             return data
 
-        redis_key = redis_service.get_session_key("otp")
-        if not redis_service.db("exists", redis_key):
-            abort(404, "OTP not created")
+        session_data = OTPRepository().check_session_data_exists()
+        if not session_data:
+            raise NotFound("OTP not created")
         return data

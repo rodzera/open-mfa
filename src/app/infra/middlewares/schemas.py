@@ -1,9 +1,11 @@
 from flask import request
-from typing import Callable
 from functools import wraps
+from typing import Callable, Type
+
+from marshmallow import Schema
 
 
-def schema_validation(schema_class) -> Callable:
+def schema_middleware(schema_class: Type[Schema]) -> Callable:
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):

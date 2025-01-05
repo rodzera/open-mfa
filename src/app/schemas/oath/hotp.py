@@ -7,7 +7,7 @@ from src.app.schemas.oath.base import OTPValidationSchema, OTPFieldSchema
 
 class HOTPSchema(OTPFieldSchema, OTPValidationSchema):
     # TODO : set a max window limit
-    key = "hotp"
+    _service_type = "hotp"
     initial_count = fields.Int(required=False, dump_default=0, validate=Range(min=0))
     resync_threshold = fields.Int(
         required=False,

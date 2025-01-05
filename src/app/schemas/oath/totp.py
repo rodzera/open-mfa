@@ -6,7 +6,7 @@ from src.app.schemas.oath.base import OTPValidationSchema, OTPFieldSchema
 
 
 class TOTPSchema(OTPFieldSchema, OTPValidationSchema):
-    key = "totp"
+    _service_type = "totp"
     interval = fields.Int(
         required=False,
         dump_default=TOTP_DF_CONFIG["min_interval"],

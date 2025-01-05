@@ -37,7 +37,7 @@ def handle_any_error(e: HTTPException) -> FlaskResponse:
     response.mimetype = "application/json"
     return response
 
-def register_error_handlers(app: Flask):
+def register_error_handlers(app: Flask) -> None:
     for ex in default_exceptions:
         app.register_error_handler(ex, handle_any_error)
     app.register_error_handler(ValidationError, handle_marshmallow_exc)

@@ -30,22 +30,22 @@ def test_get_session_data() -> None:
     data = BaseOTPService._get_session_data(mock_self)
     assert data == mock_self._repository.get_session_data.return_value
 
-def test_create_session_data() -> None:
+def test_insert_session_data() -> None:
     mock_self = MagicMock()
-    BaseOTPService._create_session_data(mock_self)
-    mock_self._repository.create_session_data.assert_called_once_with(
+    BaseOTPService._insert_session_data(mock_self)
+    mock_self._repository.insert_session_data.assert_called_once_with(
         mock_self._redis_data
     )
 
-def test_verify_session_key_exists() -> None:
+def test_check_session_data_exists() -> None:
     mock_self = MagicMock()
-    data = BaseOTPService._verify_session_key_exists(mock_self)
-    assert data == mock_self._repository.verify_session_key_exists.return_value
+    data = BaseOTPService._check_session_data_exists(mock_self)
+    assert data == mock_self._repository.check_session_data_exists.return_value
 
-def test_delete_session_key() -> None:
+def test_delete_session_data() -> None:
     mock_self = MagicMock()
-    data = BaseOTPService._delete_session_key(mock_self)
-    assert data == mock_self._repository.delete_session_key.return_value
+    data = BaseOTPService._delete_session_data(mock_self)
+    assert data == mock_self._repository.delete_session_data.return_value
 
 def test_setup_secrets_method_with_session_data() -> None:
     server_data = {"secret": test_b64_cipher_secret}
@@ -79,18 +79,18 @@ def test_delete_data() -> None:
     mock_self = MagicMock(_service_type="totp", spec=BaseOTPService)
 
     BaseOTPService.delete_data(mock_self)
-    mock_self._verify_session_key_exists.assert_called_once_with()
-    mock_self._delete_session_key.assert_called_once_with()
+    mock_self._check_session_data_exists.assert_called_once_with()
+    mock_self._delete_session_data.assert_called_once_with()
 
 def test_delete_data_session_key_does_not_exists() -> None:
     mock_self = MagicMock(_service_type="totp", spec=BaseOTPService)
-    mock_self._verify_session_key_exists.return_value = False
+    mock_self._check_session_data_exists.return_value = False
 
     status = BaseOTPService.delete_data(mock_self)
 
     assert status == 0
-    mock_self._verify_session_key_exists.assert_called_once_with()
-    mock_self._delete_session_key.assert_not_called()
+    mock_self._check_session_data_exists.assert_called_once_with()
+    mock_self._delete_session_data.assert_not_called()
 
 def test_delete_data_attribute_error() -> None:
     mock_self = MagicMock(_service_type="otp", spec=BaseOTPService)

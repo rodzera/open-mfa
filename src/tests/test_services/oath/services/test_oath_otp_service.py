@@ -43,7 +43,7 @@ def test_create_otp_not_cached() -> None:
     mock_self = MagicMock(_cached_otp=None)
     response = OTPService._create(mock_self)
     assert response["otp"] == mock_self._server_otp
-    mock_self._create_session_data.assert_called_once_with()
+    mock_self._insert_session_data.assert_called_once_with()
 
 def test_create_otp_cached() -> None:
     mock_self = MagicMock()
@@ -57,7 +57,7 @@ def test_create_otp_cached_but_not_valid() -> None:
     response = OTPService._create(mock_self)
 
     assert response["otp"] == mock_self._server_otp
-    mock_self._create_session_data.assert_called_once_with()
+    mock_self._insert_session_data.assert_called_once_with()
 
 def test_verify_success() -> None:
     mock_self = MagicMock(_client_otp="123456", _cached_otp="123456")

@@ -19,13 +19,13 @@ class BaseOTPRepository:
     def get_session_data(self):
         return redis_service.db("hgetall", self._session_key)
 
-    def create_session_data(self, redis_data: Dict) -> None:
+    def insert_session_data(self, redis_data: Dict) -> None:
         redis_service.insert_hset(self._session_key, redis_data)
 
-    def verify_session_key_exists(self) -> int:
+    def check_session_data_exists(self) -> int:
         return redis_service.db("exists", self._session_key)
 
-    def delete_session_key(self) -> int:
+    def delete_session_data(self) -> int:
         return redis_service.db("delete", self._session_key)
 
     @property

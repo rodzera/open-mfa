@@ -31,14 +31,14 @@ class BaseOTPService(ABC):
     def _get_session_data(self):
         return self._repository.get_session_data()
 
-    def _create_session_data(self) -> None:
-        self._repository.create_session_data(self._redis_data)
+    def _insert_session_data(self) -> None:
+        self._repository.insert_session_data(self._redis_data)
 
-    def _verify_session_key_exists(self) -> int:
-        return self._repository.verify_session_key_exists()
+    def _check_session_data_exists(self) -> int:
+        return self._repository.check_session_data_exists()
 
-    def _delete_session_key(self) -> int:
-        return self._repository.delete_session_key()
+    def _delete_session_data(self) -> int:
+        return self._repository.delete_session_data()
 
     def _setup_secrets(self) -> None:
         if self._session_data:
@@ -57,9 +57,9 @@ class BaseOTPService(ABC):
                 "Delete method is not available for OTP service"
             )
 
-        if not self._verify_session_key_exists():
+        if not self._check_session_data_exists():
             return 0
-        return self._delete_session_key()
+        return self._delete_session_data()
 
     def process_request(self) -> Dict:
         if self._client_otp:
