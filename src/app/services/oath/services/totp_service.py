@@ -35,7 +35,7 @@ class TOTPService(BaseOTPService):
 
     def _create(self) -> Dict:
         log.debug(f"Starting {self._service_type.upper()} creation")
-        self._create_session_data()
+        self._insert_session_data()
         return {"uri": self._totp_uri}
 
     def _verify(self) -> Dict:

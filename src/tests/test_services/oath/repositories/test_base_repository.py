@@ -15,20 +15,20 @@ def test_get_session_data(mocker: MockerFixture) -> None:
     assert data == mock_redis_service.db.return_value
     mock_redis_service.db.assert_called_once_with("hgetall", mock_session_key)
 
-def test_create_session_data(mocker: MockerFixture) -> None:
+def test_insert_session_data(mocker: MockerFixture) -> None:
     mock_redis_service = mocker.patch(
         "src.app.services.oath.repositories.base_repository.redis_service"
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     data = {}
     service = BaseOTPRepository()
-    service.create_session_data(data)
+    service.insert_session_data(data)
 
     mock_redis_service.insert_hset.assert_called_once_with(
         mock_session_key, data
     )
 
-def test_service_verify_session_key_exists(
+def test_service_check_session_data_exists(
     mocker: MockerFixture
 ) -> None:
     mock_redis_service = mocker.patch(
@@ -36,12 +36,12 @@ def test_service_verify_session_key_exists(
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     service = BaseOTPRepository()
-    data = service.verify_session_key_exists()
+    data = service.check_session_data_exists()
 
     assert data == mock_redis_service.db.return_value
     mock_redis_service.db.assert_called_once_with("exists", mock_session_key)
 
-def test_service_delete_session_key(
+def test_service_delete_session_data(
     mocker: MockerFixture
 ) -> None:
     mock_redis_service = mocker.patch(
@@ -49,7 +49,7 @@ def test_service_delete_session_key(
     )
     mock_session_key = mocker.patch.object(BaseOTPRepository, "_session_key")
     service = BaseOTPRepository()
-    data = service.delete_session_key()
+    data = service.delete_session_data()
 
     assert data == mock_redis_service.db.return_value
     mock_redis_service.db.assert_called_once_with("delete", mock_session_key)

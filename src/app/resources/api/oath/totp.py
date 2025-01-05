@@ -2,12 +2,12 @@ from flask import abort
 
 from src.app.resources.api import api
 from src.app.schemas.oath.totp import TOTPSchema
-from src.app.infra.middlewares.schemas import schema_validation
+from src.app.infra.middlewares.schemas import schema_middleware
 from src.app.services.oath.services.totp_service import TOTPService
 
 
 @api.route("/totp", methods=["GET"])
-@schema_validation(TOTPSchema)
+@schema_middleware(TOTPSchema)
 def get_totp(**kwargs):
     service = TOTPService(**kwargs)
     return service.process_request()

@@ -32,7 +32,7 @@ class OTPService(BaseOTPService):
         if self._cached_otp and self._is_otp_valid():
             otp = self._cached_otp
         else:
-            self._create_session_data()
+            self._insert_session_data()
             otp = self._server_otp
         return {"otp": otp}
 

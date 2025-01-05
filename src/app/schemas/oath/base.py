@@ -1,8 +1,8 @@
-from flask import abort
 from typing import Optional
+from werkzeug.exceptions import NotFound, Conflict
 from marshmallow import Schema, fields, validates, ValidationError, post_load
 
-from src.app.infra.redis import redis_service
+from src.app.services.oath.repositories import TOTPRepository, HOTPRepository
 
 
 class OTPFieldSchema(Schema):
@@ -18,16 +18,19 @@ class OTPFieldSchema(Schema):
 
 
 class OTPValidationSchema(Schema):
-    key = None
+    _service_type = None
 
     @post_load
     def validate(self, data, **kwargs):
         otp = data.get("otp")
-        redis_key = redis_service.get_session_key(self.key)
-        totp_data = redis_service.db("exists", redis_key)
+        if self._service_type == "totp":
+            session_data = TOTPRepository().check_session_data_exists()
+        else:
+            session_data = HOTPRepository().check_session_data_exists()
 
-        if otp and not totp_data:
-            abort(404, f"{self.key.upper()} not created")
-        elif not otp and totp_data:
-            abort(409, f"{self.key.upper()} already created")
+
+        if otp and not session_data:
+            raise NotFound(f"{self._service_type.upper()} not created")
+        elif not otp and session_data:
+            raise Conflict(f"{self._service_type.upper()} already created")
         return data
