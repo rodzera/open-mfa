@@ -3,29 +3,23 @@ from typing import Dict
 from os import path, mkdir, makedirs
 from logging.handlers import TimedRotatingFileHandler
 
-from src.app.infra.redis import redis_service
-from src.app.infra.signals import send_logging_signal
 from src.app.configs.constants import TESTING_ENV, DEVELOPMENT_ENV
-
-
-_log_dir = "./logs"
-if not TESTING_ENV and not path.exists(_log_dir):
-    makedirs(_log_dir)
 
 
 class LoggingService(object):
     DEFAULT_DIR: str = "logs"
     DEFAULT_LEVEL: int = logging.DEBUG if DEVELOPMENT_ENV else logging.INFO
     AVAILABLE_LOG_LEVELS: Dict = {
-        k: v for k, v in logging._nameToLevel.items() if v != logging.NOTSET
+        k: v for k, v in logging.getLevelNamesMapping().items() if v != logging.NOTSET
     }
     DEFAULT_LOGGERS: Dict = {
-        "open-mfa": "logs/app.log",
-        "redis": "logs/redis.log",
-        "werkzeug": "logs/server.log"
+        "open-mfa": f"{DEFAULT_DIR}/app.log",
+        "redis": f"{DEFAULT_DIR}/redis.log",
+        "werkzeug": f"{DEFAULT_DIR}/server.log"
     }
 
     def __init__(self):
+        self._init_logging_dir()
         self.handlers = []
         self.formatter = logging.Formatter(
             fmt="%(asctime)s.%(msecs)03d | %(levelname)s | %(name)s | %(funcName)s | %(lineno)s | %(message)s",
@@ -36,6 +30,19 @@ class LoggingService(object):
         self._add_stream_handler()
         self._add_file_handlers()
         logging.basicConfig(level=self.DEFAULT_LEVEL, handlers=self.handlers)
+
+    def set_logger_level(self, level: int) -> None:
+        logging.root.level = level
+        for name in logging.root.manager.loggerDict:
+            if any(name.startswith(prefix) for prefix in self.DEFAULT_LOGGERS.keys()):
+                logger = logging.getLogger(name)
+                logger.setLevel(level)
+                for handler in logger.handlers:
+                    handler.setLevel(level)
+
+    def _init_logging_dir(self):
+        if not TESTING_ENV and not path.exists(self.DEFAULT_DIR):
+            makedirs(self.DEFAULT_DIR)
 
     def _add_stream_handler(self) -> None:
         sh = logging.StreamHandler()
@@ -67,19 +74,5 @@ class LoggingService(object):
         logger.propagate = False
         logger.addHandler(handler)
 
-    def set_logger_level(self, level: int) -> None:
-        logging.root.level = level
-        for name in logging.root.manager.loggerDict:
-            if any(name.startswith(prefix) for prefix in self.DEFAULT_LOGGERS.keys()):
-                logger = logging.getLogger(name)
-                logger.setLevel(level)
-                for handler in logger.handlers:
-                    handler.setLevel(level)
-
-    def process_logging_request(self, level: str) -> None:
-        int_level = logging._nameToLevel[level]
-        redis_service.db("set", "log", int_level)
-        self.set_logger_level(int_level)
-        send_logging_signal()
 
 logging_service = LoggingService()

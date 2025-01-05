@@ -2,7 +2,7 @@ from uuid import uuid4
 from flask import session
 from datetime import timedelta
 
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.infra.redis import redis_service
 
 log = get_logger(__name__)

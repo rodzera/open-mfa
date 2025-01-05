@@ -1,4 +1,4 @@
-from src.app.utils.helpers.logs import mask_secrets_items
+from src.app.utils.helpers.logging import mask_secrets_items
 
 
 def test_mask_secrets_items():

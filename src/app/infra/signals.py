@@ -1,13 +1,24 @@
 import logging
 from os import kill
-from signal import signal, SIGUSR1
+from sys import exit as sys_exit
+from signal import signal, SIGUSR1, SIGTERM
 
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.configs.constants import PRODUCTION_ENV
-from src.app.infra.redis import redis_service
 from src.app.utils.helpers.server import get_gunicorn_pid
 
 log = get_logger(__name__)
+
+
+def terminate_server() -> None:
+    """
+    Terminates the current web server (Werkzeug WSGI or Gunicorn).
+    :return: None
+    """
+    if PRODUCTION_ENV and (app_pid := get_gunicorn_pid()):
+        kill(app_pid, SIGTERM)
+    else:
+        sys_exit(1)
 
 
 def send_logging_signal() -> None:
@@ -28,7 +39,7 @@ def send_logging_signal() -> None:
         log.exception("Exception occurred while sending a SIGUSR1 signal")
 
 
-def register_gunicorn_signal_handler() -> None:
+def register_gunicorn_signal_handler(*args) -> None:
     """
     This function register a signal handler function that is going to be
     caught by the gunicorn master process when a SIGUSR1 signal is thrown.
@@ -36,10 +47,10 @@ def register_gunicorn_signal_handler() -> None:
     :return:
     """
     if PRODUCTION_ENV:
-        signal(SIGUSR1, gunicorn_signal_handler)
+        signal(SIGUSR1, logging_signal_handler)
 
 
-def gunicorn_signal_handler(*args) -> None:
+def logging_signal_handler(*args) -> None:
     """
     This function will be used by each gunicorn worker to change its
     logging level.
@@ -47,10 +58,11 @@ def gunicorn_signal_handler(*args) -> None:
     :param *args: SIGUSR1, frame
     :return:
     """
-    from src.app.infra.logs import logging_service
+    from src.app.infra.logging import logging_service
+    from src.app.repositories.logging import LoggingRepository
 
     level = int(
-        redis_service.db("get", "log") or
+        LoggingRepository.get_app_logging_level() or
         logging_service.DEFAULT_LEVEL
     )
 

@@ -2,13 +2,14 @@ from marshmallow import post_load
 from marshmallow.validate import OneOf
 
 from src.app.schemas import ma
-from src.app.utils.helpers.logs import get_logger
-from src.app.infra.logs import logging_service
+from src.app.infra.logging import logging_service
+from src.app.utils.helpers.logging import get_logger
+from src.app.controllers.logging import LoggingController
 
 log = get_logger(__name__)
 
 
-class LogSchema(ma.Schema):
+class LoggingSchema(ma.Schema):
     level = ma.String(
         required=True,
         validate=OneOf(list(logging_service.AVAILABLE_LOG_LEVELS.keys()))
@@ -16,5 +17,5 @@ class LogSchema(ma.Schema):
 
     @post_load
     def set_logger_level(self, data, **kwargs):
-        logging_service.process_logging_request(data["level"])
+        LoggingController.process_logging_request(data["level"])
         return data

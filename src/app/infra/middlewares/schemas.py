@@ -10,8 +10,9 @@ def schema_middleware(schema_class: Type[Schema]) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
             schema = schema_class()
-            client_data = schema.load(request.args)
-            kwargs.update(client_data)
+            client_data = request.args if not request.is_json else request.json
+            validated_data = schema.load(client_data)
+            kwargs.update(validated_data)
             return func(*args, **kwargs)
         return wrapper
     return decorator

@@ -1,5 +1,5 @@
 from src.app.infra.redis import redis_service
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 from src.app.services.oath.repositories import BaseOTPRepository
 
 log = get_logger(__name__)

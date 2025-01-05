@@ -8,8 +8,8 @@ from src.app.services.oath.services.hotp_service import HOTPService
 
 @api.route("/hotp", methods=["GET"])
 @schema_middleware(HOTPSchema)
-def get_hotp(**kwargs):
-    service = HOTPService(**kwargs)
+def get_hotp(**client_data):
+    service = HOTPService(**client_data)
     return service.process_request()
 
 @api.route("/hotp", methods=["DELETE"])

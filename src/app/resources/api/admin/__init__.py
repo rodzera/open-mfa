@@ -1,2 +1,2 @@
-from src.app.resources.api.admin.logs import *
-from src.app.resources.api.admin.status import *
+from src.app.resources.api.admin.logging import *
+from src.app.resources.api.admin.healthcheck import *

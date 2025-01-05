@@ -8,14 +8,18 @@ from flask.testing import FlaskClient
 
 from src.run import application
 from src.tests.utils import basic_auth
-from src.app.infra.redis import RedisService
 from src.app.infra.aes_cipher import aes_cipher_service
+from src.app.infra.redis import RedisService, redis_service
 
 
 @fixture(autouse=True)
 def app() -> Flask:
     with application.app_context():
         yield application
+
+@fixture(autouse=True)
+def reset_fake_redis() -> None:
+    redis_service.client.flushdb()
 
 @fixture
 def client(app: Flask) -> FlaskClient:
