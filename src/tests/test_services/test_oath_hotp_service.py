@@ -3,40 +3,47 @@ from pytest_mock import MockerFixture
 from unittest.mock import MagicMock, call
 
 from src.app.services.oath.hotp import HOTPService
+from src.app.services.oath.base import BaseOTPService
+from src.app.services.oath.repository import HOTPRepository
+from src.app.services.oath.default_config import HOTP_DF_CONFIG
 from src.tests.utils import test_b64_cipher_secret, test_b32_secret
 
 
-def test_type_prop() -> None:
+def test_service_type_attr() -> None:
     assert HOTPService._service_type == "hotp"
 
-def test_init(
-    redis_db: MagicMock, mocker: MockerFixture, req_ctx: RequestContext
-) -> None:
-    mock_get_session_key = mocker.patch.object(
-        HOTPService, "_get_session_key", return_value="session_key"
+def test_repository_class_attr() -> None:
+    assert HOTPService._repository_class == HOTPRepository
+
+def test_df_config_attr() -> None:
+    assert HOTPService._df_config == HOTP_DF_CONFIG
+
+def test_init(mocker: MockerFixture, req_ctx: RequestContext) -> None:
+    mock_get_server_data = mocker.patch.object(
+        BaseOTPService,
+        "_get_server_data",
+        return_value={"secret": test_b64_cipher_secret, "count": 1}
     )
     mock_hotp = mocker.patch("src.app.services.oath.hotp.HOTP")
-    redis_db.return_value = {"secret": test_b64_cipher_secret, "count": 1}
-    service_data = {"otp": "123456", "initial_count": 10}
+    server_data = {"otp": "123456", "initial_count": 10}
     mock_session = mocker.patch("src.app.services.oath.hotp.session")
     mock_session.__getitem__.return_value = "session_key"
 
-    service = HOTPService(**service_data)
+    service = HOTPService(**server_data)
 
-    assert service._client_initial_count == service_data["initial_count"]
-    assert service._cached_count == 1
+    assert service._client_initial_count == server_data["initial_count"]
+    assert service._cached_count == mock_get_server_data.return_value["count"]
     assert service._server_hotp == mock_hotp.return_value
     assert service._hotp_uri == mock_hotp.return_value.provisioning_uri.return_value
     mock_hotp.assert_called_once_with(
         test_b32_secret,
-        initial_count=service_data["initial_count"],
+        initial_count=server_data["initial_count"],
         digest=HOTPService._hash_method
     )
     mock_hotp.return_value.provisioning_uri.assert_called_once_with(
         name=mock_session.__getitem__.return_value, issuer_name="open-mfa",
         initial_count=service._client_initial_count
     )
-    mock_get_session_key.assert_called_once_with()
 
 def test_create() -> None:
     mock_self = MagicMock()
@@ -50,7 +57,6 @@ def test_verify_success_without_resync_protocol() -> None:
     response = HOTPService._verify(mock_self)
 
     assert response["status"] is True
-    mock_self._log_action.assert_called_once_with("verify")
     mock_self._server_hotp.verify.assert_called_once_with(
         mock_self._client_otp, mock_self._cached_count
     )
@@ -66,7 +72,6 @@ def test_verify_failure() -> None:
     response = HOTPService._verify(mock_self)
 
     assert response["status"] is False
-    mock_self._log_action.assert_called_once_with("verify")
     mock_self._server_hotp.verify.assert_called_once_with(
         mock_self._client_otp, mock_self._cached_count
     )
@@ -113,43 +118,38 @@ def test_trigger_resync_protocol_failure() -> None:
         ]
     )
 
-def test_redis_data(
-    redis_db: MagicMock, mocker: MockerFixture, req_ctx: RequestContext
-)-> None:
-    mock_get_session_key = mocker.patch.object(
-        HOTPService, "_get_session_key", return_value="session_key"
+def test_redis_data(mocker: MockerFixture, req_ctx: RequestContext) -> None:
+    mock_get_server_data = mocker.patch.object(
+        BaseOTPService,
+        "_get_server_data",
+        return_value={"secret": test_b64_cipher_secret, "count": 1}
     )
     mock_hotp = mocker.patch("src.app.services.oath.hotp.HOTP")
-    redis_db.return_value = {"secret": test_b64_cipher_secret, "count": 1}
-    service_data = {
+    server_data = {
         "otp": "123456", "initial_count": 10, "resync_threshold": 5
     }
     mock_session = mocker.patch("src.app.services.oath.hotp.session")
     mock_session.__getitem__.return_value = "session_key"
 
-    service = HOTPService(**service_data)
+    service = HOTPService(**server_data)
     default_data = service._redis_data
 
-    assert default_data["count"] == service_data["initial_count"]
-    assert default_data["secret"] == redis_db.return_value["secret"]
+    assert default_data["count"] == server_data["initial_count"]
+    assert default_data["secret"] == mock_get_server_data.return_value["secret"]
     assert default_data["uri"] == mock_hotp.return_value.provisioning_uri.return_value
-    assert default_data["resync_threshold"] == service_data["resync_threshold"]
+    assert default_data["resync_threshold"] == server_data["resync_threshold"]
     mock_hotp.assert_called_once_with(
         test_b32_secret,
-        initial_count=service_data["initial_count"],
+        initial_count=server_data["initial_count"],
         digest=HOTPService._hash_method
     )
     mock_hotp.return_value.provisioning_uri.assert_called_once_with(
         name=mock_session.__getitem__.return_value, issuer_name="open-mfa",
         initial_count=service._client_initial_count
     )
-    mock_get_session_key.assert_called_once_with()
 
 def test_increase_hotp_counter(redis_db: MagicMock) -> None:
     mock_self = MagicMock()
     counter = 0
     HOTPService._increase_hotp_counter(mock_self, counter)
-    redis_db.assert_called_once_with(
-        "hset", mock_self._session_key,
-        mapping={"count": counter + 1}
-    )
+    mock_self._repository.increase_hotp_counter.assert_called_once_with(counter)

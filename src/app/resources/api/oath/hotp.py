@@ -16,5 +16,5 @@ def get_hotp(**kwargs):
 def delete_hotp():
     service = HOTPService()
     if not service.delete_data():
-        return abort(404, "HOTP not created")
+        abort(404, "HOTP not created")
     return {}, 204

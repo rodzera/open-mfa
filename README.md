@@ -1,5 +1,5 @@
 # open-mfa
-[![Python 3.12](https://img.shields.io/badge/python-3.12.x-success.svg)](https://www.python.org/downloads/release/python-3121/)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-success.svg)](https://www.python.org/downloads/release/python-3121/)
 [![Test and Build](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml) 
 [![codecov](https://codecov.io/gh/rodzera/open-mfa/graph/badge.svg?token=98ORTRBHN5)](https://codecov.io/gh/rodzera/open-mfa)
 
