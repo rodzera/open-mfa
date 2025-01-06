@@ -22,3 +22,4 @@ def basic_auth(username: str, password: str) -> Dict:
 test_b32_secret = random_base32()
 test_cipher_secret = aes_cipher_service.encrypt(test_b32_secret.encode())
 test_b64_cipher_secret = b64encode(test_cipher_secret).decode()
+test_bytes = aes_cipher_service.generate_random_bytes()
