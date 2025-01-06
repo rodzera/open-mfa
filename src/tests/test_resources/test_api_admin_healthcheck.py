@@ -11,12 +11,12 @@ def test_database_200(
     mock_controller = mocker.patch(
         "src.app.resources.api.admin.healthcheck.HealthCheckController"
     )
-    mock_controller.get_db_status.return_value = {"test": "test"}
+    mock_controller.return_value.get_db_status.return_value = {"test": "test"}
     response = client.get(
         "/api/database", headers={**json_accept_header(), **basic_admin_auth}
     )
     assert response.status_code == 200
-    assert response.json == mock_controller.get_db_status.return_value
+    assert response.json == mock_controller.return_value.get_db_status.return_value
 
 
 def test_server_200(
@@ -25,9 +25,9 @@ def test_server_200(
     mock_controller = mocker.patch(
         "src.app.resources.api.admin.healthcheck.HealthCheckController"
     )
-    mock_controller.get_server_status.return_value = {"test": "test"}
+    mock_controller.return_value.get_server_status.return_value = {"test": "test"}
     response = client.get(
         "/api/server", headers={**json_accept_header(), **basic_admin_auth}
     )
     assert response.status_code == 200
-    assert response.json == mock_controller.get_server_status.return_value
+    assert response.json == mock_controller.return_value.get_server_status.return_value

@@ -2,7 +2,7 @@ from typing import Optional
 from werkzeug.exceptions import NotFound, Conflict
 from marshmallow import Schema, fields, validates, ValidationError, post_load
 
-from src.app.services.oath.repositories import TOTPRepository, HOTPRepository
+from src.app.repositories.oath import TOTPRepository, HOTPRepository
 
 
 class OTPFieldSchema(Schema):

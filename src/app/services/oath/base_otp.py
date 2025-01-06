@@ -6,7 +6,7 @@ from typing import Dict, Callable, Union, Literal
 
 from src.app.utils.helpers.logging import get_logger
 from src.app.infra.aes_cipher import aes_cipher_service
-from src.app.services.oath.repositories import OTPRepository, TOTPRepository, \
+from src.app.repositories.oath import OTPRepository, TOTPRepository, \
     HOTPRepository
 
 log = get_logger(__name__)

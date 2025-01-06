@@ -3,7 +3,7 @@ from flask import abort
 from src.app.resources.api import api
 from src.app.schemas.oath.totp import TOTPSchema
 from src.app.infra.middlewares.schemas import schema_middleware
-from src.app.services.oath.services.totp_service import TOTPService
+from src.app.services.oath import TOTPService
 
 
 @api.route("/totp", methods=["GET"])

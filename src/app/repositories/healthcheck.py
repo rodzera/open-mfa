@@ -1,8 +1,12 @@
-from src.app.infra.redis import redis_service
+from typing import Dict
+
+from src.app.repositories.base_repository import BaseRepository
 
 
-class HealthCheckRepository:
+class HealthCheckRepository(BaseRepository):
 
-    @staticmethod
-    def get_db_version():
-        return redis_service.info.get("redis_version", "unknown")
+    def get_current_timestamp(self):
+        return self.redis.current_timestamp
+
+    def get_db_version(self) -> Dict:
+        return self.redis.info.get("redis_version", "unknown")

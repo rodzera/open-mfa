@@ -7,7 +7,7 @@ from src.app.configs.environ import DefaultConfig
 from src.app.utils.helpers.logging import get_logger
 from src.app.infra.middlewares.errors import register_error_handlers
 from src.app.infra.signals import register_gunicorn_signal_handler
-from src.app.infra.middlewares.session import set_session_id_before_request
+from src.app.infra.middlewares.user_session import trigger_user_session_controller
 
 log = get_logger(__name__)
 
@@ -33,7 +33,7 @@ def create_app() -> Flask:
     app.register_blueprint(views)
 
     log.info("Registering request funcs")
-    app.before_request(set_session_id_before_request)
+    app.before_request(trigger_user_session_controller)
 
     log.info("Registering error handlers")
     register_error_handlers(app)

@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from _pytest.python_api import raises
 from pytest_mock import MockerFixture
 
-from src.app.services.oath.services.base_service import BaseOTPService
+from src.app.services.oath import BaseOTPService
 from src.app.infra.aes_cipher import AESCipherService
 from src.tests.utils import test_b64_cipher_secret, test_cipher_secret, \
     test_b32_secret
@@ -59,7 +59,7 @@ def test_setup_secrets_method_missing_session_data(
     mocker: MockerFixture
 ) -> None:
     mock_random_base32 = mocker.patch(
-        "src.app.services.oath.services.base_service.random_base32",
+        "src.app.services.oath.base_otp.random_base32",
         return_value=test_b32_secret
     )
     mock_encrypt = mocker.patch.object(
@@ -82,7 +82,7 @@ def test_delete_data() -> None:
     mock_self._check_session_data_exists.assert_called_once_with()
     mock_self._delete_session_data.assert_called_once_with()
 
-def test_delete_data_session_key_does_not_exists() -> None:
+def test_delete_data_oath_session_key_does_not_exists() -> None:
     mock_self = MagicMock(_service_type="totp", spec=BaseOTPService)
     mock_self._check_session_data_exists.return_value = False
 

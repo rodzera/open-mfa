@@ -1,14 +1,12 @@
 from typing import Optional
 
-from src.app.infra.redis import redis_service
+from src.app.repositories.base_repository import BaseRepository
 
 
-class LoggingRepository:
+class LoggingRepository(BaseRepository):
 
-    @staticmethod
-    def get_app_logging_level() -> Optional[str]:
-        return redis_service.db("get", "log")
+    def get_app_logging_level(self) -> Optional[str]:
+        return self.redis.db("get", "log")
 
-    @staticmethod
-    def set_app_logging_level(level: int) -> bool:
-        return redis_service.db("set", "log", level)
+    def set_app_logging_level(self, level: int) -> bool:
+        return self.redis.db("set", "log", level)

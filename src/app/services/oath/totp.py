@@ -4,8 +4,8 @@ from flask import session
 
 from src.app.configs.oath import TOTP_DF_CONFIG
 from src.app.utils.helpers.logging import get_logger
-from src.app.services.oath.repositories import TOTPRepository
-from src.app.services.oath.services.base_service import BaseOTPService
+from src.app.repositories.oath import TOTPRepository
+from src.app.services.oath import BaseOTPService
 
 log = get_logger(__name__)
 
