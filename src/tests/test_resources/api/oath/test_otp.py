@@ -19,7 +19,7 @@ def test_verify_request_200(
 
 
 def test_create_request_200(
-    client: FlaskClient, mock_redis_db: MagicMock, mocker: MockerFixture
+    client: FlaskClient, mocker: MockerFixture
 ) -> None:
     mock_otp_service = mocker.patch("src.app.resources.api.oath.otp.OTPService")
     mock_otp_service.return_value.process_request.return_value = {}
