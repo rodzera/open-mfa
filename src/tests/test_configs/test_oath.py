@@ -1,5 +1,6 @@
 from src.app.configs.oath import OATH_DF_CONFIG
 
+
 def test_is_a_dict():
     assert isinstance(OATH_DF_CONFIG, dict)
 

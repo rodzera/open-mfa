@@ -18,11 +18,10 @@ def test_verify_request_200(
     mock_totp_service.return_value.process_request.assert_called_once_with()
 
 def test_verify_request_404(
-    client: FlaskClient, mock_redis_db: MagicMock, mocker: MockerFixture
+    client: FlaskClient, mocker: MockerFixture
 ) -> None:
     mock_totp_service = mocker.patch("src.app.resources.api.oath.totp.TOTPService")
     mock_totp_service.return_value.process_request.return_value = {}
-    mock_redis_db.return_value = None
 
     req_params = {"otp": "123456"}
     response = client.get("/api/totp", query_string=req_params)
@@ -33,11 +32,10 @@ def test_verify_request_404(
     mock_totp_service.return_value.process_request.assert_not_called()
 
 def test_create_request_200(
-    client: FlaskClient, mock_redis_db: MagicMock, mocker: MockerFixture
+    client: FlaskClient, mocker: MockerFixture
 ) -> None:
     mock_totp_service = mocker.patch("src.app.resources.api.oath.totp.TOTPService")
     mock_totp_service.return_value.process_request.return_value = {}
-    mock_redis_db.return_value = None
 
     req_params = {"interval": 30}
     response = client.get("/api/totp", query_string=req_params)
@@ -62,7 +60,7 @@ def test_create_request_409(
     mock_totp_service.return_value.process_request.assert_not_called()
 
 def test_delete_request_204(
-    client: FlaskClient, mock_redis_db: MagicMock, mocker: MockerFixture
+    client: FlaskClient, mocker: MockerFixture
 ) -> None:
     mock_totp_service = mocker.patch("src.app.resources.api.oath.totp.TOTPService")
     mock_totp_service.return_value.delete_data.return_value = 1
@@ -74,7 +72,7 @@ def test_delete_request_204(
     mock_totp_service.return_value.delete_data.assert_called_once_with()
 
 def test_delete_request_404(
-    client: FlaskClient, mock_redis_db: MagicMock, mocker: MockerFixture
+    client: FlaskClient, mocker: MockerFixture
 ) -> None:
     mock_totp_service = mocker.patch("src.app.resources.api.oath.totp.TOTPService")
     mock_totp_service.return_value.delete_data.return_value = 0
