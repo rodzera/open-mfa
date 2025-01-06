@@ -4,8 +4,8 @@ from typing import Dict
 
 from src.app.configs.oath import OTP_DF_CONFIG
 from src.app.utils.helpers.logging import get_logger
-from src.app.services.oath.repositories import OTPRepository
-from src.app.services.oath.services.base_service import BaseOTPService
+from src.app.repositories.oath import OTPRepository
+from src.app.services.oath import BaseOTPService
 
 log = get_logger(__name__)
 

@@ -8,7 +8,7 @@ from src.app.infra.middlewares.schemas import schema_middleware
 @api.route("/logging", methods=["GET"])
 @auth_middleware
 def get_logging_level():
-    return LoggingController.get_app_logging_level()
+    return LoggingController().get_app_logging_level()
 
 
 @api.route("/logging", methods=["PUT"])

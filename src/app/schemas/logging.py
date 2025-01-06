@@ -17,5 +17,5 @@ class LoggingSchema(ma.Schema):
 
     @post_load
     def set_logger_level(self, data, **kwargs):
-        LoggingController.process_logging_request(data["level"])
+        LoggingController().process_logging_request(data["level"])
         return data

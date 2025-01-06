@@ -9,10 +9,10 @@ log = get_logger(__name__)
 @api.route("/database", methods=["GET"])
 @auth_middleware
 def database_healthcheck():
-    return HealthCheckController.get_db_status()
+    return HealthCheckController().get_db_status()
 
 
 @api.route("/server", methods=["GET"])
 @auth_middleware
 def server_healthcheck():
-    return HealthCheckController.get_server_status()
+    return HealthCheckController().get_server_status()

@@ -2,7 +2,7 @@ from marshmallow import post_load
 from werkzeug.exceptions import NotFound
 
 from src.app.schemas.oath.base import OTPFieldSchema
-from src.app.services.oath.repositories import OTPRepository
+from src.app.repositories.oath import OTPRepository
 
 
 class OTPSchema(OTPFieldSchema):

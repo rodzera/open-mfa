@@ -26,7 +26,7 @@ def client(app: Flask) -> FlaskClient:
     return app.test_client()
 
 @fixture
-def redis_db(mocker: MockerFixture) -> MagicMock:
+def mock_redis_db(mocker: MockerFixture) -> MagicMock:
     return mocker.patch.object(RedisService, "db")
 
 @fixture

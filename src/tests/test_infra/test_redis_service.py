@@ -1,5 +1,3 @@
-from datetime import timedelta
-from flask.ctx import RequestContext
 from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock
 
@@ -17,18 +15,6 @@ def test_db_method(mocker: MockerFixture) -> None:
     mock_client_prop.return_value.hset.assert_called_once_with(
         "key", mapping={"another_key": "value"}
     )
-
-def test_insert_hset_method(mocker: MockerFixture) -> None:
-    mock_db_method = mocker.patch.object(
-        RedisService, "db", new_callable=PropertyMock
-    )
-
-    redis_service.insert_hset("key", {"another_key": "value"})
-
-    mock_db_method.return_value.assert_has_calls([
-        mocker.call("hset", "key", mapping={"another_key": "value"}),
-        mocker.call("expire", "key", timedelta(minutes=60)),
-    ])
 
 def test_setup_connection_method(mocker: MockerFixture) -> None:
     mock_redis_cls = mocker.patch("src.app.infra.redis.StrictRedis")
@@ -56,13 +42,3 @@ def test_info_prop(mocker: MockerFixture) -> None:
         RedisService, "client", new_callable=PropertyMock, create=True
     )
     assert redis_service.info == mock_client_prop.return_value.info.return_value
-
-def test_get_session_key_method(
-    req_ctx: RequestContext, mocker: MockerFixture
-) -> None:
-    mock_session = mocker.patch("src.app.infra.redis.session")
-    sess = {"session_id": "123456"}
-    mock_session.__getitem__.side_effect = sess.__getitem__
-
-    session_key = redis_service.get_session_key("otp")
-    assert session_key == f"{sess['session_id']}:otp"

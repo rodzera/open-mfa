@@ -1,20 +1,20 @@
 from typing import Dict
 from datetime import datetime
 
-from src.app.infra.redis import redis_service
 from src.app.configs.constants import APP_VERSION
 from src.app.repositories.healthcheck import HealthCheckRepository
 
 
 class HealthCheckController:
+    def __init__(self):
+        self.repository = HealthCheckRepository()
 
-    @staticmethod
-    def get_db_status() -> Dict:
-        if db_datetime := redis_service.current_timestamp:
+    def get_db_status(self) -> Dict:
+        if db_datetime := self.repository.get_current_timestamp():
             return {
                 "status": "up",
                 "datetime": db_datetime,
-                "version": HealthCheckRepository.get_db_version()
+                "version": self.repository.get_db_version()
             }
         else:
             return { "status": "down"}
