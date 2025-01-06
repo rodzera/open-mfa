@@ -7,7 +7,7 @@ Open-MFA is a demo project that implements an authentication server supporting O
 
 ## Project Overview
 
-* The authentication server creates a unique session ID for each user, storing it in both a Flask session and a Redis database with 60-minutes expiration. All OTP codes generated for a user are linked to their unique session ID.
+* The authentication server creates a unique Flask session ID for each user. All OTP codes generated for a user are linked to their unique session ID and stored into a Redis database. Both sessions and OTP codes have a 60-minutes expiration. 
 * For properly validating HOTP and TOTP codes, URIs should be transformed into QR Code using tools like [2FA-QR](https://stefansundin.github.io/2fa-qr). These QR codes can then be scanned with any authenticator app, such as [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2), which supports OTP algorithms generation.
 * In a real-world authentication server, the Identity and Access Management (IAM) would be much more robust and complex, however for demo purposes, this application has been deliberately simplified.
 
