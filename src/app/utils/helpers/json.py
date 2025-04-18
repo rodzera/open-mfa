@@ -1,6 +1,6 @@
 from flask import make_response, Response
 
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)
 
