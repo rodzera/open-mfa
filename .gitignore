@@ -175,3 +175,4 @@ cython_debug/
 
 redis_data
 gunicorn.pid
+logs

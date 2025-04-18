@@ -1,6 +1,5 @@
-from datetime import timedelta
-
-from src.app.utils.helpers.logs import get_logger
+from src.app.utils.helpers.logging import get_logger
+from src.app.services.user_session import UserSessionService
 
 log = get_logger(__name__)
 
@@ -8,8 +7,8 @@ log = get_logger(__name__)
 class DefaultConfig(object):
     def __init__(self, **kwargs):
         self.JSON_SORT_KEYS = False
-        self.REMEMBER_COOKIE_DURATION = timedelta(minutes=60)
-        self.PERMANENT_SESSION_LIFETIME = timedelta(minutes=60)
+        self.REMEMBER_COOKIE_DURATION = UserSessionService.SESSION_EXP_TIME
+        self.PERMANENT_SESSION_LIFETIME = UserSessionService.SESSION_EXP_TIME
         self.SWAGGER = dict(title="open-mfa", openapi="3.0.3")
 
     @staticmethod

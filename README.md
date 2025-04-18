@@ -1,5 +1,5 @@
 # open-mfa
-[![Python 3.12](https://img.shields.io/badge/python-3.12.x-success.svg)](https://www.python.org/downloads/release/python-3121/)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-success.svg)](https://www.python.org/downloads/release/python-3121/)
 [![Test and Build](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml) 
 [![codecov](https://codecov.io/gh/rodzera/open-mfa/graph/badge.svg?token=98ORTRBHN5)](https://codecov.io/gh/rodzera/open-mfa)
 
@@ -7,7 +7,7 @@ Open-MFA is a demo project that implements an authentication server supporting O
 
 ## Project Overview
 
-* The authentication server creates a unique session ID for each user, storing it in both a Flask session and a Redis database with 60-minutes expiration. All OTP codes generated for a user are linked to their unique session ID.
+* The authentication server creates a unique Flask session ID for each user. All OTP codes generated for a user are linked to their unique session ID and stored into a Redis database. Both sessions and OTP codes have a 60-minutes expiration. 
 * For properly validating HOTP and TOTP codes, URIs should be transformed into QR Code using tools like [2FA-QR](https://stefansundin.github.io/2fa-qr). These QR codes can then be scanned with any authenticator app, such as [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2), which supports OTP algorithms generation.
 * In a real-world authentication server, the Identity and Access Management (IAM) would be much more robust and complex, however for demo purposes, this application has been deliberately simplified.
 

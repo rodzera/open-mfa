@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: open-mfa
   description: developed by github.com/rodzera
-  version: 1.2
+  version: 1.3
 servers:
   - url: /api
 paths:
@@ -207,35 +207,35 @@ paths:
           description: TOTP reset successfully
         404:
           description: TOTP not created
-  /logs:
+  /logging:
     get:
       tags:
-        - Logs
-      summary: Retrieve the server log level.
+        - Logging
+      summary: Retrieve the server logging level.
       responses:
         200:
-          description: Server log level response.
+          description: Server logging level response.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LogLevel"
+                $ref: "#/components/schemas/LoggingLevel"
         401:
           description: Invalid credential provided
       security:
         - basic: [ ]
     put:
       tags:
-        - Logs
-      summary: Change the server log level.
+        - Logging
+      summary: Change the server logging level.
       requestBody:
-        $ref: "#/components/requestBodies/LogLevel"
+        $ref: "#/components/requestBodies/LoggingLevel"
       responses:
         200:
           description: Server log level response.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LogLevel"
+                $ref: "#/components/schemas/LoggingLevel"
         400:
           description: Invalid log level provided
         401:
@@ -245,7 +245,7 @@ paths:
 
 components:
   schemas:
-    LogLevel:
+    LoggingLevel:
       type: object
       properties:
         level:
@@ -258,12 +258,12 @@ components:
             - WARNING
           example: "INFO"
   requestBodies:
-    LogLevel:
+    LoggingLevel:
       required: true
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/LogLevel"
+            $ref: "#/components/schemas/LoggingLevel"
   securitySchemes:
     basic:
       type: http

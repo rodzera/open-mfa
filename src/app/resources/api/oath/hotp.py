@@ -2,19 +2,19 @@ from flask import abort
 
 from src.app.resources.api import api
 from src.app.schemas.oath.hotp import HOTPSchema
-from src.app.services.oath.hotp import HOTPService
-from src.app.schemas.oath.common import schema_validation
+from src.app.infra.middlewares.schemas import schema_middleware
+from src.app.services.oath import HOTPService
 
 
 @api.route("/hotp", methods=["GET"])
-@schema_validation(HOTPSchema)
-def get_hotp(**kwargs):
-    service = HOTPService(**kwargs)
+@schema_middleware(HOTPSchema)
+def get_hotp(**client_data):
+    service = HOTPService(**client_data)
     return service.process_request()
 
 @api.route("/hotp", methods=["DELETE"])
 def delete_hotp():
     service = HOTPService()
     if not service.delete_data():
-        return abort(404, "HOTP not created")
+        abort(404, "HOTP not created")
     return {}, 204

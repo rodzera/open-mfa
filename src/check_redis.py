@@ -18,7 +18,7 @@ def redis_check() -> int:
         if client.ping():
             log.debug("Redis connection established")
             return 1
-    except RuntimeError as e:
+    except Exception as e:
         log.error(f"Error connecting to redis: {e}")
     except KeyError as e:
         log.error(f"Missing env variable: {e}")
