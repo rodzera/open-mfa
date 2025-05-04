@@ -6,7 +6,11 @@ from logging.handlers import TimedRotatingFileHandler
 from src.app.configs.constants import TESTING_ENV, DEVELOPMENT_ENV
 
 
-class LoggingService(object):
+class LoggingInfra:
+    """
+    Logging infrastructure layer.
+    """
+
     DEFAULT_DIR: str = "logs"
     DEFAULT_LEVEL: int = logging.DEBUG if DEVELOPMENT_ENV else logging.INFO
     AVAILABLE_LOG_LEVELS: Dict = {
@@ -31,7 +35,7 @@ class LoggingService(object):
         self._add_file_handlers()
         logging.basicConfig(level=self.DEFAULT_LEVEL, handlers=self.handlers)
 
-    def set_logger_level(self, level: int) -> None:
+    def set_level(self, level: int) -> None:
         logging.root.level = level
         for name in logging.root.manager.loggerDict:
             if any(name.startswith(prefix) for prefix in self.DEFAULT_LOGGERS.keys()):
@@ -75,4 +79,4 @@ class LoggingService(object):
         logger.addHandler(handler)
 
 
-logging_service = LoggingService()
+logging_service = LoggingInfra()

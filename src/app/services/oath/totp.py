@@ -2,7 +2,7 @@ from pyotp import random_base32
 
 from src.app.services.oath import BaseOTPService
 from src.app.utils.helpers.logging import get_logger
-from src.app.infra.aes_cipher import aes_cipher_service
+from src.app.infra.aes_cipher import aes_cipher_infra
 from src.app.domains.oath.totp import TOTPEntity, TOTPGenerator
 
 
@@ -16,7 +16,7 @@ class TOTPService(BaseOTPService):
         log.info(f"Starting {self.service_type.upper()} creation")
 
         raw_secret = random_base32()
-        hash_secret = aes_cipher_service.encrypt_b64(raw_secret)
+        hash_secret = aes_cipher_infra.encrypt_b64(raw_secret)
 
         entity = TOTPEntity(hash_secret, self.req_data["interval"])
         self.repo.insert_session_data(entity.as_dict, exp=True)
@@ -28,7 +28,7 @@ class TOTPService(BaseOTPService):
         log.info(f"Starting {self.service_type.upper()} verifying")
 
         hash_secret = self.session_data["secret"]
-        raw_secret = aes_cipher_service.decrypt_b64(hash_secret)
+        raw_secret = aes_cipher_infra.decrypt_b64(hash_secret)
 
         entity = TOTPEntity(
             hash_secret,

@@ -9,7 +9,7 @@ from src.app.utils.helpers.logging import get_logger
 log = get_logger(__name__)
 
 
-class AESCipherService:
+class AESCipherInfra:
 
     def __init__(self):
         if not TESTING_ENV:
@@ -61,4 +61,4 @@ class AESCipherService:
         return self.decrypt(cipher_secret).decode()
 
 
-aes_cipher_service = AESCipherService()
+aes_cipher_infra = AESCipherInfra()

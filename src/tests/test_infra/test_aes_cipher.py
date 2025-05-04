@@ -5,7 +5,7 @@ from cryptography.exceptions import InvalidTag
 from hypothesis import given, strategies as st, settings, HealthCheck
 
 from src.tests.utils import test_bytes
-from src.app.infra.aes_cipher import AESCipherService
+from src.app.infra.aes_cipher import AESCipherInfra
 
 
 @pytest.mark.parametrize(
@@ -20,7 +20,7 @@ from src.app.infra.aes_cipher import AESCipherService
 
 
 def test_parse_aes_key_from_environ(
-    mocker: MockerFixture, cipher_service: AESCipherService,
+    mocker: MockerFixture, cipher_service: AESCipherInfra,
     env_value: Optional[str], expected_exception: Optional[SystemExit],
 ) -> None:
     get_env = mocker.patch(
@@ -37,7 +37,7 @@ def test_parse_aes_key_from_environ(
 
 
 def test_generate_random_bytes(
-    mocker: MockerFixture, cipher_service: AESCipherService
+    mocker: MockerFixture, cipher_service: AESCipherInfra
 ) -> None:
     mock_generate_random_bytes = mocker.patch.object(
         cipher_service, "generate_random_bytes",
@@ -51,7 +51,7 @@ def test_generate_random_bytes(
 @given(data=st.binary(min_size=1, max_size=1024))
 @settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_encrypt_properties(
-    cipher_service: AESCipherService, mocker: MockerFixture, data: bytes
+    cipher_service: AESCipherInfra, mocker: MockerFixture, data: bytes
 ) -> None:
     mocked_iv = test_bytes
     mocker.patch.object(cipher_service, "generate_random_bytes", return_value=mocked_iv)
@@ -70,14 +70,14 @@ def test_encrypt_properties(
 @given(data=st.binary(min_size=1, max_size=1024))
 @settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_encrypt_decrypt_consistency(
-    cipher_service: AESCipherService, data: bytes
+    cipher_service: AESCipherInfra, data: bytes
 ) -> None:
     encrypted_data = cipher_service.encrypt(data)
     decrypted_data = cipher_service.decrypt(encrypted_data)
     assert decrypted_data == data
 
 
-def test_encrypt_unique_iv(cipher_service: AESCipherService) -> None:
+def test_encrypt_unique_iv(cipher_service: AESCipherInfra) -> None:
     data1, data2 = b"test_data_1", b"test_data_2"
 
     encrypted1 = cipher_service.encrypt(data1)
@@ -87,7 +87,7 @@ def test_encrypt_unique_iv(cipher_service: AESCipherService) -> None:
     assert iv1 != iv2
 
 
-def test_decrypt_tampered_ciphertext(cipher_service: AESCipherService) -> None:
+def test_decrypt_tampered_ciphertext(cipher_service: AESCipherInfra) -> None:
     iv = cipher_service.generate_random_bytes(16)
     ciphertext = b"tampered_ciphertext"
     tag = cipher_service.generate_random_bytes(16)

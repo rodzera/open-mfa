@@ -4,7 +4,7 @@ from flask.testing import FlaskClient
 from pytest_mock import MockerFixture
 
 from src.app.configs.constants import APP_VERSION
-from src.app.infra.redis import redis_service
+from src.app.infra.redis import redis_infra
 from src.tests.utils import json_accept_header
 
 
@@ -15,7 +15,7 @@ def test_database_200_up(
         "/api/database", headers={**json_accept_header(), **basic_admin_auth}
     )
     assert response.status_code == 200
-    assert response.json["datetime"] == redis_service.current_timestamp
+    assert response.json["datetime"] == redis_infra.current_timestamp
     assert response.json["status"] == "up"
     assert response.json["version"] == "unknown"
 
@@ -23,7 +23,7 @@ def test_database_200_down(
     client: FlaskClient, mocker: MockerFixture, basic_admin_auth: Dict
 ) -> None:
     mock_redis_client_time = mocker.patch.object(
-        redis_service.client, "time", side_effect=Exception()
+        redis_infra.client, "time", side_effect=Exception()
     )
     response = client.get(
         "/api/database", headers={**json_accept_header(), **basic_admin_auth}

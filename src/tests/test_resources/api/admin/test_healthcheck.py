@@ -9,7 +9,7 @@ def test_database_200(
     client: FlaskClient, mocker: MockerFixture, basic_admin_auth: Dict
 ) -> None:
     mock_controller = mocker.patch(
-        "src.app.resources.api.admin.healthcheck.HealthCheckController"
+        "src.app.resources.api.admin.healthcheck.HealthCheckService"
     )
     mock_controller.return_value.get_db_status.return_value = {"test": "test"}
     response = client.get(
@@ -23,7 +23,7 @@ def test_server_200(
     client: FlaskClient, mocker: MockerFixture, basic_admin_auth: Dict
 ) -> None:
     mock_controller = mocker.patch(
-        "src.app.resources.api.admin.healthcheck.HealthCheckController"
+        "src.app.resources.api.admin.healthcheck.HealthCheckService"
     )
     mock_controller.return_value.get_server_status.return_value = {"test": "test"}
     response = client.get(
