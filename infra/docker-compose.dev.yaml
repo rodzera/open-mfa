@@ -1,0 +1,92 @@
+networks:
+  open-mfa:
+    name: open-mfa
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+
+volumes:
+  shared-certs:
+
+services:
+  mkcert:
+    image: alpine/mkcert:latest
+    container_name: mkcert
+    environment:
+      - CAROOT=/mkcert-root
+    entrypoint: /bin/sh
+    command: -c "
+        mkcert -install && \
+        mkcert -cert-file /shared-certs/open-mfa.pem -key-file /shared-certs/open-mfa-key.pem *.open-mfa.local
+      "
+    volumes:
+      - shared-certs:/shared-certs:rw
+      - ${HOME}/.local/share/mkcert:/mkcert-root:ro
+    networks:
+      open-mfa:
+        aliases:
+          - mkcert
+        ipv4_address: 172.19.0.4
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    volumes:
+      - shared-certs:/etc/nginx/certs:ro
+      - ./dev/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - mkcert
+    networks:
+      open-mfa:
+        aliases:
+          - nginx
+        ipv4_address: 172.19.0.5
+
+  open-mfa:
+    image: rodzera/open-mfa:dev
+    container_name: open-mfa
+    restart: unless-stopped
+    depends_on:
+      - nginx
+      - redis
+    environment:
+      _DEBUG: 1
+      _SECRET_KEY: ${_SECRET_KEY}
+      _B64_AES_KEY: ${_B64_AES_KEY}
+      _ADMIN_USER: ${_ADMIN_USER}
+      _ADMIN_PASS: ${_ADMIN_PASS}
+      _REDIS_HOST: redis
+      _REDIS_PASS: ${_REDIS_PASS}
+      HOST: 0.0.0.0
+      PORT: 8080
+      TZ: Etc/Greenwich
+    networks:
+      open-mfa:
+        aliases:
+          - open-mfa
+        ipv4_address: 172.19.0.2
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/logs
+      - /etc/localtime:/etc/localtime:ro
+
+  redis:
+    image: redis:7.4.1-alpine
+    container_name: redis
+    restart: unless-stopped
+    environment:
+      REDIS_PASS: ${_REDIS_PASS}
+    command: sh -c 'redis-server --requirepass "$_REDIS_PASS"'
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+    networks:
+      open-mfa:
+        aliases:
+          - redis
+        ipv4_address: 172.19.0.3
