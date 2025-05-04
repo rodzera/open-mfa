@@ -25,12 +25,12 @@ def test_insert_session_data(mocker: MockerFixture, mock_redis_db: MagicMock) ->
         mocker.call("expire", mock_oath_session_key, timedelta(minutes=60))
     ])
 
-def test_service_check_session_data_exists(
+def test_service_session_data_exists(
     mocker: MockerFixture, mock_redis_db: MagicMock
 ) -> None:
     mock_oath_session_key = mocker.patch.object(OTPRepository, "oath_session_key")
     service = OTPRepository(service_type="otp")
-    data = service.check_session_data_exists()
+    data = service.session_data_exists()
 
     assert data == mock_redis_db.return_value
     mock_redis_db.assert_called_once_with("exists", mock_oath_session_key)
@@ -49,9 +49,9 @@ def test_oath_session_key_prop(req_ctx: RequestContext) -> None:
     service = OTPRepository(service_type="otp")
     oath_key = service.oath_session_key
 
-    session_id = OTPRepository.user_session().manage_session()
+    session_id = service.user_session.manage_session()
     assert oath_key == f"{session_id}:{service.service_type}"
 
 def test_user_session_id_prop(req_ctx: RequestContext) -> None:
     service = OTPRepository(service_type="otp")
-    assert service.user_session_id == OTPRepository.user_session().manage_session()
+    assert service.user_session_id == service.user_session.manage_session()

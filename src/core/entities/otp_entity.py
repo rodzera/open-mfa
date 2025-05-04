@@ -1,24 +1,6 @@
 from time import time
 from typing import  Union
-from pyotp import OTP as PyOTP
-
 from src.app.configs.oath import OATH_CONFIG
-from src.app.utils.helpers.logging import get_logger
-
-log = get_logger(__name__)
-
-
-class OTPGenerator:
-
-    def __init__(self, raw_secret: str):
-        self.raw_secret = raw_secret
-        self.server = PyOTP(
-            self.raw_secret,
-            digest=OATH_CONFIG.hash_method
-        )
-
-    def generate_code(self, moving_factor: int) -> str:
-        return self.server.generate_otp(moving_factor)
 
 
 class OTPEntity:
@@ -39,7 +21,6 @@ class OTPEntity:
 
     @property
     def is_expired(self) -> bool:
-        """ checks if OTP creation has surpassed the expiration range """
         return (
             int(time()) -
             self.creation_timestamp >=
@@ -48,7 +29,6 @@ class OTPEntity:
 
     @property
     def is_valid(self) -> bool:
-        """ checks if OTP is neither expired nor used """
         return not self.used and not self.is_expired
 
     @property

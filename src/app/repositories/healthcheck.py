@@ -1,10 +1,8 @@
 from typing import Dict
-
 from src.app.repositories.redis import RedisRepository
 
 
 class HealthCheckRepository(RedisRepository):
-
     def get_current_timestamp(self):
         return self.redis.current_timestamp
 

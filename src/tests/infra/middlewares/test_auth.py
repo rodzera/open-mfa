@@ -3,7 +3,7 @@ from typing import Dict
 from _pytest.python_api import raises
 from werkzeug.exceptions import Unauthorized
 
-from src.tests.utils import basic_auth
+from src.tests.helpers import basic_auth
 from src.app.infra.middlewares.auth import auth_middleware
 
 

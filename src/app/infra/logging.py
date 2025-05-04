@@ -10,7 +10,6 @@ class LoggingInfra:
     """
     Logging infrastructure layer.
     """
-
     DEFAULT_DIR: str = "logs"
     DEFAULT_LEVEL: int = logging.DEBUG if DEVELOPMENT_ENV else logging.INFO
     AVAILABLE_LOG_LEVELS: Dict = {
@@ -23,7 +22,7 @@ class LoggingInfra:
     }
 
     def __init__(self):
-        self._init_logging_dir()
+        self.init_logging_dir()
         self.handlers = []
         self.formatter = logging.Formatter(
             fmt="%(asctime)s.%(msecs)03d | %(levelname)s | %(name)s | %(funcName)s | %(lineno)s | %(message)s",
@@ -31,8 +30,8 @@ class LoggingInfra:
         )
 
     def configure_loggers(self) -> None:
-        self._add_stream_handler()
-        self._add_file_handlers()
+        self.add_stream_handler()
+        self.add_file_handlers()
         logging.basicConfig(level=self.DEFAULT_LEVEL, handlers=self.handlers)
 
     def set_level(self, level: int) -> None:
@@ -44,19 +43,19 @@ class LoggingInfra:
                 for handler in logger.handlers:
                     handler.setLevel(level)
 
-    def _init_logging_dir(self):
+    def init_logging_dir(self):
         if not TESTING_ENV and not path.exists(self.DEFAULT_DIR):
             makedirs(self.DEFAULT_DIR)
 
-    def _add_stream_handler(self) -> None:
+    def add_stream_handler(self) -> None:
         sh = logging.StreamHandler()
         sh.setLevel(self.DEFAULT_LEVEL)
         sh.setFormatter(self.formatter)
         self.handlers.append(sh)
         for logger_name in self.DEFAULT_LOGGERS.keys():
-            self._add_handler_to_logger(logger_name, sh)
+            self.add_handler_to_logger(logger_name, sh)
 
-    def _add_file_handlers(self) -> None:
+    def add_file_handlers(self) -> None:
         if not TESTING_ENV:
             if not path.exists("logs"):
                 mkdir("logs")
@@ -68,15 +67,14 @@ class LoggingInfra:
                 file_handler.setLevel(self.DEFAULT_LEVEL)
                 file_handler.setFormatter(self.formatter)
                 self.handlers.append(file_handler)
-                self._add_handler_to_logger(logger_name, file_handler)
+                self.add_handler_to_logger(logger_name, file_handler)
 
     @staticmethod
-    def _add_handler_to_logger(logger_name: str, handler: logging.Handler) -> None:
+    def add_handler_to_logger(logger_name: str, handler: logging.Handler) -> None:
         logger = logging.getLogger(logger_name)
         if handler not in logger.handlers:
             logger.addHandler(handler)
         logger.propagate = False
-        logger.addHandler(handler)
 
 
-logging_service = LoggingInfra()
+logging_infra = LoggingInfra()

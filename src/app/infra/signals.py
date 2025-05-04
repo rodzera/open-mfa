@@ -55,13 +55,13 @@ def logging_signal_handler(*args) -> None:
     :param *args: SIGUSR1, frame
     :return:
     """
-    from src.app.infra.logging import logging_service
+    from src.app.infra.logging import logging_infra
     from src.app.repositories.logging import LoggingRepository
 
     level = int(
         LoggingRepository().get_level() or
-        logging_service.DEFAULT_LEVEL
+        logging_infra.DEFAULT_LEVEL
     )
 
     if level != logging.root.level:
-        logging_service.set_level(level)
+        logging_infra.set_level(level)

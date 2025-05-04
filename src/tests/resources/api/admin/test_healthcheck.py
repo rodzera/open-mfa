@@ -2,7 +2,7 @@ from typing import Dict
 from flask.testing import FlaskClient
 from pytest_mock import MockerFixture
 
-from src.tests.utils import json_accept_header
+from src.tests.helpers import json_accept_header
 
 
 def test_database_200(

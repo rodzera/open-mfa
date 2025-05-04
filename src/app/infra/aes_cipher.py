@@ -10,7 +10,6 @@ log = get_logger(__name__)
 
 
 class AESCipherInfra:
-
     def __init__(self):
         if not TESTING_ENV:
             self.aes_key = self.parse_aes_key_from_environ()

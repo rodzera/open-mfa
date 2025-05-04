@@ -2,7 +2,7 @@ import logging
 from logging import getLevelName
 from typing import Dict, Optional
 
-from src.app.infra.logging import logging_service
+from src.app.infra.logging import logging_infra
 from src.app.infra.signals import send_logging_signal
 from src.app.configs.constants import PRODUCTION_ENV
 from src.app.repositories.logging import LoggingRepository
@@ -26,7 +26,7 @@ class LoggingService:
         self.repo.set_level(int_level)
 
         if not PRODUCTION_ENV:
-            logging_service.set_level(int_level)
+            logging_infra.set_level(int_level)
         else:
             send_logging_signal()
         return req_data

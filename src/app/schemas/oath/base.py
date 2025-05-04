@@ -25,7 +25,7 @@ class OTPValidationSchema(Schema):
     @post_load
     def validate(self, data, **kwargs):
         otp = data.get("otp")
-        session_data = OTPRepository(self.service_type).check_session_data_exists()
+        session_data = OTPRepository(self.service_type).session_data_exists()
 
         if otp and not session_data:
             raise NotFound(f"{self.service_type.upper()} not created")

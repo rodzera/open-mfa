@@ -1,6 +1,5 @@
 from typing import Optional
 from flask import has_request_context, session as flask_session
-
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)

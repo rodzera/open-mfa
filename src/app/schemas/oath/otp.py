@@ -13,7 +13,7 @@ class OTPSchema(OTPFieldSchema):
         if not data.get("otp"):
             return data
 
-        session_data = OTPRepository(self.service_type).check_session_data_exists()
+        session_data = OTPRepository(self.service_type).session_data_exists()
         if not session_data:
             raise NotFound("OTP not created")
         return data
