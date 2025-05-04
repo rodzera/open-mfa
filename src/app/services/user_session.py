@@ -12,9 +12,15 @@ class UserSessionService:
     SESSION_EXP_TIME = timedelta(hours=1)
 
     def __init__(self):
-        self.repository = UserSessionRepository()
-        self.session_id = self.repository.get_session_id()
+        self.repo = UserSessionRepository()
+        self.session_id = self.repo.get_session_id()
 
+    def manage_session(self) -> str:
+        if not self.is_active:
+            self.create_session()
+        return self.session_id
+
+    @property
     def is_active(self) -> bool:
         return self.session_id is not None
 
@@ -22,4 +28,4 @@ class UserSessionService:
         if has_request_context():
             self.session_id = str(uuid4())
             log.debug(f"Creating new user session: {self.session_id}")
-            self.repository.save_session(self.session_id)
+            self.repo.save_session(self.session_id)

@@ -8,13 +8,13 @@ log = get_logger(__name__)
 
 class UserSessionRepository:
     def __init__(self) -> None:
-        self.repository = flask_session
+        self.repo = flask_session
 
     def get_session_id(self) -> Optional[str]:
         if has_request_context():
-            return self.repository.get("session_id")
+            return self.repo.get("session_id")
 
     def save_session(self, session_id: str) -> None:
         if has_request_context():
-            self.repository["session_id"] = session_id
-            self.repository.permanent = True
+            self.repo["session_id"] = session_id
+            self.repo.permanent = True

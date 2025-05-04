@@ -4,7 +4,7 @@ from datetime import timedelta
 from src.app.configs.types import OTPType
 from src.app.utils.helpers.logging import get_logger
 from src.app.repositories.redis import RedisRepository
-from src.app.controllers.user_session import UserSessionController
+from src.app.services.user_session import UserSessionService
 
 log = get_logger(__name__)
 
@@ -14,8 +14,8 @@ class OTPRepository(RedisRepository):
     Base data layer class for OTP repositories.
     """
     oath_session_key: str
-    user_session = UserSessionController
     service_type: OTPType
+    user_session = UserSessionService
 
     def __init__(self, service_type: OTPType):
         super().__init__()
@@ -42,7 +42,7 @@ class OTPRepository(RedisRepository):
         return self.redis.db("delete", self.oath_session_key)
 
     def get_oath_session_key(self, method: OTPType) -> str:
-        session_id = self.user_session.manage_session()
+        session_id = self.user_session().manage_session()
         return f"{session_id}:{method}"
 
     @property
@@ -51,4 +51,4 @@ class OTPRepository(RedisRepository):
 
     @property
     def user_session_id(self) -> str:
-        return self.user_session.manage_session()
+        return self.user_session().manage_session()

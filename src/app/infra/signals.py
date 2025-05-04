@@ -27,9 +27,6 @@ def send_logging_signal() -> None:
     triggering all workers to change its logging level.
     :return:
     """
-    if not PRODUCTION_ENV:
-        return
-
     app_pid = get_gunicorn_pid()
     log.debug(f"Sending a SIGUSR1 signal to the gunicorn master process")
 
@@ -62,9 +59,9 @@ def logging_signal_handler(*args) -> None:
     from src.app.repositories.logging import LoggingRepository
 
     level = int(
-        LoggingRepository.get_app_logging_level() or
+        LoggingRepository().get_level() or
         logging_service.DEFAULT_LEVEL
     )
 
     if level != logging.root.level:
-        logging_service.set_logger_level(level)
+        logging_service.set_level(level)

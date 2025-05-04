@@ -11,7 +11,11 @@ from src.app.utils.helpers.logging import get_logger, mask_secrets_items
 log = get_logger("redis")
 
 
-class RedisService(object):
+class RedisInfra:
+    """
+    Redis infrastructure layer.
+    """
+
     def __init__(self):
         if not TESTING_ENV:
             self.client = self.setup_connection()
@@ -65,4 +69,4 @@ class RedisService(object):
             return False
 
 
-redis_service = RedisService()
+redis_infra = RedisInfra()

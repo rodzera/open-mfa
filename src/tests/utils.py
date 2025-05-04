@@ -2,7 +2,7 @@ from typing import Dict
 from base64 import b64encode
 from pyotp import random_base32
 
-from src.app.infra.aes_cipher import aes_cipher_service
+from src.app.infra.aes_cipher import aes_cipher_infra
 
 
 def json_accept_header() -> Dict:
@@ -20,6 +20,6 @@ def basic_auth(username: str, password: str) -> Dict:
     return {"Authorization": f"Basic {encoded_credentials}"}
 
 test_b32_secret = random_base32()
-test_cipher_secret = aes_cipher_service.encrypt(test_b32_secret.encode())
+test_cipher_secret = aes_cipher_infra.encrypt(test_b32_secret.encode())
 test_b64_cipher_secret = b64encode(test_cipher_secret).decode()
-test_bytes = aes_cipher_service.generate_random_bytes()
+test_bytes = aes_cipher_infra.generate_random_bytes()

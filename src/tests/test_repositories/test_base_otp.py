@@ -49,9 +49,9 @@ def test_oath_session_key_prop(req_ctx: RequestContext) -> None:
     service = OTPRepository(service_type="otp")
     oath_key = service.oath_session_key
 
-    session_id = OTPRepository.user_session.manage_session()
+    session_id = OTPRepository.user_session().manage_session()
     assert oath_key == f"{session_id}:{service.service_type}"
 
 def test_user_session_id_prop(req_ctx: RequestContext) -> None:
     service = OTPRepository(service_type="otp")
-    assert service.user_session_id == OTPRepository.user_session.manage_session()
+    assert service.user_session_id == OTPRepository.user_session().manage_session()
