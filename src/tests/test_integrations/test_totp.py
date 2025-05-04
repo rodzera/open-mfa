@@ -3,7 +3,7 @@ from pyotp import TOTP
 from flask.testing import FlaskClient
 from datetime import datetime, timedelta
 
-from src.app.services.oath import TOTPService
+from src.app.domains.oath.totp import TOTPGenerator
 
 
 def test_totp_create_and_verify_request_200_success(
@@ -15,7 +15,7 @@ def test_totp_create_and_verify_request_200_success(
     totp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", totp_uri)
     secret = secret_match.group(1)
-    totp = TOTP(secret, digest=TOTPService._hash_method)
+    totp = TOTP(secret, digest=TOTPGenerator.hash_method)
     current_otp = totp.now()
 
     verify_response = client.get(f"/api/totp?otp={current_otp}")
@@ -31,7 +31,7 @@ def test_totp_create_and_verify_request_200_success_in_next_window(
     totp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", totp_uri)
     secret = secret_match.group(1)
-    totp = TOTP(secret, digest=TOTPService._hash_method)
+    totp = TOTP(secret, digest=TOTPGenerator.hash_method)
     previous_window_time = datetime.now() + timedelta(seconds=30)
     last_window_otp = totp.at(previous_window_time)
 
@@ -48,7 +48,7 @@ def test_totp_create_and_verify_request_200_failure_for_two_future_windows(
     totp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", totp_uri)
     secret = secret_match.group(1)
-    totp = TOTP(secret, digest=TOTPService._hash_method)
+    totp = TOTP(secret, digest=TOTPGenerator.hash_method)
     previous_window_time = datetime.now() + timedelta(seconds=60)
     last_window_otp = totp.at(previous_window_time)
 
@@ -65,7 +65,7 @@ def test_totp_create_and_verify_request_200_success_in_previous_window(
     totp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", totp_uri)
     secret = secret_match.group(1)
-    totp = TOTP(secret, digest=TOTPService._hash_method)
+    totp = TOTP(secret, digest=TOTPGenerator.hash_method)
     previous_window_time = datetime.now() - timedelta(seconds=30)
     last_window_otp = totp.at(previous_window_time)
 
@@ -82,7 +82,7 @@ def test_totp_create_and_verify_request_200_failure_for_two_past_windows(
     totp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", totp_uri)
     secret = secret_match.group(1)
-    totp = TOTP(secret, digest=TOTPService._hash_method)
+    totp = TOTP(secret, digest=TOTPGenerator.hash_method)
     previous_window_time = datetime.now() - timedelta(seconds=60)
     last_window_otp = totp.at(previous_window_time)
 
@@ -111,7 +111,7 @@ def test_totp_create_and_verify_already_used_otp_200_failure(
     totp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", totp_uri)
     secret = secret_match.group(1)
-    totp = TOTP(secret, digest=TOTPService._hash_method)
+    totp = TOTP(secret, digest=TOTPGenerator.hash_method)
     current_otp = totp.now()
 
     verify_response = client.get(f"/api/totp?otp={current_otp}")
@@ -153,3 +153,15 @@ def test_totp_verify_totp_different_len_400(client: FlaskClient) -> None:
     response = client.get("/api/totp", query_string={"otp": "123"})
     assert response.status_code == 400
     assert response.json["description"] == "OTP must be a 6-digit string"
+
+def test_totp_delete_request_204(client: FlaskClient) -> None:
+    create_response = client.get("/api/totp")
+    assert create_response.status_code == 200
+
+    response = client.delete("/api/totp")
+    assert response.status_code == 204
+
+def test_totp_delete_request_404(client: FlaskClient) -> None:
+    response = client.delete("/api/totp")
+    assert response.status_code == 404
+    assert response.json["description"] == "TOTP not created"

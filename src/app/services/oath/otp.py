@@ -1,67 +1,59 @@
 from time import time
-from pyotp import OTP
-from typing import Dict
+from pyotp import random_base32
 
-from src.app.configs.oath import OTP_DF_CONFIG
-from src.app.utils.helpers.logging import get_logger
-from src.app.repositories.oath import OTPRepository
 from src.app.services.oath import BaseOTPService
+from src.app.utils.helpers.logging import get_logger
+from src.app.infra.aes_cipher import aes_cipher_service
+from src.app.domains.oath.otp import OTPEntity, OTPGenerator
 
 log = get_logger(__name__)
 
 
 class OTPService(BaseOTPService):
-    _service_type: str = "otp"
-    _df_config: Dict = OTP_DF_CONFIG
-    _repository_class: OTPRepository = OTPRepository
+    service_type = "otp"
 
-    def __init__(self, **client_data):
-        super().__init__(self._repository_class, **client_data)
+    def create(self) -> str:
+        log.info(f"Starting {self.service_type.upper()} creation")
 
-        self._cached_otp = self._session_data.get("otp")
-        self._used_otp = int(self._session_data.get("used", 0))
-        self._current_timestamp = int(time())
-        self._creation_timestamp = int(self._session_data.get("timestamp", 0))
-        self._server_otp = OTP(
-            self._secret,
-            digest=self._hash_method
-        ).generate_otp(self._current_timestamp)
+        raw_secret = random_base32()
+        hash_secret = aes_cipher_service.encrypt_b64(raw_secret)
 
-    def _create(self) -> Dict:
-        log.debug(f"Starting {self._service_type.upper()} creation")
-        if self._cached_otp and self._is_otp_valid():
-            otp = self._cached_otp
-        else:
-            self._insert_session_data()
-            otp = self._server_otp
-        return {"otp": otp}
+        if self.session_data:
+            entity = OTPEntity(
+                self.session_data["code"],
+                self.session_data["secret"],
+                self.session_data["used"],
+                self.session_data["creation_timestamp"],
+            )
+            if entity.is_valid:
+                log.debug("Returning cached OTP")
+                return entity.code
 
-    def _verify(self) -> Dict:
-        status = (self._client_otp == self._cached_otp) and self._is_otp_valid()
-        if status:
-            self._set_otp_as_used()
-        return {"status": status}
-
-    def _otp_has_expired(self) -> bool:
-        """ checks if OTP creation has surpassed the expiration range """
-        return (
-            self._current_timestamp -
-            self._creation_timestamp >=
-            self._df_config["expires_in"]
+        log.debug("Creating new OTP")
+        current_timestamp = int(time())
+        server_code = OTPGenerator(raw_secret).generate_code(current_timestamp)
+        entity = OTPEntity(
+            server_code,
+            hash_secret,
+            used=0,
+            timestamp=current_timestamp
         )
+        self.repo.insert_session_data(entity.as_dict, exp=True)
+        return entity.code
 
-    def _is_otp_valid(self) -> bool:
-        """ checks if OTP is neither expired nor used """
-        return not self._used_otp and not self._otp_has_expired()
-
-    def _set_otp_as_used(self) -> None:
-        self._repository.set_otp_as_used()
-
-    @property
-    def _redis_data(self) -> Dict:
-        return {
-            "otp": self._server_otp,
-            "secret": self._b64_cipher_secret,
-            "used": 0,
-            "timestamp": self._current_timestamp
-        }
+    def verify(self) -> bool:
+        log.info(f"Starting {self.service_type.upper()} verifying")
+        entity = OTPEntity(
+            self.session_data["code"],
+            self.session_data["secret"],
+            self.session_data["used"],
+            self.session_data["creation_timestamp"],
+        )
+        if entity.code == self.req_otp and entity.is_valid:
+            log.debug("OTP code is valid")
+            entity.mark_as_used()
+            self.repo.insert_session_data(entity.as_dict)
+            return True
+        else:
+            log.debug("OTP code not valid")
+            return False

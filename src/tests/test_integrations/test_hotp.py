@@ -2,7 +2,7 @@ from re import search
 from pyotp import HOTP
 from flask.testing import FlaskClient
 
-from src.app.services.oath import HOTPService
+from src.app.domains.oath.hotp import HOTPGenerator
 
 
 def test_hotp_create_and_verify_request_200_twice_success(
@@ -14,7 +14,7 @@ def test_hotp_create_and_verify_request_200_twice_success(
     hotp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", hotp_uri)
     secret = secret_match.group(1)
-    hotp = HOTP(secret, digest=HOTPService._hash_method)
+    hotp = HOTP(secret, digest=HOTPGenerator.hash_method)
     current_otp = hotp.at(0)
 
     verify_response = client.get(f"/api/hotp?otp={current_otp}")
@@ -37,7 +37,7 @@ def test_hotp_create_and_verify_request_200_twice_success_with_resync_protocol(
     hotp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", hotp_uri)
     secret = secret_match.group(1)
-    client_hotp = HOTP(secret, digest=HOTPService._hash_method)
+    client_hotp = HOTP(secret, digest=HOTPGenerator.hash_method)
     desynchronized_otp = client_hotp.at(35)
 
     verify_response = client.get(
@@ -74,7 +74,7 @@ def test_hotp_create_and_verify_wrong_otp_200_failure_with_resync_protocol(
     hotp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", hotp_uri)
     secret = secret_match.group(1)
-    client_hotp = HOTP(secret, digest=HOTPService._hash_method)
+    client_hotp = HOTP(secret, digest=HOTPGenerator.hash_method)
     otp_out_of_the_resync_range = client_hotp.at(6)
 
     verify_response = client.get(
@@ -95,7 +95,7 @@ def test_hotp_create_and_verify_already_used_otp_200_failure(
     hotp_uri = create_response.json["uri"]
     secret_match = search(r"secret=([A-Z2-7]+)", hotp_uri)
     secret = secret_match.group(1)
-    hotp = HOTP(secret, digest=HOTPService._hash_method)
+    hotp = HOTP(secret, digest=HOTPGenerator.hash_method)
     current_otp = hotp.at(30)
 
     verify_response = client.get(f"/api/hotp?otp={current_otp}")
@@ -150,3 +150,15 @@ def test_hotp_verify_hotp_different_len_400(client: FlaskClient) -> None:
     response = client.get("/api/hotp", query_string={"otp": "123"})
     assert response.status_code == 400
     assert response.json["description"] == "OTP must be a 6-digit string"
+
+def test_hotp_delete_request_204(client: FlaskClient) -> None:
+    create_response = client.get("/api/hotp")
+    assert create_response.status_code == 200
+
+    response = client.delete("/api/hotp")
+    assert response.status_code == 204
+
+def test_hotp_delete_request_404(client: FlaskClient) -> None:
+    response = client.delete("/api/hotp")
+    assert response.status_code == 404
+    assert response.json["description"] == "HOTP not created"

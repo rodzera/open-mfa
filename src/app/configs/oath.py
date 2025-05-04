@@ -1,4 +1,5 @@
 OATH_DF_CONFIG = {
+    "issuer": "open-mfa",
     "otp": {
       "expires_in": 300
     },
