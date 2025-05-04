@@ -1,9 +1,9 @@
 from typing import Optional
 
-from src.app.repositories.base_repository import BaseRepository
+from src.app.repositories.redis import RedisRepository
 
 
-class LoggingRepository(BaseRepository):
+class LoggingRepository(RedisRepository):
 
     def get_app_logging_level(self) -> Optional[str]:
         return self.redis.db("get", "log")

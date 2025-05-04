@@ -13,6 +13,16 @@ def test_otp_create_and_verify_request_200_success(
     assert verify_response.status_code == 200
     assert verify_response.json["status"] is True
 
+def test_otp_create_returning_cached_otp_200_success(
+    client: FlaskClient
+) -> None:
+    r1 = client.get("/api/otp")
+    assert r1.status_code == 200
+
+    r2 = client.get("/api/otp")
+    assert r2.status_code == 200
+    assert r1.json["otp"] == r2.json["otp"]
+
 def test_otp_create_and_verify_wrong_otp_200_failure(
     client: FlaskClient
 ) -> None:

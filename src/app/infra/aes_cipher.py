@@ -1,15 +1,15 @@
-from base64 import b64decode
 from os import urandom, getenv
+from base64 import b64decode, b64encode
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from src.app.utils.helpers.logging import get_logger
 from src.app.configs.constants import TESTING_ENV
 from src.app.infra.signals import terminate_server
+from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)
 
 
-class AESCipherService(object):
+class AESCipherService:
 
     def __init__(self):
         if not TESTING_ENV:
@@ -51,6 +51,14 @@ class AESCipherService(object):
         cipher = Cipher(algorithms.AES(self.aes_key), modes.GCM(iv, tag))
         decryptor = cipher.decryptor()
         return decryptor.update(ciphertext) + decryptor.finalize()
+
+    def encrypt_b64(self, secret: str) -> str:
+        cipher_secret = self.encrypt(secret.encode())
+        return b64encode(cipher_secret).decode()
+
+    def decrypt_b64(self, secret: str) -> str:
+        cipher_secret = b64decode(secret)
+        return self.decrypt(cipher_secret).decode()
 
 
 aes_cipher_service = AESCipherService()

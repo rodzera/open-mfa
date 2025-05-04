@@ -3,22 +3,22 @@ from flask.ctx import RequestContext
 from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock, MagicMock
 
-from src.app.repositories.oath import BaseOTPRepository
+from src.app.repositories.oath import OTPRepository
 
 
 def test_get_session_data(mocker: MockerFixture, mock_redis_db: MagicMock) -> None:
-    mock_oath_session_key = mocker.patch.object(BaseOTPRepository, "_oath_session_key")
-    service = BaseOTPRepository()
+    mock_oath_session_key = mocker.patch.object(OTPRepository, "oath_session_key")
+    service = OTPRepository(service_type="otp")
     data = service.get_session_data()
 
     assert data == mock_redis_db.return_value
     mock_redis_db.assert_called_once_with("hgetall", mock_oath_session_key)
 
 def test_insert_session_data(mocker: MockerFixture, mock_redis_db: MagicMock) -> None:
-    mock_oath_session_key = mocker.patch.object(BaseOTPRepository, "_oath_session_key")
+    mock_oath_session_key = mocker.patch.object(OTPRepository, "oath_session_key")
     data = {}
-    service = BaseOTPRepository()
-    service.insert_session_data(data)
+    service = OTPRepository(service_type="otp")
+    service.insert_session_data(data, exp=True)
 
     mock_redis_db.assert_has_calls([
         mocker.call("hset", mock_oath_session_key, mapping=data),
@@ -28,8 +28,8 @@ def test_insert_session_data(mocker: MockerFixture, mock_redis_db: MagicMock) ->
 def test_service_check_session_data_exists(
     mocker: MockerFixture, mock_redis_db: MagicMock
 ) -> None:
-    mock_oath_session_key = mocker.patch.object(BaseOTPRepository, "_oath_session_key")
-    service = BaseOTPRepository()
+    mock_oath_session_key = mocker.patch.object(OTPRepository, "oath_session_key")
+    service = OTPRepository(service_type="otp")
     data = service.check_session_data_exists()
 
     assert data == mock_redis_db.return_value
@@ -38,24 +38,20 @@ def test_service_check_session_data_exists(
 def test_service_delete_session_data(
     mocker: MockerFixture, mock_redis_db: MagicMock
 ) -> None:
-    mock_oath_session_key = mocker.patch.object(BaseOTPRepository, "_oath_session_key")
-    service = BaseOTPRepository()
+    mock_oath_session_key = mocker.patch.object(OTPRepository, "oath_session_key")
+    service = OTPRepository(service_type="otp")
     data = service.delete_session_data()
 
     assert data == mock_redis_db.return_value
     mock_redis_db.assert_called_once_with("delete", mock_oath_session_key)
 
-def test_oath_session_key_prop(
-    req_ctx: RequestContext, mocker: MockerFixture
-) -> None:
-    mock_service_type = mocker.patch.object(
-        BaseOTPRepository,
-        "_service_type",
-        new_callable=PropertyMock,
-        create=True
-    )
-    mock_service_type.return_value = "type"
-    service = BaseOTPRepository()
-    oath_key = service._oath_session_key
+def test_oath_session_key_prop(req_ctx: RequestContext) -> None:
+    service = OTPRepository(service_type="otp")
+    oath_key = service.oath_session_key
 
-    assert BaseOTPRepository._user_session.manage_session() in oath_key
+    session_id = OTPRepository.user_session.manage_session()
+    assert oath_key == f"{session_id}:{service.service_type}"
+
+def test_user_session_id_prop(req_ctx: RequestContext) -> None:
+    service = OTPRepository(service_type="otp")
+    assert service.user_session_id == OTPRepository.user_session.manage_session()
