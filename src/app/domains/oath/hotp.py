@@ -1,15 +1,13 @@
-from hashlib import sha256
-from typing import Callable, Union
+from typing import Union
 from pyotp import HOTP as PyHOTP
 
-from src.app.configs.oath import OATH_DF_CONFIG
+from src.app.configs.oath import OATH_CONFIG
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)
 
 
 class HOTPGenerator:
-    hash_method: Callable = sha256
 
     def __init__(
         self,
@@ -18,14 +16,14 @@ class HOTPGenerator:
     ):
         self.server = PyHOTP(
             raw_secret,
-            digest=self.hash_method,
+            digest=OATH_CONFIG.hash_method,
             initial_count=initial_count
         )
 
     def generate_uri(self, session_id: str) -> str:
         return self.server.provisioning_uri(
             name=session_id,
-            issuer_name=OATH_DF_CONFIG["issuer"]
+            issuer_name=OATH_CONFIG.issuer
         )
 
     def verify(self, code: str, moving_factor: int = 0) -> bool:

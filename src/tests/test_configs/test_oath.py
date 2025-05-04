@@ -1,21 +1,24 @@
-from src.app.configs.oath import OATH_DF_CONFIG
+from hashlib import sha256
+
+from src.app.configs.oath import OATH_CONFIG, OATHConfig
 
 
-def test_is_a_dict():
-    assert isinstance(OATH_DF_CONFIG, dict)
+def test_is_cls():
+    assert isinstance(OATH_CONFIG, OATHConfig)
 
 def test_otp_config():
-    data = OATH_DF_CONFIG["otp"]
-    assert data["expires_in"] == 300
+    assert OATH_CONFIG.otp.expires_in == 300
 
 def test_totp_config():
-    data = OATH_DF_CONFIG["totp"]
-    assert data["valid_window"] == 1
-    assert data["min_interval"] == 30
-    assert data["max_interval"] == 60
+    assert OATH_CONFIG.totp.valid_window == 1
+    assert OATH_CONFIG.totp.min_interval == 30
+    assert OATH_CONFIG.totp.max_interval == 60
 
 def test_hotp_config():
-    data = OATH_DF_CONFIG["hotp"]
-    assert data["initial_count"] == 0
-    assert data["min_resync_threshold"] == 5
-    assert data["max_resync_threshold"] == 10
+    assert OATH_CONFIG.hotp.initial_count == 0
+    assert OATH_CONFIG.hotp.min_resync_threshold == 5
+    assert OATH_CONFIG.hotp.max_resync_threshold == 10
+
+def test_oath_config():
+    assert OATH_CONFIG.hash_method == sha256
+    assert OATH_CONFIG.issuer == "open-mfa"

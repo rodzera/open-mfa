@@ -1,20 +1,21 @@
 from time import time
-from hashlib import sha256
+from typing import  Union
 from pyotp import OTP as PyOTP
-from typing import Callable, Union
 
-from src.app.configs.oath import OTP_DF_CONFIG
+from src.app.configs.oath import OATH_CONFIG
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)
 
 
 class OTPGenerator:
-    hash_method: Callable = sha256
 
     def __init__(self, raw_secret: str):
         self.raw_secret = raw_secret
-        self.server = PyOTP(self.raw_secret, digest=self.hash_method)
+        self.server = PyOTP(
+            self.raw_secret,
+            digest=OATH_CONFIG.hash_method
+        )
 
     def generate_code(self, moving_factor: int) -> str:
         return self.server.generate_otp(moving_factor)
@@ -42,7 +43,7 @@ class OTPEntity:
         return (
             int(time()) -
             self.creation_timestamp >=
-            OTP_DF_CONFIG["expires_in"]
+            OATH_CONFIG.otp.expires_in
         )
 
     @property
