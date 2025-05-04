@@ -15,7 +15,6 @@ class RedisInfra:
     """
     Redis infrastructure layer.
     """
-
     def __init__(self):
         if not TESTING_ENV:
             self.client = self.setup_connection()
@@ -45,7 +44,8 @@ class RedisInfra:
 
     def db(self, method: str, *args, **kwargs):
         log.debug(
-            f"Executing Redis command: {method}, args: {args}, kwargs: {mask_secrets_items(kwargs)}"
+            f"Executing Redis command: {method}, args: {args}, "
+            f"kwargs: {mask_secrets_items(kwargs)}"
         )
         return getattr(self.client, method)(*args, **kwargs)
 

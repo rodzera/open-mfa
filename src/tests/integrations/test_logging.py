@@ -3,7 +3,7 @@ from logging import DEBUG, INFO
 from flask.testing import FlaskClient
 
 from src.app.repositories.logging import LoggingRepository
-from src.tests.utils import json_accept_header, json_content_type_header
+from src.tests.helpers import json_accept_header, json_content_type_header
 
 
 def test_get_logging_level_200(

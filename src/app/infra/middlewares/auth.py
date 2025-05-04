@@ -11,7 +11,7 @@ log = get_logger(__name__)
 def auth_middleware(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(*args, **kwargs) -> Callable:
-        log.info(f"Authentication middleware called: {request.endpoint}")
+        log.debug(f"Authentication middleware called: {request.endpoint}")
         auth = request.authorization
         if not auth or not hasattr(auth, "username") or not hasattr(auth, "password"):
             log.debug("Invalid or missing authorization in headers")

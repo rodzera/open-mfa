@@ -7,7 +7,7 @@ from flask.ctx import RequestContext
 from flask.testing import FlaskClient
 
 from src.run import application
-from src.tests.utils import basic_auth
+from src.tests.helpers import basic_auth
 from src.app.infra.aes_cipher import aes_cipher_infra
 from src.app.infra.redis import RedisInfra, redis_infra
 

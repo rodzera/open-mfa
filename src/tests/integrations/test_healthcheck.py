@@ -5,7 +5,7 @@ from pytest_mock import MockerFixture
 
 from src.app.configs.constants import APP_VERSION
 from src.app.infra.redis import redis_infra
-from src.tests.utils import json_accept_header
+from src.tests.helpers import json_accept_header
 
 
 def test_database_200_up(

@@ -4,7 +4,7 @@ from pytest_mock import MockerFixture
 from cryptography.exceptions import InvalidTag
 from hypothesis import given, strategies as st, settings, HealthCheck
 
-from src.tests.utils import test_bytes
+from src.tests.helpers import test_bytes
 from src.app.infra.aes_cipher import AESCipherInfra
 
 
