@@ -33,7 +33,7 @@ class HOTPGenerator:
     ) -> tuple[bool, int]:
         """
         Look-ahead window resynchronization protocol:
-        https://datatracker.ietf.org/doc/html/rfc42aq26#page-11
+        https://datatracker.ietf.org/doc/html/rfc4226#page-11
         """
 
         log.debug("Triggering resync protocol")
