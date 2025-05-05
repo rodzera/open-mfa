@@ -33,7 +33,7 @@ def test_setup_connection_method(mocker: MockerFixture) -> None:
         port="6379",
         password="s3cr3t",
         db=0,
-        socket_timeout=5,
+        socket_timeout=3,
         decode_responses=True
     )
 

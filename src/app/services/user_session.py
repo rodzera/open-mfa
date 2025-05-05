@@ -18,7 +18,12 @@ class UserSessionService:
     def manage_session(self) -> str:
         if not self.is_active:
             self.create_session()
+        log.info(f"User session found: {self.masked_session_id}")
         return self.session_id
+
+    @property
+    def masked_session_id(self) -> str:
+        return f"{self.session_id[:4]}****{self.session_id[-4:]}"
 
     @property
     def is_active(self) -> bool:
@@ -27,5 +32,5 @@ class UserSessionService:
     def create_session(self) -> None:
         if has_request_context():
             self.session_id = str(uuid4())
-            log.debug(f"Creating new user session: {self.session_id}")
+            log.info(f"Creating new user session: {self.masked_session_id}")
             self.repo.save_session(self.session_id)

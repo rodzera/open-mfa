@@ -13,10 +13,17 @@ class BaseOTPService(ABC):
     """
     service_type: OTPType
     repo: OTPRepository = OTPRepository
+    cache: dict = None
 
     @property
     def session_data(self):
-        return self.repo.get_session_data()
+        if not self.cache:
+            self.cache = self.repo.get_session_data()
+        return self.cache
+
+    @session_data.setter
+    def session_data(self, data):
+        self.cache = data
 
     def __init__(self, **req_data):
         self.repo = self.repo(self.service_type)
@@ -36,7 +43,10 @@ class BaseOTPService(ABC):
         if not self.session_data:
             log.debug(f"No {self.service_type.upper()} data found")
             return False
-        return bool(self.repo.delete_session_data())
+
+        result = bool(self.repo.delete_session_data())
+        log.info(f"{self.service_type.upper()} deletion: {result}")
+        return result
 
     @abstractmethod
     def create(self) -> str:
