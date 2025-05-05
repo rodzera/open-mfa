@@ -42,7 +42,7 @@ class OTPRepository(RedisRepository):
         return self.redis.db("delete", self.oath_session_key)
 
     def get_oath_session_key(self, method: OTPType) -> str:
-        session_id = self.user_session.manage_session()
+        session_id = self.user_session.session_id
         return f"{session_id}:{method}"
 
     @property
@@ -51,4 +51,4 @@ class OTPRepository(RedisRepository):
 
     @property
     def user_session_id(self) -> str:
-        return self.user_session.manage_session()
+        return self.user_session.session_id

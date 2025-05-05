@@ -28,7 +28,7 @@ def send_logging_signal() -> None:
     :return:
     """
     app_pid = get_gunicorn_pid()
-    log.debug(f"Sending a SIGUSR1 signal to the gunicorn master process")
+    log.debug(f"Sending SIGUSR1 signal to the gunicorn master process")
 
     try:
         kill(app_pid, SIGUSR1)
@@ -44,6 +44,7 @@ def register_gunicorn_signal_handler(*args) -> None:
     :return:
     """
     if PRODUCTION_ENV:
+        log.info("Registering gunicorn signal handler")
         signal(SIGUSR1, logging_signal_handler)
 
 

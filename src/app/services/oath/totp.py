@@ -18,7 +18,9 @@ class TOTPService(BaseOTPService):
         hash_secret = aes_cipher_infra.encrypt_b64(raw_secret)
 
         entity = TOTPEntity(hash_secret, self.req_data["interval"])
+        log.info("Storing TOTP data in repository")
         self.repo.insert_session_data(entity.as_dict, exp=True)
+        log.info("TOTP stored successfully")
 
         generator = TOTPGenerator(raw_secret, entity.interval)
         return generator.generate_uri(session_id=self.repo.user_session_id)
@@ -37,10 +39,12 @@ class TOTPService(BaseOTPService):
         generator = TOTPGenerator(raw_secret, entity.interval)
 
         if generator.verify(self.req_otp) and not entity.is_replay(self.req_otp):
-            log.debug("TOTP code is valid")
+            log.info("TOTP code is valid")
             entity.accept_otp(self.req_otp)
+
+            log.info("Updating TOTP data in repository")
             self.repo.insert_session_data(entity.as_dict)
             return True
         else:
-            log.debug("TOTP code not valid")
+            log.info("TOTP code not valid")
             return False

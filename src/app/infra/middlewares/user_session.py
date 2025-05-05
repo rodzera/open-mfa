@@ -5,5 +5,4 @@ log = get_logger(__name__)
 
 
 def trigger_user_session_service() -> None:
-    log.debug("Triggering user session service")
     UserSessionService().manage_session()

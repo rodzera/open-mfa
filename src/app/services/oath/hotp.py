@@ -22,7 +22,9 @@ class HOTPService(BaseOTPService):
             self.req_data["initial_count"],
             self.req_data["resync_threshold"]
         )
+        log.info("Storing HOTP data in repository")
         self.repo.insert_session_data(entity.as_dict, exp=True)
+        log.info("HOTP stored successfully")
 
         generator = HOTPGenerator(raw_secret, entity.count)
         return generator.generate_uri(session_id=self.repo.user_session_id)
@@ -41,7 +43,7 @@ class HOTPService(BaseOTPService):
         generator = HOTPGenerator(raw_secret, entity.count)
 
         if generator.verify(self.req_otp):
-            log.debug("HOTP code is valid")
+            log.info("HOTP code is valid")
             entity.increment(1)
             self.repo.insert_session_data(entity.as_dict)
             return True
@@ -51,8 +53,9 @@ class HOTPService(BaseOTPService):
         )
         if status:
             entity.increment(new_count)
+            log.info("Updating HOTP data in repository")
             self.repo.insert_session_data(entity.as_dict)
             return True
 
-        log.debug("HOTP code not valid")
+        log.info("HOTP code not valid")
         return False
