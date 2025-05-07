@@ -10,18 +10,6 @@ done
 
 echo "Redis connected"
 
-if [[ -z "${HOST}" ]]; then
-  export HOST="0.0.0.0"
-fi
-
-if [[ -z "${PORT}" ]]; then
-  export PORT=8080
-fi
-
-echo "Server host: $HOST"
-echo "Server port: $PORT"
-
-
 if [[ "$DEBUG" -eq 1 || "$_DEBUG" -eq 1 || "$FLASK_DEBUG" -eq 1 ]]; then
 
   echo "Starting development server"
@@ -29,18 +17,7 @@ if [[ "$DEBUG" -eq 1 || "$_DEBUG" -eq 1 || "$FLASK_DEBUG" -eq 1 ]]; then
 
 else
 
-  if [[ -z "${WORKERS}" ]]; then
-    export WORKERS=4
-  fi
-
-  if [[ -z "${WORKER_CONNECTIONS}" ]]; then
-    export WORKER_CONNECTIONS=8192
-  fi
-
-  echo "Server workers class: gthread"
-  echo "Server workers: $WORKERS"
-  echo "Worker connections limit: $WORKER_CONNECTIONS"
   echo "Starting production server"
-  gunicorn --bind "$HOST:$PORT" --workers $WORKERS --worker-connections $WORKER_CONNECTIONS --pid /src/app/gunicorn.pid --log-config=/src/gunicorn_log.conf "run"
+  gunicorn -c "gunicorn.conf" "run"
 
 fi

@@ -21,9 +21,9 @@ services:
       _REDIS_PASS: ${_REDIS_PASS}
       HOST: 0.0.0.0
       PORT: 8080
-      WORKERS: 4
-      THREADS: 64
-      WORKER_CONNECTIONS: 8192
+      WORKERS: 2
+      THREADS: 4
+      WORKER_CONNECTIONS: 1000
       TZ: Etc/Greenwich
     networks:
       open-mfa:
