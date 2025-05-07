@@ -20,7 +20,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="gunicorn" />
-    <option name="PARAMETERS" value="--bind &quot;0.0.0.0:8080&quot; --workers 4 --worker-connections 8192 --pid &quot;app/gunicorn.pid&quot; --log-config=gunicorn_log.conf --timeout 600 &quot;run&quot;" />
+    <option name="PARAMETERS" value="-c &quot;gunicorn.conf.py&quot; &quot;run&quot;" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="true" />
