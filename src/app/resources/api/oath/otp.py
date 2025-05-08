@@ -1,7 +1,7 @@
 from src.app.resources.api import api
 from src.app.services.oath import OTPService
 from src.app.schemas.oath.otp import OTPSchema
-from src.app.infra.middlewares.schemas import schema_middleware
+from src.app.middlewares.schemas import schema_middleware
 
 
 @api.route("/otp", methods=["GET"])

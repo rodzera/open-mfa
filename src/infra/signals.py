@@ -56,7 +56,7 @@ def logging_signal_handler(*args) -> None:
     :param *args: SIGUSR1, frame
     :return:
     """
-    from src.app.infra.logging import logging_infra
+    from src.infra.logging import logging_infra
     from src.app.repositories.logging import LoggingRepository
 
     level = int(

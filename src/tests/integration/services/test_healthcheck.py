@@ -4,7 +4,7 @@ from flask.testing import FlaskClient
 from pytest_mock import MockerFixture
 
 from src.app.configs.constants import APP_VERSION
-from src.app.infra.redis import redis_infra
+from src.infra.redis import redis_infra
 from src.tests.helpers import json_accept_header
 
 

@@ -4,7 +4,7 @@ from pyotp import random_base32
 from src.app.services.oath import BaseOTPService
 from src.core.entities.otp_entity import OTPEntity
 from src.app.utils.helpers.logging import get_logger
-from src.app.infra.aes_cipher import aes_cipher_infra
+from src.infra.aes_cipher import aes_cipher_infra
 from src.core.services.otp_generator import OTPGenerator
 
 log = get_logger(__name__)

@@ -4,9 +4,9 @@ from time import strftime, gmtime
 from fakeredis import FakeStrictRedis
 from redis import StrictRedis, RedisError
 
-from src.app.infra.signals import terminate_server
+from src.infra.signals import terminate_server
 from src.app.utils.helpers.logging import get_logger
-from src.app.infra.exceptions import RedisUnavailableError
+from src.app.middlewares.http_exceptions import RedisUnavailableError
 from src.app.configs.constants import TESTING_ENV, PRODUCTION_ENV
 
 log = get_logger("redis")

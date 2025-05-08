@@ -1,6 +1,6 @@
 from src.app.resources.api import api
 from src.app.utils.helpers.logging import get_logger
-from src.app.infra.middlewares.auth import auth_middleware
+from src.app.middlewares.auth import auth_middleware
 from src.app.services.healthcheck import HealthCheckService
 
 log = get_logger(__name__)

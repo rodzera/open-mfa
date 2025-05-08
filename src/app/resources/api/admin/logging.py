@@ -1,8 +1,8 @@
 from src.app.resources.api import api
 from src.app.schemas.logging import LoggingSchema
 from src.app.services.logging import LoggingService
-from src.app.infra.middlewares.auth import auth_middleware
-from src.app.infra.middlewares.schemas import schema_middleware
+from src.app.middlewares.auth import auth_middleware
+from src.app.middlewares.schemas import schema_middleware
 
 
 @api.route("/logging", methods=["GET"])

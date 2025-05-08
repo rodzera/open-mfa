@@ -4,7 +4,7 @@ from src.app.resources.api import api
 from src.app.services.oath import HOTPService
 from src.app.schemas.oath.hotp import HOTPSchema
 from src.app.utils.helpers.logging import get_logger
-from src.app.infra.middlewares.schemas import schema_middleware
+from src.app.middlewares.schemas import schema_middleware
 
 log = get_logger(__name__)
 

@@ -1,7 +1,7 @@
 from pyotp import random_base32
 from src.app.services.oath import BaseOTPService
 from src.app.utils.helpers.logging import get_logger
-from src.app.infra.aes_cipher import aes_cipher_infra
+from src.infra.aes_cipher import aes_cipher_infra
 from src.core.entities.hotp_entity import HOTPEntity
 from src.core.services.hotp_generator import HOTPGenerator
 
