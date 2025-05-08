@@ -1,4 +1,4 @@
-from src.app.infra.redis import redis_infra
+from src.infra.redis import redis_infra
 
 
 class RedisRepository:

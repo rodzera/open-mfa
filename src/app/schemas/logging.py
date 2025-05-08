@@ -1,7 +1,7 @@
 from marshmallow.validate import OneOf
 
 from src.app.schemas import ma
-from src.app.infra.logging import logging_infra
+from src.infra.logging import logging_infra
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)

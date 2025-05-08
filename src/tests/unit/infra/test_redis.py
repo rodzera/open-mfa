@@ -1,7 +1,7 @@
 from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock
 
-from src.app.infra.redis import RedisInfra, redis_infra
+from src.infra.redis import RedisInfra, redis_infra
 
 
 def test_db_method(mocker: MockerFixture) -> None:
@@ -17,8 +17,8 @@ def test_db_method(mocker: MockerFixture) -> None:
     )
 
 def test_setup_connection_method(mocker: MockerFixture) -> None:
-    mock_redis_cls = mocker.patch("src.app.infra.redis.StrictRedis")
-    mock_environ = mocker.patch("src.app.infra.redis.environ")
+    mock_redis_cls = mocker.patch("src.infra.redis.StrictRedis")
+    mock_environ = mocker.patch("src.infra.redis.environ")
     environ = {
         "_REDIS_HOST": "localhost",
         "_REDIS_PASS": "s3cr3t"

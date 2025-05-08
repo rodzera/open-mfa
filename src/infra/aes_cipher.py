@@ -3,7 +3,7 @@ from base64 import b64decode, b64encode
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from src.app.configs.constants import TESTING_ENV
-from src.app.infra.signals import terminate_server
+from src.infra.signals import terminate_server
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)

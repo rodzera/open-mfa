@@ -2,9 +2,9 @@ import logging
 from typing import Optional
 from logging import getLevelName
 
-from src.app.infra.logging import logging_infra
+from src.infra.logging import logging_infra
 from src.app.configs.constants import PRODUCTION_ENV
-from src.app.infra.signals import send_logging_signal
+from src.infra.signals import send_logging_signal
 from src.app.utils.helpers.logging import get_logger
 from src.app.repositories.logging import LoggingRepository
 

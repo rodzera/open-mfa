@@ -5,7 +5,7 @@ from cryptography.exceptions import InvalidTag
 from hypothesis import given, strategies as st, settings, HealthCheck
 
 from src.tests.helpers import test_bytes
-from src.app.infra.aes_cipher import AESCipherInfra
+from src.infra.aes_cipher import AESCipherInfra
 
 
 @pytest.mark.parametrize(
@@ -24,7 +24,7 @@ def test_parse_aes_key_from_environ(
     env_value: Optional[str], expected_exception: Optional[SystemExit],
 ) -> None:
     get_env = mocker.patch(
-        "src.app.infra.aes_cipher.getenv", return_value=env_value
+        "src.infra.aes_cipher.getenv", return_value=env_value
     )
     if expected_exception:
         with pytest.raises(expected_exception):
