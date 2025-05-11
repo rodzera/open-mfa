@@ -1,10 +1,8 @@
 from time import time
-from pyotp import random_base32
 
 from src.app.services.oath import BaseOTPService
 from src.core.entities.otp_entity import OTPEntity
 from src.app.utils.helpers.logging import get_logger
-from src.infra.aes_cipher import aes_cipher_infra
 from src.core.services.otp_generator import OTPGenerator
 
 log = get_logger(__name__)
@@ -15,9 +13,7 @@ class OTPService(BaseOTPService):
 
     def create(self) -> str:
         log.info(f"Starting {self.service_type.upper()} creation")
-
-        raw_secret = random_base32()
-        hash_secret = aes_cipher_infra.encrypt_b64(raw_secret)
+        raw_secret, hash_secret = self.cipher.generate_secret()
 
         if self.session_data:
             entity = OTPEntity(
