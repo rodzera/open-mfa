@@ -173,6 +173,6 @@ cython_debug/
 .idea/sonarlint.xml
 .idea/vcs.xml
 
-redis_data
+redis/
+logs/
 gunicorn.pid
-logs

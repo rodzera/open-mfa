@@ -5,7 +5,7 @@ DB_STATUS=1
 while [[ $DB_STATUS -ne 0 ]] ; do
   sleep 2
   echo "Connecting into redis"
-  DB_STATUS=$(python3 /src/check_redis.py)
+  DB_STATUS=$(python3 redis_conn.py)
 done
 
 echo "Redis connected"
@@ -18,6 +18,6 @@ if [[ "$DEBUG" -eq 1 || "$_DEBUG" -eq 1 || "$FLASK_DEBUG" -eq 1 ]]; then
 else
 
   echo "Starting production server"
-  gunicorn -c "gunicorn.conf" "run"
+  gunicorn -c src/gunicorn/conf.py run
 
 fi

@@ -19,12 +19,12 @@ jobs:
     - name: Extract version from version.yaml
       id: version
       run: |
-        echo "VERSION=$(cat ./src/app/version.yaml | tr -d '[:space:]' | awk -F: '{print $2}')" | tee -a $GITHUB_ENV $GITHUB_OUTPUT
+        echo "VERSION=$(cat src/app/version.yaml | tr -d '[:space:]' | awk -F: '{print $2}')" | tee -a $GITHUB_ENV $GITHUB_OUTPUT
 
     - name: Check if version exists on Docker Hub
       run: |
         RESPONSE=$(curl -s -u "${{ secrets.DOCKERHUB_USER }}:${{ secrets.DOCKERHUB_PASS }}" 'https://hub.docker.com/v2/namespaces/${{ secrets.DOCKERHUB_USER }}/repositories/open-mfa/tags/${{ env.VERSION }}')
-        bash ./src/check_version.sh "$RESPONSE" "${{ env.VERSION }}"          
+        bash .github/scripts/check_version.sh "$RESPONSE" "${{ env.VERSION }}"          
 
     - name: Set up python
       uses: actions/setup-python@v4

@@ -3,11 +3,22 @@ from os import kill
 from sys import exit as sys_exit
 from signal import signal, SIGUSR1, SIGTERM
 
-from src.app.utils.helpers.logging import get_logger
 from src.app.configs.constants import PRODUCTION_ENV
-from src.app.utils.helpers.server import get_gunicorn_pid
+from src.app.utils.helpers.logging import get_logger
+from src.gunicorn.conf import pidfile
 
 log = get_logger(__name__)
+
+
+def get_gunicorn_pid() -> int:
+    try:
+        with open(pidfile) as f:
+            return int(f.readline())
+    except FileNotFoundError:
+        log.error("Gunicorn pid not defined. Exiting")
+    except ProcessLookupError:
+        log.error("Gunicorn master process not found. Exiting")
+    return 0
 
 
 def terminate_server() -> None:

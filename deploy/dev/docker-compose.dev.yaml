@@ -1,0 +1,46 @@
+services:
+  mkcert:
+    image: alpine/mkcert:latest
+    container_name: mkcert
+    environment:
+      - CAROOT=/mkcert-root
+    entrypoint: /bin/sh
+    command: -c "
+        mkcert -install && \
+        mkcert -cert-file /shared-certs/open-mfa.pem -key-file /shared-certs/open-mfa-key.pem *.open-mfa.local
+      "
+    volumes:
+      - shared-certs:/shared-certs:rw
+      - ${HOME}/.local/share/mkcert:/mkcert-root:ro
+    networks:
+      open-mfa:
+        aliases: [mkcert]
+        ipv4_address: 172.19.0.4
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    volumes:
+      - shared-certs:/etc/nginx/certs:ro
+      - ./dev/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - mkcert
+    networks:
+      open-mfa:
+        aliases: [nginx]
+        ipv4_address: 172.19.0.5
+
+  open-mfa:
+    image: rodzera/open-mfa:dev
+    depends_on: [ nginx, redis ]
+    environment:
+      _DEBUG: 1
+    volumes:
+      - ./dev/logs:/open-mfa/logs
+
+  redis:
+    volumes:
+      - ./dev/redis:/data
