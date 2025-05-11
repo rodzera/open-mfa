@@ -1,6 +1,6 @@
 from time import time
 
-from src.app.services.oath import BaseOTPService
+from src.app.services.oath import OATHService
 from src.core.entities.otp_entity import OTPEntity
 from src.app.utils.helpers.logging import get_logger
 from src.core.services.otp_generator import OTPGenerator
@@ -8,7 +8,7 @@ from src.core.services.otp_generator import OTPGenerator
 log = get_logger(__name__)
 
 
-class OTPService(BaseOTPService):
+class OTPService(OATHService):
     service_type = "otp"
 
     def create(self) -> str:
