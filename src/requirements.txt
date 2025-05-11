@@ -1,4 +1,3 @@
-alembic==1.13.3
 attrs==24.2.0
 blinker==1.8.2
 cffi==1.17.1
@@ -9,7 +8,6 @@ fakeredis==2.26.1
 flasgger==0.9.7.1
 Flask==3.0.3
 flask-marshmallow==1.2.1
-greenlet==3.1.1
 gunicorn==23.0.0
 hypothesis==6.123.4
 iniconfig==2.0.0
@@ -17,15 +15,12 @@ itsdangerous==2.2.0
 Jinja2==3.1.6
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
-Mako==1.3.5
 MarkupSafe==3.0.2
 marshmallow==3.23.0
 mistune==3.0.2
 packaging==24.1
 pluggy==1.5.0
-psycopg2==2.9.10
 pycparser==2.22
-PyMySQL==1.1.1
 pyotp==2.9.0
 pytest==8.3.4
 pytest-cov==6.0.0
@@ -36,6 +31,5 @@ referencing==0.35.1
 rpds-py==0.20.0
 six==1.16.0
 sortedcontainers==2.4.0
-SQLAlchemy==2.0.36
 typing_extensions==4.12.2
 Werkzeug==3.1.3

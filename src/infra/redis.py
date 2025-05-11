@@ -4,7 +4,6 @@ from time import strftime, gmtime
 from fakeredis import FakeStrictRedis
 from redis import StrictRedis, RedisError
 
-from src.infra.signals import terminate_server
 from src.app.utils.helpers.logging import get_logger
 from src.app.middlewares.http_exceptions import RedisUnavailableError
 from src.app.configs.constants import TESTING_ENV, PRODUCTION_ENV
@@ -26,30 +25,25 @@ class RedisInfra:
     @staticmethod
     def setup_connection():
         log.debug("Setting up redis connection")
-        # TODO : SSL connection for redis
-        return StrictRedis(
-            host=environ["_REDIS_HOST"],
-            port="6379",
-            password=environ["_REDIS_PASS"],
-            db=0,
-            socket_timeout=3,
-            decode_responses=True
-        )
-
-    def test_connection(self):
         try:
-            log.debug("Testing redis connection")
-            self.client.ping()
-        except RedisError:
-            log.exception("Exception while connecting to Redis")
-            terminate_server()
+            return StrictRedis(
+                host=environ["_REDIS_HOST"],
+                port="6379",
+                password=environ["_REDIS_PASS"],
+                db=0,
+                socket_timeout=3,
+                decode_responses=True
+            )
+        except KeyError as e:
+            log.error(f"Missing env variable: {e}")
+            raise KeyError(f"Missing env variable: {e}")
 
     def db(self, method: str, *args, **kwargs):
         if self.debug:
             log.debug(f"Executing '{method}' with args: {args}, kwargs: {kwargs}")
-        return self.execute(method, *args, **kwargs)
+        return self.exec(method, *args, **kwargs)
 
-    def execute(self, method: str, *args, **kwargs):
+    def exec(self, method: str, *args, **kwargs):
         try:
             return getattr(self.client, method)(*args, **kwargs)
         except Exception as e:

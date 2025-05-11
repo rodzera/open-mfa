@@ -20,7 +20,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="gunicorn" />
-    <option name="PARAMETERS" value="-c &quot;gunicorn.conf.py&quot; &quot;run&quot;" />
+    <option name="PARAMETERS" value="-c infra/gunicorn/conf.py run" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="true" />

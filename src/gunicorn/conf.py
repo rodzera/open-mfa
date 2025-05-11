@@ -1,4 +1,7 @@
 from os import getenv
+from pathlib import Path
+
+current_path = Path(__file__).parent.resolve()
 
 host = getenv("HOST", "0.0.0.0")
 port = getenv("PORT", "8080")
@@ -12,9 +15,8 @@ timeout = 30
 graceful_timeout = 30
 
 proc_name = "open-mfa"
-pidfile = "app/gunicorn.pid"
-
-logconfig = "gunicorn_log.conf"
+pidfile = f"{current_path}/gunicorn.pid"
+logconfig = f"{current_path}/log.conf"
 
 limit_request_line = 4094
 limit_request_fields = 100

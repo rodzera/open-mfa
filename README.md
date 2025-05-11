@@ -30,14 +30,14 @@ Open-MFA is a demo project that implements an authentication server supporting O
 
 ## Running this project
 
-To run the project stack locally with docker compose, follow these steps within the `/infra` directory:
+To run the project stack locally with docker compose, follow these steps within the `/deploy` directory:
 * Install [docker](https://docs.docker.com/engine/install/) engine.
 * Rename the `template.env` file to `.env` and fill the variables with real values.
 * Run `chmod +x ./dev/setup.sh` and `sudo ./dev/setup.sh` to install and configure mkcert and hosts file.
 * Run `make dev-up` to start the stack.
 * The application will be available at: https://app.open-mfa.local
 
-Optionally, you can build a local docker image within the `/src` directory:
+Optionally, you can build a local docker image within the `/src/docker` directory:
 * Run `make` command.
 
 ## Project Stack
