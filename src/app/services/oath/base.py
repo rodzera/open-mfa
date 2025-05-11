@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from src.app.configs.types import OTPType
 from src.app.repositories.oath import OTPRepository
+from src.app.services.oath.cipher import OTPCipherService
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)
@@ -11,9 +12,10 @@ class BaseOTPService(ABC):
     """
     Base service layer class for OTP services.
     """
+    cache: dict = None
     service_type: OTPType
     repo: OTPRepository = OTPRepository
-    cache: dict = None
+    cipher: OTPCipherService = OTPCipherService
 
     @property
     def session_data(self):
@@ -27,6 +29,7 @@ class BaseOTPService(ABC):
 
     def __init__(self, **req_data):
         self.repo = self.repo(self.service_type)
+        self.cipher = self.cipher()
         self.req_data = req_data
         self.req_otp = req_data.get("otp")
 

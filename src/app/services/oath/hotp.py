@@ -1,9 +1,7 @@
-from pyotp import random_base32
 from src.app.services.oath import BaseOTPService
-from src.app.utils.helpers.logging import get_logger
-from src.infra.aes_cipher import aes_cipher_infra
 from src.core.entities.hotp_entity import HOTPEntity
 from src.core.services.hotp_generator import HOTPGenerator
+from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)
 
@@ -13,9 +11,7 @@ class HOTPService(BaseOTPService):
 
     def create(self) -> str:
         log.info(f"Starting {self.service_type.upper()} creation")
-
-        raw_secret = random_base32()
-        hash_secret = aes_cipher_infra.encrypt_b64(raw_secret)
+        raw_secret, hash_secret = self.cipher.generate_secret()
 
         entity = HOTPEntity(
             hash_secret,
@@ -33,7 +29,7 @@ class HOTPService(BaseOTPService):
         log.info(f"Starting {self.service_type.upper()} verifying")
 
         hash_secret = self.session_data["secret"]
-        raw_secret = aes_cipher_infra.decrypt_b64(hash_secret)
+        raw_secret = self.cipher.decrypt_secret(hash_secret)
 
         entity = HOTPEntity(
             hash_secret,
