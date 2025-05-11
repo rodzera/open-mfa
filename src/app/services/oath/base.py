@@ -1,21 +1,21 @@
 from abc import ABC, abstractmethod
 
 from src.app.configs.types import OTPType
-from src.app.repositories.oath import OTPRepository
-from src.app.services.oath.cipher import OTPCipherService
+from src.app.repositories.oath import OATHRepository
+from src.app.services.oath.cipher import OATHCipherService
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)
 
 
-class BaseOTPService(ABC):
+class OATHService(ABC):
     """
-    Base service layer class for OTP services.
+    Controller and Application layer class for OATH services.
     """
     cache: dict = None
     service_type: OTPType
-    repo: OTPRepository = OTPRepository
-    cipher: OTPCipherService = OTPCipherService
+    repo: OATHRepository = OATHRepository
+    cipher: OATHCipherService = OATHCipherService
 
     @property
     def session_data(self):
@@ -34,7 +34,6 @@ class BaseOTPService(ABC):
         self.req_otp = req_data.get("otp")
 
     def get(self) -> dict:
-        # TODO : formatting is a controller responsibility
         if self.req_otp:
             return {"status": self.verify()}
         else:

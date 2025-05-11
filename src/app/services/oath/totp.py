@@ -1,4 +1,4 @@
-from src.app.services.oath import BaseOTPService
+from src.app.services.oath import OATHService
 from src.core.entities.totp_entity import TOTPEntity
 from src.core.services.totp_generator import TOTPGenerator
 from src.app.utils.helpers.logging import get_logger
@@ -6,7 +6,7 @@ from src.app.utils.helpers.logging import get_logger
 log = get_logger(__name__)
 
 
-class TOTPService(BaseOTPService):
+class TOTPService(OATHService):
     service_type = "totp"
 
     def create(self) -> str:

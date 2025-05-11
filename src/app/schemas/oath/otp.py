@@ -1,11 +1,11 @@
 from marshmallow import post_load
 from werkzeug.exceptions import NotFound
 
-from src.app.repositories.oath import OTPRepository
-from src.app.schemas.oath.base import OTPFieldSchema
+from src.app.repositories.oath import OATHRepository
+from src.app.schemas.oath.base import OATHSchema
 
 
-class OTPSchema(OTPFieldSchema):
+class OTPSchema(OATHSchema):
     service_type = "otp"
 
     @post_load
@@ -13,7 +13,7 @@ class OTPSchema(OTPFieldSchema):
         if not data.get("otp"):
             return data
 
-        session_data = OTPRepository(self.service_type).session_data_exists()
+        session_data = OATHRepository(self.service_type).session_data_exists()
         if not session_data:
             raise NotFound("OTP not created")
         return data

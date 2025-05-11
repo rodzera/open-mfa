@@ -2,10 +2,10 @@ from marshmallow import fields
 from marshmallow.validate import Range
 
 from src.app.configs.oath import OATH_CONFIG
-from src.app.schemas.oath.base import OTPValidationSchema, OTPFieldSchema
+from src.app.schemas.oath.base import OTPValidationSchema, OATHSchema
 
 
-class TOTPSchema(OTPFieldSchema, OTPValidationSchema):
+class TOTPSchema(OATHSchema, OTPValidationSchema):
     service_type = "totp"
     interval = fields.Int(
         required=False,

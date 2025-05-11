@@ -2,10 +2,10 @@ from marshmallow import fields
 from marshmallow.validate import Range
 
 from src.app.configs.oath import OATH_CONFIG
-from src.app.schemas.oath.base import OTPValidationSchema, OTPFieldSchema
+from src.app.schemas.oath.base import OTPValidationSchema, OATHSchema
 
 
-class HOTPSchema(OTPFieldSchema, OTPValidationSchema):
+class HOTPSchema(OATHSchema, OTPValidationSchema):
     # TODO : set a max window limit
     service_type = "hotp"
     initial_count = fields.Int(required=False, load_default=0, validate=Range(min=0))

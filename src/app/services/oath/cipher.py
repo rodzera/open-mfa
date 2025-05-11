@@ -2,7 +2,7 @@ from pyotp import random_base32
 from src.infra.aes_cipher import aes_cipher_infra
 
 
-class OTPCipherService:
+class OATHCipherService:
     cipher = aes_cipher_infra
 
     def generate_secret(self) -> tuple[str, str]:

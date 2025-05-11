@@ -8,9 +8,9 @@ from src.app.services.user_session import UserSessionService
 log = get_logger(__name__)
 
 
-class OTPRepository(RedisRepository):
+class OATHRepository(RedisRepository):
     """
-    Base data layer class for OTP repositories.
+    Base data layer class for OATH repositories.
     """
     oath_session_key: str
     service_type: OTPType
