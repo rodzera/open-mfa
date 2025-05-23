@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="unittests" type="tests" factoryName="Autodetect">
+  <configuration default="false" name="tests" type="tests" factoryName="Autodetect">
     <module name="open-mfa" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
