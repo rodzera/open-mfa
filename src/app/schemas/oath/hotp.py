@@ -1,7 +1,7 @@
 from marshmallow import fields
 from marshmallow.validate import Range
 
-from src.app.configs.oath import OATH_CONFIG
+from src.core.configs.base import OATH_CONFIG
 from src.app.schemas.oath.base import OTPValidationSchema, OATHSchema
 
 

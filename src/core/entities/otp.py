@@ -1,6 +1,6 @@
 from time import time
 from typing import  Union
-from src.app.configs.oath import OATH_CONFIG
+from src.core.configs.base import OATH_CONFIG
 
 
 class OTPEntity:
