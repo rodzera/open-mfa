@@ -1,13 +1,15 @@
 from pyotp import TOTP as PyTOTP
-from src.app.configs.oath import OATH_CONFIG
+from src.core.configs.base import OATH_CONFIG
+from src.core.ports.totp import TOTPGeneratorPort
+from src.infra.adapters.shared import default_hash_method
 
 
-class TOTPGenerator:
+class TOTPGenerator(TOTPGeneratorPort):
     def __init__(self, raw_secret: str, interval: int):
         self.server = PyTOTP(
             raw_secret,
             interval=interval,
-            digest=OATH_CONFIG.hash_method
+            digest=default_hash_method
         )
 
     def generate_uri(self, session_id: str) -> str:

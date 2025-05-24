@@ -1,6 +1,7 @@
 from src.app.services.oath import OATHService
-from src.core.entities.hotp_entity import HOTPEntity
-from src.core.services.hotp_generator import HOTPGenerator
+from src.core.entities.hotp import HOTPEntity
+from src.infra.adapters.hotp import HOTPGenerator
+from src.core.rules.hotp_resync import HOTPResyncService
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)
@@ -44,7 +45,8 @@ class HOTPService(OATHService):
             self.repo.insert_session_data(entity.as_dict)
             return True
 
-        status, new_count = generator.resync_protocol(
+        hotp_resync_service = HOTPResyncService(generator)
+        status, new_count = hotp_resync_service.resync(
             self.req_otp, entity.resync_threshold
         )
         if status:

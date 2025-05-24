@@ -1,6 +1,6 @@
 from src.app.services.oath import OATHService
-from src.core.entities.totp_entity import TOTPEntity
-from src.core.services.totp_generator import TOTPGenerator
+from src.core.entities.totp import TOTPEntity
+from src.infra.adapters.totp import TOTPGenerator
 from src.app.utils.helpers.logging import get_logger
 
 log = get_logger(__name__)

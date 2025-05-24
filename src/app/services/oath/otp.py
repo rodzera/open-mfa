@@ -1,9 +1,9 @@
 from time import time
 
+from src.core.entities.otp import OTPEntity
 from src.app.services.oath import OATHService
-from src.core.entities.otp_entity import OTPEntity
+from src.infra.adapters.otp import OTPGenerator
 from src.app.utils.helpers.logging import get_logger
-from src.core.services.otp_generator import OTPGenerator
 
 log = get_logger(__name__)
 

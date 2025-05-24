@@ -1,6 +1,4 @@
-from hashlib import sha256
-
-from src.app.configs.oath import OATH_CONFIG, OATHConfig
+from src.core.configs.base import OATH_CONFIG, OATHConfig
 
 
 def test_is_cls():
@@ -20,5 +18,4 @@ def test_hotp_config():
     assert OATH_CONFIG.hotp.max_resync_threshold == 10
 
 def test_oath_config():
-    assert OATH_CONFIG.hash_method == sha256
     assert OATH_CONFIG.issuer == "open-mfa"
