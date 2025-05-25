@@ -56,6 +56,9 @@ jobs:
     name: Tag and publish to GHCR
     runs-on: ubuntu-latest
     needs: tests
+    permissions:
+      contents: read
+      packages: write
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Log in to GHCR
