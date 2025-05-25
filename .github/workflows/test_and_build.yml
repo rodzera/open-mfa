@@ -13,7 +13,7 @@ jobs:
     outputs:
       VERSION: ${{ steps.version.outputs.VERSION }}
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
@@ -58,6 +58,11 @@ jobs:
     needs: tests
     if: github.ref == 'refs/heads/master'
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
