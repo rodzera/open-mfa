@@ -52,8 +52,8 @@ This project is a case study demonstrating the use of the following technologies
 - [Python Logging](https://docs.python.org/3.12/library/logging) - Configurable runtime logging.
 - [Pytest](https://docs.pytest.org/en/7.4.x/) and [Hypothesis](https://hypothesis.readthedocs.io/en/latest/) - Unit, integration and property-based testing.
 - [Flasgger](https://github.com/flasgger/flasgger) - Swagger UI and OpenAPI documentation.
-- [Docker Hub](https://docs.docker.com/docker-hub/) - Container image registry.
 - [GitHub Actions](https://docs.github.com/en/actions) - CI/CD pipelines for testing and deployment.
+- [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) - Container image registry.
 - [Docker Compose](https://docs.docker.com/compose/) - Multi-service orchestration.
   - **Development:**
     - [Werkzeug](https://werkzeug.palletsprojects.com/en/stable/) server.
