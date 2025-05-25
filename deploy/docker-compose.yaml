@@ -10,7 +10,7 @@ volumes:
 
 services:
   open-mfa:
-    image: rodzera/open-mfa:latest
+    image: ghcr.io/rodzera/open-mfa:latest
     container_name: open-mfa
     restart: unless-stopped
     depends_on: [redis]
