@@ -1,0 +1,13 @@
+services:
+  open-mfa:
+    restart: on-failure:3
+    environment:
+      WORKERS: 2
+      THREADS: 4
+      WORKER_CONNECTIONS: 1000
+    volumes:
+      - ./prd/logs:/open-mfa/logs
+
+  redis:
+    volumes:
+      - ./prd/redis:/data

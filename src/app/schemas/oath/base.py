@@ -2,10 +2,12 @@ from typing import Optional
 from werkzeug.exceptions import NotFound, Conflict
 from marshmallow import Schema, fields, validates, ValidationError, post_load
 
-from src.app.repositories.oath import TOTPRepository, HOTPRepository
+from src.app.configs.types import OTPType
+from src.app.repositories.oath import OATHRepository
 
 
-class OTPFieldSchema(Schema):
+class OATHSchema(Schema):
+    service_type: OTPType
     otp = fields.Str(required=False)
 
     @validates("otp")
@@ -18,19 +20,15 @@ class OTPFieldSchema(Schema):
 
 
 class OTPValidationSchema(Schema):
-    _service_type = None
+    service_type: OTPType
 
     @post_load
     def validate(self, data, **kwargs):
         otp = data.get("otp")
-        if self._service_type == "totp":
-            session_data = TOTPRepository().check_session_data_exists()
-        else:
-            session_data = HOTPRepository().check_session_data_exists()
-
+        session_data = OATHRepository(self.service_type).session_data_exists()
 
         if otp and not session_data:
-            raise NotFound(f"{self._service_type.upper()} not created")
+            raise NotFound(f"{self.service_type.upper()} not created")
         elif not otp and session_data:
-            raise Conflict(f"{self._service_type.upper()} already created")
+            raise Conflict(f"{self.service_type.upper()} already created")
         return data

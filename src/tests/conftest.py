@@ -7,9 +7,9 @@ from flask.ctx import RequestContext
 from flask.testing import FlaskClient
 
 from src.run import application
-from src.tests.utils import basic_auth
-from src.app.infra.aes_cipher import aes_cipher_service
-from src.app.infra.redis import RedisService, redis_service
+from src.tests.helpers import basic_auth
+from src.infra.aes_cipher import aes_cipher_infra
+from src.infra.redis import RedisInfra, redis_infra
 
 
 @fixture(autouse=True)
@@ -19,7 +19,7 @@ def app() -> Flask:
 
 @fixture(autouse=True)
 def reset_fake_redis() -> None:
-    redis_service.client.flushdb()
+    redis_infra.client.flushdb()
 
 @fixture
 def client(app: Flask) -> FlaskClient:
@@ -27,7 +27,7 @@ def client(app: Flask) -> FlaskClient:
 
 @fixture
 def mock_redis_db(mocker: MockerFixture) -> MagicMock:
-    return mocker.patch.object(RedisService, "db")
+    return mocker.patch.object(RedisInfra, "db")
 
 @fixture
 def req_ctx(app: Flask) -> RequestContext:
@@ -40,4 +40,4 @@ def basic_admin_auth() -> Dict:
 
 @fixture
 def cipher_service():
-    return aes_cipher_service
+    return aes_cipher_infra

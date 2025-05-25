@@ -2,19 +2,19 @@ from flask import Flask
 from flasgger import Swagger
 
 from src.app.schemas import ma
-from src.app.infra.logging import logging_service
+from src.infra.logging import logging_infra
 from src.app.configs.environ import DefaultConfig
 from src.app.utils.helpers.logging import get_logger
-from src.app.infra.middlewares.errors import register_error_handlers
-from src.app.infra.signals import register_gunicorn_signal_handler
-from src.app.infra.middlewares.user_session import trigger_user_session_controller
+from src.app.middlewares.errors import register_error_handlers
+from src.infra.signals import register_gunicorn_signal_handler
+from src.app.middlewares.user_session import trigger_user_session_service
 
 log = get_logger(__name__)
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    logging_service.configure_loggers()
+    logging_infra.configure_loggers()
 
     log.info("Setting app configuration")
     app.config.from_prefixed_env(prefix="")  # variables starting with an underscore will be loaded
@@ -33,7 +33,7 @@ def create_app() -> Flask:
     app.register_blueprint(views)
 
     log.info("Registering request funcs")
-    app.before_request(trigger_user_session_controller)
+    app.before_request(trigger_user_session_service)
 
     log.info("Registering error handlers")
     register_error_handlers(app)

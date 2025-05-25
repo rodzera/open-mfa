@@ -30,26 +30,33 @@ Open-MFA is a demo project that implements an authentication server supporting O
 
 ## Running this project
 
-To run the open-mfa stack locally with docker compose, follow these steps within the `docker-compose` directory:
-* Install [docker](https://docs.docker.com/engine/install/) engine
-* Rename the `template.env` file to `.env` and fill the variables with real values
-* Run: `docker compose up`
-* Application will be available at: http://0.0.0.0:8080
+To run the project stack locally with docker compose, follow these steps within the `/deploy` directory:
+* Install [docker](https://docs.docker.com/engine/install/) engine.
+* Rename the `template.env` file to `.env` and fill the variables with real values.
+* Run `chmod +x ./dev/setup.sh` and `sudo ./dev/setup.sh` to install and configure mkcert and hosts file.
+* Run `make dev-up` to start the stack.
+* The application will be available at: https://app.open-mfa.local
 
-Optionally, you can build a local docker image within the `src` directory:
-* Run `make` command
+Optionally, you can build a local docker image within the `/src/docker` directory:
+* Run `make` command.
 
 ## Project Stack
 
-This project was built with the following tech stack:
+This project is a case study demonstrating the use of the following technologies:
 
-- [Flask](https://flask.palletsprojects.com/en/stable/) web server. 
-- OTP services implemented with [PyOTP](https://github.com/pyauth/pyotp).
-- RESTful APIs with [marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/) validation.
-- [Redis](https://hub.docker.com/_/redis) database support.
-- Runtime [logging](https://docs.python.org/3.12/library/logging).
-- Unittests with [Pytest](https://docs.pytest.org/en/7.4.x/).
-- [Swagger](https://github.com/flasgger/flasgger) documentation.
-- [Docker Hub](https://docs.docker.com/docker-hub/) deployment.
-- CI/CD pipelines with [GitHub Actions](https://docs.github.com/en/actions).
-- Production-ready [Docker Compose](https://docs.docker.com/compose/) setup with [Gunicorn](https://gunicorn.org/).
+- [Architecture](https://en.wikipedia.org/wiki/Software_architecture) - Based on layered architecture, clean architecture, and domain-driven design (DDD).
+- [Flask](https://flask.palletsprojects.com/en/stable/) - Web framework.
+- [PyOTP](https://github.com/pyauth/pyotp) - Library for OTP algorithms implementation.
+- [Marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/) - Library for REST API data validation.
+- [Redis](https://hub.docker.com/_/redis) - Database for OTP storage.
+- [Python Logging](https://docs.python.org/3.12/library/logging) - Configurable runtime logging.
+- [Pytest](https://docs.pytest.org/en/7.4.x/) and [Hypothesis](https://hypothesis.readthedocs.io/en/latest/) - Unit, integration and property-based testing.
+- [Flasgger](https://github.com/flasgger/flasgger) - Swagger UI and OpenAPI documentation.
+- [GitHub Actions](https://docs.github.com/en/actions) - CI/CD pipelines for testing and deployment.
+- [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) - Container image registry.
+- [Docker Compose](https://docs.docker.com/compose/) - Multi-service orchestration.
+  - **Development:**
+    - [Werkzeug](https://werkzeug.palletsprojects.com/en/stable/) server.
+    - [Nginx](https://nginx.org/) and [mkcert](https://github.com/FiloSottile/mkcert) for HTTPS and reverse proxy.
+  - **Production:**
+    - [Gunicorn](https://gunicorn.org/) server.
