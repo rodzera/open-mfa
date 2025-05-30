@@ -1,4 +1,4 @@
-name: Build and Publish Docker Image
+name: Test, Build, and Publish Docker Image
 
 on:
   push:
@@ -52,13 +52,13 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
 
-  tag_and_publish:
-    name: Tag and publish docker image
+  build_and_publish:
+    name: Build and publish docker image
     runs-on: ubuntu-latest
     needs: tests
     if: github.ref == 'refs/heads/master'
     env:
-      ECR_URI: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ github.repository }}
+      ECR_URI: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/open-mfa
       GHCR_URI: ghcr.io/${{ github.repository }}
     steps:
       - name: Checkout repository
