@@ -1,7 +1,7 @@
 # open-mfa
 [![Python 3.12](https://img.shields.io/badge/python-3.12-success.svg)](https://www.python.org/downloads/release/python-3121/)
-[![Test and Build](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/test_and_build.yml) 
 [![codecov](https://codecov.io/gh/rodzera/open-mfa/graph/badge.svg?token=98ORTRBHN5)](https://codecov.io/gh/rodzera/open-mfa)
+[![Build and Publish Docker Image](https://github.com/rodzera/open-mfa/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/main.yml) 
 
 Open-MFA is a demo project that implements an authentication server supporting OTP (One-Time Password), HOTP (HMAC-Based One-Time Password) and TOTP (Time-Based One-Time Password) algorithms. 
 
@@ -44,19 +44,28 @@ Optionally, you can build a local docker image within the `/src/docker` director
 
 This project is a case study demonstrating the use of the following technologies:
 
-- [Architecture](https://en.wikipedia.org/wiki/Software_architecture) - Based on layered architecture, clean architecture, and domain-driven design (DDD).
-- [Flask](https://flask.palletsprojects.com/en/stable/) - Web framework.
-- [PyOTP](https://github.com/pyauth/pyotp) - Library for OTP algorithms implementation.
-- [Marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/) - Library for REST API data validation.
-- [Redis](https://hub.docker.com/_/redis) - Database for OTP storage.
-- [Python Logging](https://docs.python.org/3.12/library/logging) - Configurable runtime logging.
-- [Pytest](https://docs.pytest.org/en/7.4.x/) and [Hypothesis](https://hypothesis.readthedocs.io/en/latest/) - Unit, integration and property-based testing.
-- [Flasgger](https://github.com/flasgger/flasgger) - Swagger UI and OpenAPI documentation.
-- [GitHub Actions](https://docs.github.com/en/actions) - CI/CD pipelines for testing and deployment.
-- [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) - Container image registry.
-- [Docker Compose](https://docs.docker.com/compose/) - Multi-service orchestration.
-  - **Development:**
-    - [Werkzeug](https://werkzeug.palletsprojects.com/en/stable/) server.
-    - [Nginx](https://nginx.org/) and [mkcert](https://github.com/FiloSottile/mkcert) for HTTPS and reverse proxy.
-  - **Production:**
-    - [Gunicorn](https://gunicorn.org/) server.
+- Architecture:
+  - RESTful API design.
+  - Clean architecture.
+  - Layered architecture.
+  - Domain-driven design (DDD).
+- Backend:
+  - [Flask](https://flask.palletsprojects.com/en/stable/) - Web framework.
+  - [PyOTP](https://github.com/pyauth/pyotp) - Library for OTP algorithms implementation.
+  - [Marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/) - Library for REST API data validation.
+  - [Redis](https://hub.docker.com/_/redis) - Database for OTP storage.
+  - [Python Logging](https://docs.python.org/3.12/library/logging) - Configurable runtime logging.
+  - [Pytest](https://docs.pytest.org/en/7.4.x/) and [Hypothesis](https://hypothesis.readthedocs.io/en/latest/) - Unit, integration, and property-based testing.
+  - [Flasgger](https://github.com/flasgger/flasgger) - Swagger UI and OpenAPI documentation.
+- DevOps:
+  - [Codecov](https://about.codecov.io/product/documentation/) - Code coverage reports.
+  - [Docker](https://docs.docker.com/) - Services containerization.
+  - [GitHub Actions](https://docs.github.com/en/actions) - CI/CD pipelines for testing and deployment.
+  - [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) - Public container image registry.
+  - [AWS Elastic Container Registry](https://docs.aws.amazon.com/ecr/) - Private container image registry.
+  - [Docker Compose](https://docs.docker.com/compose/) - Multi-service orchestration.
+    - **Development:**
+      - [Werkzeug](https://werkzeug.palletsprojects.com/en/stable/) server.
+      - [Nginx](https://nginx.org/) and [mkcert](https://github.com/FiloSottile/mkcert) for HTTPS and reverse proxy.
+    - **Production:**
+      - [Gunicorn](https://gunicorn.org/) server.

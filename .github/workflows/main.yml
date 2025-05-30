@@ -6,10 +6,6 @@ on:
       - 'src/**'
       - '.github/**'
 
-env:
-  ECR_URI: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ github.repository }}
-  GHCR_URI: ghcr.io/${{ github.repository }}
-
 jobs:
   tests:
     name: Run tests
@@ -61,6 +57,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: tests
     if: github.ref == 'refs/heads/master'
+    env:
+      ECR_URI: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ github.repository }}
+      GHCR_URI: ghcr.io/${{ github.repository }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
