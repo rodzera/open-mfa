@@ -88,8 +88,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ ECR_URI }}
-            ${{ GHCR_URI }}
+            ${{ env.ECR_URI }}
+            ${{ env.GHCR_URI }}
           tags: type=raw,value=${{ needs.tests.outputs.VERSION }}
 
       - name: Set up docker buildx
