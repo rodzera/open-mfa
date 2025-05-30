@@ -1,7 +1,7 @@
 # open-mfa
 [![Python 3.12](https://img.shields.io/badge/python-3.12-success.svg)](https://www.python.org/downloads/release/python-3121/)
 [![codecov](https://codecov.io/gh/rodzera/open-mfa/graph/badge.svg?token=98ORTRBHN5)](https://codecov.io/gh/rodzera/open-mfa)
-[![Build and Publish Docker Image](https://github.com/rodzera/open-mfa/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/main.yml) 
+[![GH Actions Badge](https://github.com/rodzera/open-mfa/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/rodzera/open-mfa/actions/workflows/main.yml) 
 
 Open-MFA is a demo project that implements an authentication server supporting OTP (One-Time Password), HOTP (HMAC-Based One-Time Password) and TOTP (Time-Based One-Time Password) algorithms. 
 
