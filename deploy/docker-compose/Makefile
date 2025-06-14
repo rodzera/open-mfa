@@ -1,5 +1,5 @@
 dev-build:
-	docker build -t rodzera/open-mfa:dev -f ../src/docker/Dockerfile ../src
+	docker build -t rodzera/open-mfa:dev -f ../../src/docker/Dockerfile ../../src
 
 dev-up: dev-build
 	docker compose --env-file dev/.env -f docker-compose.yaml -f dev/docker-compose.dev.yaml up -d

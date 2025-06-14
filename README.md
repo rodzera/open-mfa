@@ -37,7 +37,7 @@ Open-MFA is a demo project that implements an authentication server supporting O
 
 ### Development
 
-Inside `/docker-compose` directory:
+Inside `/deploy/docker-compose` directory:
 * Rename the `.env.example` file to `.env` and replace the variables with real values.
 * Run `chmod +x ./dev/setup.sh` and `sudo ./dev/setup.sh` to install and configure mkcert and hosts file.
 * Run `make dev-up` to start the stack.
@@ -45,7 +45,7 @@ Inside `/docker-compose` directory:
 
 ### Staging
 
-Inside `/docker-compose` directory:
+Inside `/deploy/docker-compose` directory:
 * Rename the `.env.example` file to `.env` and replace the variables with real values.
 * Run `make staging-up` to start the stack.
 * The application will be available at: `https://${DNS_DOMAIN}`
