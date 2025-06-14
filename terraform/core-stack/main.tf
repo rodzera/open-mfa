@@ -10,6 +10,12 @@ terraform {
 provider "aws" {
   region  = "us-east-2"
   profile = "terraform"
+  default_tags {
+    tags = {
+      Project   = "open-mfa"
+      ManagedBy = "terraform"
+    }
+  }
 }
 
 resource "aws_route53_zone" "main" {

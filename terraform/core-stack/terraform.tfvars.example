@@ -1,0 +1,15 @@
+# dns domain
+route53_domain = "my-domain.com"
+
+# flask super admin credentials
+admin_user     = "admin"
+admin_pass     = "p4ssw0rd"
+
+# database password
+redis_pass     = "p4ssw0rd"
+
+# flask secret key
+secret_key     = "s3cr3t_k3y"
+
+# AES cipher key encoded in base64
+b64_aes_key    = "QUJDREVGR0gxMjM0NTY3OA=="
