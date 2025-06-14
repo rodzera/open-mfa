@@ -7,14 +7,13 @@ services:
     entrypoint: /bin/sh
     command: -c "
         mkcert -install && \
-        mkcert -cert-file /shared-certs/open-mfa.pem -key-file /shared-certs/open-mfa-key.pem *.open-mfa.local
+        mkcert -cert-file /shared-certs/open-mfa.pem -key-file /shared-certs/open-mfa-key.pem open-mfa.local
       "
     volumes:
       - shared-certs:/shared-certs:rw
       - ${HOME}/.local/share/mkcert:/mkcert-root:ro
     networks:
       open-mfa:
-        aliases: [mkcert]
         ipv4_address: 172.19.0.4
 
   nginx:
@@ -30,7 +29,6 @@ services:
       - mkcert
     networks:
       open-mfa:
-        aliases: [nginx]
         ipv4_address: 172.19.0.5
 
   open-mfa:

@@ -176,3 +176,9 @@ cython_debug/
 redis/
 logs/
 gunicorn.pid
+
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars

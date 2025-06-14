@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: open-mfa
   description: developed by github.com/rodzera
-  version: 1.4
+  version: 0.0.15
 servers:
   - url: /api
 paths:

@@ -8,7 +8,7 @@ echo "Generating mkcert CA ROOT"
 mkcert -install
 
 echo "Editing /etc/hosts"
-if ! grep -q "app.open-mfa.local" /etc/hosts; then
+if ! grep -q "open-mfa.local" /etc/hosts; then
     sudo sh -c "cat hosts >> /etc/hosts"
     echo "Hosts file updated"
 else

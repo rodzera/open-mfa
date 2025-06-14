@@ -1,0 +1,54 @@
+services:
+  open-mfa:
+    restart: on-failure:3
+    environment:
+      WORKERS: 2
+      THREADS: 4
+      WORKER_CONNECTIONS: 1000
+      VIRTUAL_HOST: ${DNS_HOST}
+      VIRTUAL_PORT: 8080
+      LETSENCRYPT_HOST: ${DNS_HOST}
+      LETSENCRYPT_EMAIL: ${DNS_EMAIL}
+    volumes:
+      - ./prd/logs:/open-mfa/logs
+
+  redis:
+    volumes:
+      - ./prd/redis:/data
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./staging/nginx/certs:/etc/nginx/certs
+      - ./staging/nginx/html:/usr/share/nginx/html
+      - ./staging/nginx/default:/etc/nginx/vhost.d/default:ro
+      - ./staging/nginx/custom.conf:/etc/nginx/conf.d/custom.conf:ro
+    depends_on:
+      - open-mfa
+    networks:
+      open-mfa:
+        ipv4_address: 172.19.0.4
+
+  nginx-letsencrypt:
+    image: nginxproxy/acme-companion
+    container_name: nginx-letsencrypt
+    restart: unless-stopped
+    environment:
+      DEFAULT_EMAIL: ${DNS_EMAIL}
+      NGINX_PROXY_CONTAINER: nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./staging/nginx/certs:/etc/nginx/certs
+      - ./staging/nginx/html:/usr/share/nginx/html
+      - ./staging/nginx/default:/etc/nginx/vhost.d/default:ro
+    depends_on:
+      - nginx-proxy
+    networks:
+      open-mfa:
+        ipv4_address: 172.19.0.5
