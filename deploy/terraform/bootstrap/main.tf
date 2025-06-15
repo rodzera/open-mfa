@@ -20,6 +20,9 @@ provider "aws" {
 
 resource "aws_s3_bucket" "tf_state" {
   bucket = "open-mfa-tf-state"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_versioning" "tf_state_versioning" {
