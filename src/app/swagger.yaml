@@ -115,7 +115,7 @@ paths:
         - name: otp
           in: query
           required: false
-          description: The HOTP to verify (optional).
+          description: The OTP to verify (optional).
           schema:
             type: string
         - name: initial_count
@@ -159,7 +159,7 @@ paths:
                   value:
                     status: true
         400:
-          description: Invalid HOTP provided
+          description: Invalid OTP provided
         404:
           description: HOTP not created
         409:
