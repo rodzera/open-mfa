@@ -17,7 +17,7 @@ Open-MFA is a demo project that implements an authentication server supporting O
 * The seed is a static and non-guessable secret that may be shared with the client in HOTP and TOTP implementations, but must always be securely stored by the authentication server. 
 * The moving factor is a dynamic value that must be distinct for each OTP code generation. This value, combined with the seed, produces different OTP codes for each authentication request.
 * Different OTP implementations exist due to variations in how the moving factor is generated and whether the HMAC secret is shared with the client.
-* While there are RFCs for HOTP ([RFC 4226](https://datatracker.ietf.org/doc/html/rfc4226)) and TOTP ([RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238)), there is no specific RFC for a simplified OTP implementation. However, such implementations may be the most common on the world wide web today, often found in scenarios like email verification or temporary login codes. Despite their widespread use, any simplified OTP implementation **should** still follow the security guidelines outlined in the HOTP and TOTP specs.
+* While there are RFCs for HOTP ([RFC 4226](https://datatracker.ietf.org/doc/html/rfc4226)) and TOTP ([RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238)), there is no specific RFC for a simplified OTP implementation. However, such implementation may be the most common on the world wide web today, often found in scenarios like email verification or temporary login codes. Despite their widespread use, any simplified OTP implementation **should** still follow the security guidelines outlined in the HOTP and TOTP specs.
 
 ### General and common best practices for all algorithms
 
@@ -38,7 +38,7 @@ Open-MFA is a demo project that implements an authentication server supporting O
 ### Development
 
 Inside `/deploy/docker-compose` directory:
-* Rename the `.env.example` file to `.env` and replace the variables with real values.
+* Copy the `.env.example` file to `dev/.env` and replace the variables with real values.
 * Run `chmod +x ./dev/setup.sh` and `sudo ./dev/setup.sh` to install and configure mkcert and hosts file.
 * Run `make dev-up` to start the stack.
 * The application will be available at: `https://open-mfa.local`
@@ -46,7 +46,7 @@ Inside `/deploy/docker-compose` directory:
 ### Staging
 
 Inside `/deploy/docker-compose` directory:
-* Rename the `.env.example` file to `.env` and replace the variables with real values.
+* Copy the `.env.example` file to `staging/.env` and replace the variables with real values.
 * Run `make staging-up` to start the stack.
 * The application will be available at: `https://${DNS_DOMAIN}`
 

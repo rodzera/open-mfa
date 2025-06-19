@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: open-mfa
   description: developed by github.com/rodzera
-  version: 0.0.15
+  version: 0.0.16
 servers:
   - url: /api
 paths:
@@ -21,15 +21,15 @@ paths:
                 properties:
                   datetime:
                     type: string
-                    description: Current timestamp from redis
+                    description: Current timestamp from Redis
                     example: "2024-11-01 03:36:58"
                   status:
                     type: string
-                    description: Status of the database, either 'up' or 'down'
+                    description: Redis availability, either 'up' or 'down'
                     example: "up"
                   version:
                     type: string
-                    description: Current redis version
+                    description: Current Redis version
                     example: "7.4.1"
         500:
           description: Database connection error
@@ -54,12 +54,12 @@ paths:
                     example: "2024-11-01 03:36:58"
                   status:
                     type: string
-                    description: Status of the server, always 'up'
+                    description: Flask server availability, always 'up'
                     example: "up"
                   version:
                     type: string
-                    description: Current version of the application
-                    example: "1.0.0"
+                    description: Current app version
+                    example: "0.0.16"
       security:
         - basic: [ ]
   /otp:
@@ -91,8 +91,17 @@ paths:
                     properties:
                       status:
                         type: boolean
-                        description: Verification result if an OTP was provided
+                        description: OTP verification result
                         example: true
+              examples:
+                OTPGeneration:
+                  summary: OTP Generation
+                  value:
+                    otp: "123456"
+                OTPVerification:
+                  summary: OTP Verification
+                  value:
+                    status: true
         400:
           description: Invalid OTP provided
         404:
@@ -133,13 +142,22 @@ paths:
                       uri:
                         type: string
                         description: Provisioning HOTP uri to be used in a authenticator app
-                        example: "otpauth://hotp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App&counter=0"
+                        example: "otpauth://hotp/open-mfa:username?secret=JBSWY3DPEHPK3PXP&issuer=open-mfa&counter=0"
                   - type: object
                     properties:
                       status:
                         type: boolean
-                        description: Verification result if an OTP was provided
+                        description: HOTP verification result
                         example: true
+              examples:
+                HOTPGeneration:
+                  summary: HOTP Generation
+                  value:
+                    uri: "otpauth://hotp/open-mfa:username?secret=JBSWY3DPEHPK3PXP&issuer=open-mfa&counter=0"
+                HOTPVerification:
+                  summary: HOTP Verification
+                  value:
+                    status: true
         400:
           description: Invalid OTP provided
         404:
@@ -185,13 +203,22 @@ paths:
                       uri:
                         type: string
                         description: Provisioning TOTP uri to be used in a authenticator app
-                        example: "otpauth://totp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App"
+                        example: "otpauth://totp/open-mfa:username?secret=JBSWY3DPEHPK3PXP&issuer=open-mfa"
                   - type: object
                     properties:
                       status:
                         type: boolean
-                        description: Verification result if an OTP was provided
+                        description: TOTP verification result
                         example: true
+              examples:
+                TOTPGeneration:
+                  summary: TOTP Generation
+                  value:
+                    uri: "otpauth://totp/open-mfa:username?secret=JBSWY3DPEHPK3PXP&issuer=open-mfa"
+                TOTPVerification:
+                  summary: TOTP Verification
+                  value:
+                    status: true
         400:
           description: Invalid OTP provided
         404:

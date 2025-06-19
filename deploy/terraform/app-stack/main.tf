@@ -22,7 +22,7 @@ data "terraform_remote_state" "base" {
   backend = "s3"
   config = {
     bucket  = "open-mfa-tf-state"
-    key     = "base.tfstate"
+    key     = "core-stack.tfstate"
     region  = "us-east-2"
     encrypt = true
   }
